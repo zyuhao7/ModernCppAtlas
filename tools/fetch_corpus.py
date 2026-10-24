@@ -50,12 +50,25 @@ def main() -> int:
             if not (dest / ".git").exists():
                 raise SystemExit(f"{dest} exists but is not a git checkout")
             actual = head_commit(dest)
+            if actual == commit:
+                print(f"{repo}: cached at {actual[:12]}")
+                continue
+            dirty = run(["git", "status", "--porcelain"], cwd=dest)
+            if dirty:
+                raise SystemExit(
+                    f"{repo}: cache at {dest} has local changes; "
+                    "commit or discard them before updating"
+                )
+            print(f"{repo}: updating {actual[:12]} -> {commit[:12]}")
+            run(["git", "fetch", "--depth", "1", "origin", commit], cwd=dest)
+            run(["git", "checkout", "--detach", commit], cwd=dest)
+            actual = head_commit(dest)
             if actual != commit:
                 raise SystemExit(
-                    f"{repo}: cache is at {actual}, expected {commit}; "
-                    "remove the cache directory explicitly to refetch"
+                    f"{repo}: fetched {actual}, expected {commit}; "
+                    "update data/corpus.yaml or fetch the commit directly"
                 )
-            print(f"{repo}: cached at {actual[:12]}")
+            print(f"{repo}: ready at {actual[:12]}")
             continue
 
         print(f"{repo}: cloning {tag} ({commit[:12]})")

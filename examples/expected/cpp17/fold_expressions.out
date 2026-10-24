@@ -1,0 +1,9 @@
+sum: 15
+sum empty: 0
+all true: 1
+all true empty: 1
+any true: 1
+any true empty: 0
+joined: 1 2.5 atlas
+total: 60
+count: 3

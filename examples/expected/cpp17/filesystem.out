@@ -1,0 +1,6 @@
+/var/log/app
+server .log
+/var/log/app/backup.log
+entries: archive config.ini server.log
+size: 5
+relative: logs/server.log

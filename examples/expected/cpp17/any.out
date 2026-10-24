@@ -1,0 +1,9 @@
+count: int 42
+name: string atlas
+item: user amy 3
+item: int 7
+item: string x
+after reset: empty
+amy
+pointer cast 7
+bad_any_cast

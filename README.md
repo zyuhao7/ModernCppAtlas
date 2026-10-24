@@ -134,13 +134,16 @@ M0 目标：
 ```bash
 uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
 uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
-uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段
-uv run tools/verify_examples.py --compiler g++ --run  # 按 examples/cppNN 选择标准并编译运行
+uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段，并比对摘录原文
+uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
+uv run python -m unittest discover -s tests -v  # 工具与输出目录安全边界回归测试
 uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 生成并构建站点
 uv run tools/check_search.py                  # 中文搜索冒烟（需先构建站点）
 ```
 
-`tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径与行段。
+`tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径、行段、许可证与摘录原文。证据按自身固定 commit 校验，不要求等于语料当前版本；缺失的历史 commit 会自动尝试浅拉取。
+
+示例行为变化时，用 `uv run tools/verify_examples.py --run --update-expected` 更新 `examples/expected/` 下的输出快照，并在 PR 中说明预期变化。
 
 格式化（与 CI 的 `format` job 一致）：
 

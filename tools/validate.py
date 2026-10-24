@@ -9,8 +9,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 import yaml
@@ -33,6 +35,49 @@ EXCERPT_LICENSES = {
     "CC0-1.0",
 }
 MAX_EXCERPT_LINES = 15
+PUBLISHED_LEVELS = {"manual", "verified"}
+EXAMPLE_LINK = re.compile(r"\]\(\.\./\.\./examples/([^)\s]+\.cpp)\)")
+TIER_RULES = {
+    "A": {
+        "min_evidence": 3,
+        "require_production": True,
+        "require_example": True,
+        "headings": [
+            "解决什么问题",
+            "基础用法",
+            "进阶用法",
+            "真实项目证据",
+            "陷阱与边界",
+            "库联动",
+            "横向对比",
+        ],
+    },
+    "B": {
+        "min_evidence": 2,
+        "require_production": False,
+        "require_example": False,
+        "headings": [
+            "解决什么问题",
+            "基础用法",
+            "真实项目证据",
+            "陷阱与边界",
+            "横向对比",
+        ],
+    },
+    "C": {
+        "min_evidence": 1,
+        "require_production": False,
+        "require_example": False,
+        "headings": [],
+    },
+}
+
+
+def report_path(path: Path) -> str:
+    try:
+        return str(path.relative_to(ROOT))
+    except ValueError:
+        return str(path)
 
 
 class Report:
@@ -40,7 +85,7 @@ class Report:
         self.errors: list[str] = []
 
     def error(self, path: Path, message: str) -> None:
-        self.errors.append(f"{path.relative_to(ROOT)}: {message}")
+        self.errors.append(f"{report_path(path)}: {message}")
 
 
 def load_schema(name: str) -> dict:
@@ -56,7 +101,7 @@ def validate_schema(report: Report, path: Path, data: object, schema: dict) -> b
     return not errors
 
 
-def read_frontmatter(path: Path, report: Report) -> dict | None:
+def read_frontmatter(path: Path, report: Report) -> tuple[dict, str] | None:
     text = path.read_text(encoding="utf-8")
     if not text.startswith("---\n"):
         report.error(path, "missing YAML frontmatter")
@@ -73,11 +118,21 @@ def read_frontmatter(path: Path, report: Report) -> dict | None:
     if not isinstance(data, dict):
         report.error(path, "frontmatter must be a mapping")
         return None
-    return data
+    return data, text[end + 5 :].lstrip("\n")
 
 
 def git(repo_dir: Path, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(["git", *args], cwd=repo_dir, text=True, capture_output=True)
+
+
+def ensure_commit(repo_dir: Path, commit: str) -> bool:
+    probe = git(repo_dir, "cat-file", "-e", f"{commit}^{{commit}}")
+    if probe.returncode == 0:
+        return True
+    fetch = git(repo_dir, "fetch", "--depth", "1", "origin", commit)
+    if fetch.returncode != 0:
+        return False
+    return git(repo_dir, "cat-file", "-e", f"{commit}^{{commit}}").returncode == 0
 
 
 def check_corpus_link(
@@ -91,24 +146,30 @@ def check_corpus_link(
     if entry is None:
         report.error(path, f"repo {repo} is not declared in data/corpus.yaml")
         return
-    if evidence["commit"] != entry["commit"]:
+    if evidence["license"] != entry.get("license"):
         report.error(
             path,
-            f"commit {evidence['commit']} differs from pinned corpus commit {entry['commit']}",
+            f"license {evidence['license']} differs from corpus declaration "
+            f"{entry.get('license')}",
         )
-        return
     repo_dir = CORPUS_CACHE / repo.replace("/", "__")
     if not (repo_dir / ".git").exists():
         report.error(path, f"corpus cache missing: {repo_dir}")
         return
-    head = git(repo_dir, "rev-parse", "HEAD")
-    if head.returncode != 0 or head.stdout.strip() != evidence["commit"]:
-        report.error(path, f"corpus checkout is not at {evidence['commit']}")
+    if not ensure_commit(repo_dir, evidence["commit"]):
+        report.error(
+            path,
+            f"commit {evidence['commit']} is not available in the cache; "
+            f"run git -C {report_path(repo_dir)} fetch --depth 1 origin "
+            f"{evidence['commit']}",
+        )
         return
     object_spec = f"{evidence['commit']}:{evidence['path']}"
     exists = git(repo_dir, "cat-file", "-e", object_spec)
     if exists.returncode != 0:
-        report.error(path, f"path not found at pinned commit: {evidence['path']}")
+        report.error(
+            path, f"path not found at commit {evidence['commit']}: {evidence['path']}"
+        )
         return
     start_text, end_text = evidence["lines"].split("-")
     start, end = int(start_text), int(end_text)
@@ -119,9 +180,70 @@ def check_corpus_link(
     if shown.returncode != 0:
         report.error(path, f"cannot read {object_spec}")
         return
-    line_count = len(shown.stdout.splitlines())
-    if end > line_count:
-        report.error(path, f"line range {evidence['lines']} exceeds {line_count} lines")
+    source_lines = shown.stdout.splitlines()
+    if end > len(source_lines):
+        report.error(
+            path, f"line range {evidence['lines']} exceeds {len(source_lines)} lines"
+        )
+        return
+    if not evidence["excerpt"].strip():
+        return
+    expected = source_lines[start - 1 : end]
+    actual = evidence["excerpt"].splitlines()
+    if actual == expected:
+        return
+    for index, (found, wanted) in enumerate(zip(actual, expected), start=1):
+        if found != wanted:
+            report.error(
+                path,
+                f"excerpt line {index} differs from source: "
+                f"expected {wanted!r}, found {found!r}",
+            )
+            return
+    report.error(
+        path,
+        f"excerpt has {len(actual)} lines but line range "
+        f"{evidence['lines']} has {len(expected)}",
+    )
+
+
+def check_tier(
+    report: Report,
+    path: Path,
+    feature: dict,
+    body: str,
+    feature_evidence: list[dict],
+) -> None:
+    tier = feature.get("tier")
+    rule = TIER_RULES.get(tier)
+    if rule is None:
+        return
+    published = [item for item in feature_evidence if item["level"] in PUBLISHED_LEVELS]
+    if len(published) < rule["min_evidence"]:
+        report.error(
+            path,
+            f"tier {tier} needs at least {rule['min_evidence']} published "
+            f"evidence entries, found {len(published)}",
+        )
+    if rule["require_production"] and not any(
+        not item["is_test"] for item in published
+    ):
+        report.error(path, f"tier {tier} needs at least one non-test evidence entry")
+    headings = {
+        line[3:].strip() for line in body.splitlines() if line.startswith("## ")
+    }
+    missing = [heading for heading in rule["headings"] if heading not in headings]
+    if missing:
+        report.error(path, f"tier {tier} missing sections: {', '.join(missing)}")
+    if not rule["require_example"]:
+        return
+    links = EXAMPLE_LINK.findall(body)
+    if not links:
+        report.error(path, "tier A needs a compilable example under examples/")
+    for link in links:
+        example = (path.parent / "../../examples" / link).resolve()
+        if not example.is_file():
+            report.error(path, f"example link does not exist: examples/{link}")
 
 
 def main() -> int:
@@ -140,13 +262,16 @@ def main() -> int:
     corpus_schema = load_schema("corpus.schema.json")
 
     features: dict[str, dict] = {}
+    feature_bodies: dict[str, str] = {}
+    feature_paths: dict[str, Path] = {}
     feature_files = sorted(FEATURE_DIR.glob("*.md")) if FEATURE_DIR.exists() else []
     for path in feature_files:
         if path.name.startswith("_"):
             continue
-        data = read_frontmatter(path, report)
-        if data is None:
+        parsed = read_frontmatter(path, report)
+        if parsed is None:
             continue
+        data, body = parsed
         validate_schema(report, path, data, feature_schema)
         feature_id = data.get("id")
         if not isinstance(feature_id, str):
@@ -156,8 +281,11 @@ def main() -> int:
         if feature_id in features:
             report.error(path, f"duplicate feature id {feature_id}")
         features[feature_id] = data
+        feature_bodies[feature_id] = body
+        feature_paths[feature_id] = path
 
     evidence: dict[str, dict] = {}
+    evidence_by_feature: dict[str, list[dict]] = defaultdict(list)
     evidence_files = (
         sorted(EVIDENCE_DIR.glob("*.json")) if EVIDENCE_DIR.exists() else []
     )
@@ -176,6 +304,7 @@ def main() -> int:
         if evidence_id in evidence:
             report.error(path, f"duplicate evidence id {evidence_id}")
         evidence[evidence_id] = data
+        evidence_by_feature[data["feature"]].append(data)
 
         key = (
             data["repo"],
@@ -210,6 +339,15 @@ def main() -> int:
             report.error(path, "verified evidence needs two reviewers and verified_at")
         if data["level"] == "candidate" and data["verified_by"]:
             report.error(path, "candidate evidence must not list reviewers")
+
+    for feature_id, data in features.items():
+        check_tier(
+            report,
+            feature_paths[feature_id],
+            data,
+            feature_bodies[feature_id],
+            evidence_by_feature[feature_id],
+        )
 
     libraries: dict[str, dict] = {}
     library_files = sorted(LIBRARY_DIR.glob("*.yaml")) if LIBRARY_DIR.exists() else []

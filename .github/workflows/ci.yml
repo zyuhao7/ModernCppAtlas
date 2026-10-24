@@ -17,8 +17,8 @@ jobs:
 
       - name: Check Python formatting
         run: |
-          uv run ruff format --check tools
-          uv run ruff check tools
+          uv run ruff format --check tools tests
+          uv run ruff check tools tests
 
       - name: Check C++ formatting
         run: uv run clang-format --dry-run --Werror examples/*/*.cpp
@@ -51,6 +51,19 @@ jobs:
       - name: Verify pinned evidence locations
         run: uv run tools/validate.py --check-corpus
 
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install tools
+        run: uv sync --frozen
+
+      - name: Run tool tests
+        run: uv run python -m unittest discover -s tests -v
+
   examples:
     runs-on: ubuntu-latest
     strategy:
@@ -64,8 +77,8 @@ jobs:
       - name: Install tools
         run: uv sync --frozen
 
-      - name: Compile examples (${{ matrix.compiler }})
-        run: uv run tools/verify_examples.py --compiler ${{ matrix.compiler }}
+      - name: Compile and run examples (${{ matrix.compiler }})
+        run: uv run tools/verify_examples.py --compiler ${{ matrix.compiler }} --run
 
   site:
     runs-on: ubuntu-latest

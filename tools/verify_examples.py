@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import difflib
 import subprocess
 import sys
 import tempfile
@@ -15,6 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "examples"
+EXPECTED = EXAMPLES / "expected"
 STANDARDS = {
     "cpp11": "c++11",
     "cpp14": "c++14",
@@ -32,13 +34,24 @@ def standard_for(path: Path) -> str:
     raise ValueError(f"{path}: expected an examples/cppNN/ directory")
 
 
+def expected_path(path: Path) -> Path:
+    return EXPECTED / path.relative_to(EXAMPLES).with_suffix(".out")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--compiler", default="g++")
     parser.add_argument(
         "--run", action="store_true", help="run each binary after linking"
     )
+    parser.add_argument(
+        "--update-expected",
+        action="store_true",
+        help="run and rewrite examples/expected/cppNN/*.out snapshots",
+    )
     args = parser.parse_args()
+    if args.update_expected:
+        args.run = True
 
     files = sorted(EXAMPLES.rglob("*.cpp")) if EXAMPLES.exists() else []
     if not files:
@@ -69,12 +82,38 @@ def main() -> int:
                 print(result.stderr, file=sys.stderr)
                 continue
             print(f"ok   {label}")
-            if args.run:
-                ran = subprocess.run([str(binary)], text=True, capture_output=True)
-                if ran.returncode != 0:
-                    failures.append(f"{label} (run)")
-                    print(f"FAIL {label} (run)", file=sys.stderr)
-                    print(ran.stderr, file=sys.stderr)
+            if not args.run:
+                continue
+            ran = subprocess.run([str(binary)], text=True, capture_output=True)
+            if ran.returncode != 0:
+                failures.append(f"{label} (run)")
+                print(f"FAIL {label} (run)", file=sys.stderr)
+                print(ran.stderr, file=sys.stderr)
+                continue
+            snapshot = expected_path(path)
+            if args.update_expected:
+                snapshot.parent.mkdir(parents=True, exist_ok=True)
+                snapshot.write_text(ran.stdout, encoding="utf-8")
+                print(f"snap {snapshot.relative_to(ROOT)}")
+                continue
+            if not snapshot.is_file():
+                failures.append(f"{label} (missing snapshot)")
+                print(
+                    f"FAIL {label} (missing {snapshot.relative_to(ROOT)})",
+                    file=sys.stderr,
+                )
+                continue
+            wanted = snapshot.read_text(encoding="utf-8")
+            if ran.stdout != wanted:
+                failures.append(f"{label} (output)")
+                print(f"FAIL {label} (output differs from snapshot)", file=sys.stderr)
+                diff = difflib.unified_diff(
+                    wanted.splitlines(keepends=True),
+                    ran.stdout.splitlines(keepends=True),
+                    fromfile=str(snapshot.relative_to(ROOT)),
+                    tofile="actual",
+                )
+                print("".join(diff), file=sys.stderr)
 
     if failures:
         print(f"{len(failures)} example(s) failed", file=sys.stderr)
