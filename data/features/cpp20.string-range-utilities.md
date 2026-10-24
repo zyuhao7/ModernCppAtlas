@@ -46,7 +46,12 @@ int main() {
 ```text
 1
 1
-bnn 3
+1
+values: 1 3 5
+3 bnn
+words: apple plum
+3
+reverse: 5 3 1
 ```
 
 ## 进阶用法

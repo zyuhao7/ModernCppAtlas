@@ -44,6 +44,10 @@ int main() {
 
 ```text
 10 30 50
+5 4
+7 14 21
+test build deploy
+deploy build
 ```
 
 `std::ranges::sort` 直接接收容器；`views::filter` 与 `views::transform` 只构造视图，直到范围 `for` 迭代时才逐个计算。

@@ -38,6 +38,9 @@ auto deref_or_value(const T& value) {
 ```text
 42
 42
+integer:42
+floating:3.500000
+integer:42
 ```
 
 ## 进阶用法

@@ -37,13 +37,15 @@ int main() {
 }
 ```
 
-路径分解是纯词法操作，不访问磁盘。完整示例见 [`examples/cpp17/filesystem.cpp`](../../examples/cpp17/filesystem.cpp)：
+路径分解是纯词法操作，不访问磁盘；后半段用临时目录演示创建、遍历与属性查询。完整示例见 [`examples/cpp17/filesystem.cpp`](../../examples/cpp17/filesystem.cpp)：
 
 ```text
 /var/log/app
-server
-.log
+server .log
 /var/log/app/backup.log
+entries: archive config.ini server.log
+size: 5
+relative: logs/server.log
 ```
 
 ## 进阶用法

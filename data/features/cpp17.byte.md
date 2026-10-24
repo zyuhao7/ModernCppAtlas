@@ -39,11 +39,15 @@ int main() {
 完整示例见 [`examples/cpp17/byte.cpp`](../../examples/cpp17/byte.cpp)：
 
 ```text
-5
-1
+CA FE 1 5 5 0
+version: 1
+compressed: 1
+flags: 6
+length: 1280
+size: 1
 ```
 
-`std::byte{...}` 从整数列表初始化是允许的；`std::byte b = 42` 不允许隐式转换。读取数值必须显式 `std::to_integer`。
+`std::byte{...}` 从整数列表初始化是允许的；`std::byte b = 42` 不允许隐式转换。读取数值必须显式 `std::to_integer`。示例用字节数组模拟协议头：先按十六进制打印原始字节，再用位掩码读写标志位，最后把两个字节拼成 16 位长度。
 
 ## 进阶用法
 

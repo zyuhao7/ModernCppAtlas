@@ -46,8 +46,10 @@ int main() {
 完整示例见 [`examples/cpp17/string_view.cpp`](../../examples/cpp17/string_view.cpp)：
 
 ```text
+[host] [example.com]
 cpp
 
+[alpha][beta][][gamma]
 ```
 
 ## 进阶用法

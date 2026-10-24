@@ -48,9 +48,16 @@ int main() {
 完整示例见 [`examples/cpp17/optional.cpp`](../../examples/cpp17/optional.cpp)：
 
 ```text
-42
+127.0.0.1
+8080
 -1
+30
+present: 1, enabled: 0
+atlas
+none
 ```
+
+示例把 `optional` 用在配置读取上：查找可能缺失的键、解析可能失败的数字、用 `value_or` 提供默认值，并单独演示 `optional<bool>` 的“有值”与“值为真”不是一回事。
 
 ## 进阶用法
 
