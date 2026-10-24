@@ -2,7 +2,7 @@
 
 > 从 C++11 到 C++26 的现代 C++ 特性图谱：**使用场景、真实项目证据、进阶用法、开源库联动**。
 
-[![Status](https://img.shields.io/badge/status-tracer--bullet-yellow)](todo.md) [![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](todo.md#15-%E5%B7%B2%E7%A1%AE%E5%AE%9A%E4%BA%8B%E9%A1%B9) [![Code License](https://img.shields.io/badge/code-MIT-blue)](todo.md#15-%E5%B7%B2%E7%A1%AE%E5%AE%9A%E4%BA%8B%E9%A1%B9)
+[![Status](https://img.shields.io/badge/status-tracer--bullet-yellow)](todo.md) [![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 
 ## 这是什么
 
@@ -163,6 +163,6 @@ uv run mdformat README.md todo.md data/features
 
 ## 许可证
 
-- 正文与结构化数据：CC BY 4.0。
-- 示例代码：MIT。
+- 正文与结构化数据：CC BY 4.0，全文见 [LICENSE-CONTENT](LICENSE-CONTENT)。
+- 示例代码与工具脚本：MIT，全文见 [LICENSE](LICENSE)。
 - 第三方项目摘录：遵循原项目许可证，并在证据条目中标注来源与许可证。弱 copyleft（如 MPL-2.0）与 GPL/AGPL 项目只记录位置，不摘录代码。
