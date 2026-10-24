@@ -30,15 +30,15 @@
 
 ## 3. 现状与竞品
 
-| 项目 | 覆盖 | 有场景 | 有真实项目证据 | 有库联动 | C++26 |
-|---|---|---|---|---|---|
-| [modern-cpp-features](https://github.com/AnthonyCalandra/modern-cpp-features) | C++11–23 | 部分 | 否 | 否 | 否 |
-| cppreference | C++98–26 | 否 | 否 | 否 | 部分 |
-| Modern C++ Programming Cookbook | C++11–23 | 是（配方） | 否 | 部分 | 否 |
-| Awesome C++ / awesome-hpp | 库清单 | 否 | 否 | 是（无语法关联） | 否 |
-| C++ Core Guidelines | 规范 | 是 | 少量 | 部分 | 部分 |
-| 各类博客/公众号 | 碎片 | 是 | 少量 | 否 | 碎片 |
-| **本项目** | **C++11–26** | **是** | **是（可追溯）** | **是** | **是** |
+| 项目                                                                          | 覆盖         | 有场景     | 有真实项目证据   | 有库联动         | C++26  |
+| ----------------------------------------------------------------------------- | ------------ | ---------- | ---------------- | ---------------- | ------ |
+| [modern-cpp-features](https://github.com/AnthonyCalandra/modern-cpp-features) | C++11–23     | 部分       | 否               | 否               | 否     |
+| cppreference                                                                  | C++98–26     | 否         | 否               | 否               | 部分   |
+| Modern C++ Programming Cookbook                                               | C++11–23     | 是（配方） | 否               | 部分             | 否     |
+| Awesome C++ / awesome-hpp                                                     | 库清单       | 否         | 否               | 是（无语法关联） | 否     |
+| C++ Core Guidelines                                                           | 规范         | 是         | 少量             | 部分             | 部分   |
+| 各类博客/公众号                                                               | 碎片         | 是         | 少量             | 否               | 碎片   |
+| **本项目**                                                                    | **C++11–26** | **是**     | **是（可追溯）** | **是**           | **是** |
 
 结论：单点内容都有人做，**“特性 × 场景 × 真实项目 × 库联动”的统一索引没人做**，这是唯一值得投入的差异化。若只做前三列，项目没有存在价值。
 
@@ -66,24 +66,24 @@
 
 ### 5.1 三级条目
 
-| 级别 | 定位 | 固定章节 | 证据要求 | 示例 | 单条耗时 |
-|---|---|---|---|---|---|
-| A · 深度条目 | 高频、易误用、有库联动价值 | 七节全 | ≥3 条，且至少 1 条来自生产路径 | ≥1 个可编译示例 | 6–10 人时 |
-| B · 标准条目 | 常规特性，讲清用法与边界 | 五节：问题、基础、证据、陷阱、替代 | ≥2 条 | 可选 | 3–5 人时 |
-| C · 索引条目 | 低频或证据稀薄，仅建立索引 | 摘要 + 证据表 | ≥1 条 | 否 | 1–2 人时 |
+| 级别         | 定位                       | 固定章节                           | 证据要求                       | 示例            | 单条耗时  |
+| ------------ | -------------------------- | ---------------------------------- | ------------------------------ | --------------- | --------- |
+| A · 深度条目 | 高频、易误用、有库联动价值 | 七节全                             | ≥3 条，且至少 1 条来自生产路径 | ≥1 个可编译示例 | 6–10 人时 |
+| B · 标准条目 | 常规特性，讲清用法与边界   | 五节：问题、基础、证据、陷阱、替代 | ≥2 条                          | 可选            | 3–5 人时  |
+| C · 索引条目 | 低频或证据稀薄，仅建立索引 | 摘要 + 证据表                      | ≥1 条                          | 否              | 1–2 人时  |
 
 “完整条目”仅指 A 级与 B 级。C 级页面必须显示“索引条目，正文待补”标记，不计入覆盖率与证据强度指标。
 
 ### 5.2 v1.0 数量模型
 
-| 级别 | 数量 | 平均耗时 | 小计 |
-|---|---|---|---|
-| A | 60 | 8 人时 | 480 人时 |
-| B | 120 | 4 人时 | 480 人时 |
-| C | 70 | 1.5 人时 | 105 人时 |
-| **内容合计** | **250** | — | **约 1065 人时** |
-| 工具、站点、CI | — | — | 150–250 人时 |
-| **总计** | — | — | **约 1200–1500 人时**（第 10 节按里程碑给出区间） |
+| 级别           | 数量    | 平均耗时 | 小计                                              |
+| -------------- | ------- | -------- | ------------------------------------------------- |
+| A              | 60      | 8 人时   | 480 人时                                          |
+| B              | 120     | 4 人时   | 480 人时                                          |
+| C              | 70      | 1.5 人时 | 105 人时                                          |
+| **内容合计**   | **250** | —        | **约 1065 人时**                                  |
+| 工具、站点、CI | —       | —        | 150–250 人时                                      |
+| **总计**       | —       | —        | **约 1200–1500 人时**（第 10 节按里程碑给出区间） |
 
 投入强度换算（不含突发维护）：
 
@@ -127,15 +127,15 @@ last_verified: 2026-10-24
 
 正文七节与字数上限（A 级）：
 
-| 章节 | 内容 | 上限 |
-|---|---|---|
-| 解决什么问题 | 痛点、旧写法、代价 | 300 字 |
-| 基础用法 | 最小可编译示例 + 输出 | 1 个示例 + 200 字 |
-| 进阶用法 | 组合、泛型、性能细节 | 800 字 |
-| 真实项目证据 | 表格：项目 / 路径 / commit / 用法 / 为什么典型 | 表格，不设字数 |
-| 陷阱与边界 | 生命周期、UB、可移植性、常见误用 | 500 字 |
-| 库联动 | 与哪些库组合、收益与代价 | 400 字 |
-| 横向对比 | 替代方案、跨标准演进 | 500 字 |
+| 章节         | 内容                                           | 上限              |
+| ------------ | ---------------------------------------------- | ----------------- |
+| 解决什么问题 | 痛点、旧写法、代价                             | 300 字            |
+| 基础用法     | 最小可编译示例 + 输出                          | 1 个示例 + 200 字 |
+| 进阶用法     | 组合、泛型、性能细节                           | 800 字            |
+| 真实项目证据 | 表格：项目 / 路径 / commit / 用法 / 为什么典型 | 表格，不设字数    |
+| 陷阱与边界   | 生命周期、UB、可移植性、常见误用               | 500 字            |
+| 库联动       | 与哪些库组合、收益与代价                       | 400 字            |
+| 横向对比     | 替代方案、跨标准演进                           | 500 字            |
 
 写作规则：删除一切不能帮助读者判断“该不该用、怎么用、什么时候别用”的内容。禁止复制 cppreference 段落，禁止无出处的性能断言。
 
@@ -196,28 +196,28 @@ example: examples/cpp20/coroutine_asio.cpp
 
 ### 7.1 流水线阶段
 
-| 阶段 | 输入 | 输出 | 人工参与 |
-|---|---|---|---|
-| 语料入库 | `corpus.yaml` | 固定 commit 的稀疏克隆、许可证快照 | 选定仓库与 commit |
-| 语法扫描 | 源码 | 候选位置（文件、行段、信号） | 无 |
-| 过滤与排序 | 候选位置 | 去重、排除生成/vendor、按影响力排序 | 抽查误报 |
-| 人工复核 | 排好序的候选 | 证据 JSON、`why_typical`、许可证 | 全部 |
-| 发布 | 证据 JSON | 站点卡片、permalink | 无 |
-| 增量刷新 | 新 commit 语料 | 新增/消失候选 diff | 决定是否替换 |
+| 阶段       | 输入           | 输出                                | 人工参与          |
+| ---------- | -------------- | ----------------------------------- | ----------------- |
+| 语料入库   | `corpus.yaml`  | 固定 commit 的稀疏克隆、许可证快照  | 选定仓库与 commit |
+| 语法扫描   | 源码           | 候选位置（文件、行段、信号）        | 无                |
+| 过滤与排序 | 候选位置       | 去重、排除生成/vendor、按影响力排序 | 抽查误报          |
+| 人工复核   | 排好序的候选   | 证据 JSON、`why_typical`、许可证    | 全部              |
+| 发布       | 证据 JSON      | 站点卡片、permalink                 | 无                |
+| 增量刷新   | 新 commit 语料 | 新增/消失候选 diff                  | 决定是否替换      |
 
 ### 7.2 先便宜后昂贵
 
 第一版扫描器只做**语法级信号**，用 Tree-sitter 查询，不要求项目可编译。典型查询点（以锁定的 tree-sitter-cpp 版本为准）：
 
-| 特性 | 语法信号 |
-|---|---|
-| 结构化绑定 | `structured_binding_declarator` |
-| `if constexpr` | `if_statement` 且含 `constexpr` |
-| 协程 | `co_await_expression`、`co_yield_expression`、`co_return_statement` |
-| concepts | `concept_definition`、`requires_clause`、`requires_expression` |
-| modules | `module_declaration`、`import_declaration` |
-| lambda | `lambda_expression`，再按捕获与参数细分 |
-| 标准库设施 | `#include <optional>` 等头文件 + 限定名文本匹配（`std::optional`） |
+| 特性           | 语法信号                                                            |
+| -------------- | ------------------------------------------------------------------- |
+| 结构化绑定     | `structured_binding_declarator`                                     |
+| `if constexpr` | `if_statement` 且含 `constexpr`                                     |
+| 协程           | `co_await_expression`、`co_yield_expression`、`co_return_statement` |
+| concepts       | `concept_definition`、`requires_clause`、`requires_expression`      |
+| modules        | `module_declaration`、`import_declaration`                          |
+| lambda         | `lambda_expression`，再按捕获与参数细分                             |
+| 标准库设施     | `#include <optional>` 等头文件 + 限定名文本匹配（`std::optional`）  |
 
 只有语义类特性需要 AST 二次确认，例如：concepts 的约束实际生效位置、`consteval` 的求值上下文、重载决议后的调用目标。二次确认使用**局部编译单元**：从候选位置抽取最小片段，或用仓库自带的单目录 compile commands，不构建整个仓库。
 
@@ -235,25 +235,25 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB（2026-10-25 已完成，4,489
 
 **M0 首轮扫描（2026-10-24，fmt 12.2.0 / json 3.12.0 / spdlog 1.17.0 / mold 2.35.0）**：加入测试目录与 mold 后重扫，505 个源文件、1351 条候选；已排除 `single_include`、`bundled` 等生成或 vendored 目录。下表是扫描器候选数，不是已复核证据数。
 
-| 特性 | 生产候选 | 测试候选 | M0 决策 |
-|---|---:|---:|---|
-| `if constexpr` | 144 | 0 | A 级样板已完成 |
-| `std::filesystem` | 24 | 10 | A |
-| 字符串/范围小工具 | 110 | 22 | A |
-| `<=>` | 7 | 3 | A |
-| concepts | 60 | 0 | A |
-| `std::byte` | 4 | 3 | A |
-| `std::optional` | 56 | 34 | A |
-| `std::span` | 157 | 1 | A |
-| `std::string_view` | 366 | 251 | A |
-| ranges | 1 | 18 | A（生产证据仅 1 条，另用测试补充） |
-| `std::bit_cast` | 2 | 1 | 不足 3 条，B 或扩语料 |
-| `std::format` | 2 | 0 | 不足 3 条，B 或扩语料 |
-| `std::source_location` | 2 | 1 | 不足 3 条，B 或扩语料 |
-| structured bindings | 9 | 18 | A（3 条生产证据，已作为全流程样板） |
-| `std::variant` | 6 | 16 | 不足 3 条生产证据，B 或扩语料 |
-| `std::any` | 1 | 4 | 不足 3 条，B 或扩语料 |
-| 折叠表达式 | 1 | 0 | 不足 3 条，B 或扩语料 |
+| 特性                   | 生产候选 | 测试候选 | M0 决策                             |
+| ---------------------- | -------: | -------: | ----------------------------------- |
+| `if constexpr`         |      144 |        0 | A 级样板已完成                      |
+| `std::filesystem`      |       24 |       10 | A                                   |
+| 字符串/范围小工具      |      110 |       22 | A                                   |
+| `<=>`                  |        7 |        3 | A                                   |
+| concepts               |       60 |        0 | A                                   |
+| `std::byte`            |        4 |        3 | A                                   |
+| `std::optional`        |       56 |       34 | A                                   |
+| `std::span`            |      157 |        1 | A                                   |
+| `std::string_view`     |      366 |      251 | A                                   |
+| ranges                 |        1 |       18 | A（生产证据仅 1 条，另用测试补充）  |
+| `std::bit_cast`        |        2 |        1 | 不足 3 条，B 或扩语料               |
+| `std::format`          |        2 |        0 | 不足 3 条，B 或扩语料               |
+| `std::source_location` |        2 |        1 | 不足 3 条，B 或扩语料               |
+| structured bindings    |        9 |       18 | A（3 条生产证据，已作为全流程样板） |
+| `std::variant`         |        6 |       16 | 不足 3 条生产证据，B 或扩语料       |
+| `std::any`             |        1 |        4 | 不足 3 条，B 或扩语料               |
+| 折叠表达式             |        1 |        0 | 不足 3 条，B 或扩语料               |
 
 结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
@@ -261,27 +261,27 @@ M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生�
 
 后续候选与许可证（以仓库固定 commit 的 LICENSE 为准）：
 
-| 仓库 | 许可证 | 备注 |
-|---|---|---|
-| fmtlib/fmt | MIT | 首批 |
-| nlohmann/json | MIT | 首批 |
-| gabime/spdlog | MIT | 首批 |
-| rui314/mold | MIT | 首批；补齐 span 与字符串小工具 |
-| abseil/abseil-cpp | Apache-2.0 | M1 |
-| drogonframework/drogon | MIT | M1 |
-| duckdb/duckdb | MIT | M1 |
-| llvm/llvm-project | Apache-2.0 WITH LLVM-exception | 只扫选定子目录 |
-| ClickHouse/ClickHouse | Apache-2.0 | 只扫选定子目录 |
-| protocolbuffers/protobuf | BSD-3-Clause | 后续 |
-| grpc/grpc | Apache-2.0 | 后续 |
-| oneapi-src/oneTBB | Apache-2.0 | 后续 |
-| chriskohlhoff/asio | BSL-1.0 | 后续 |
-| taskflow/taskflow | MIT | 后续 |
-| yhirose/cpp-httplib | MIT | 后续 |
-| ericniebler/range-v3 | BSL-1.0 | 后续 |
-| google/googletest | BSD-3-Clause | 后续 |
-| TartanLlama/expected | CC0-1.0 | 后续 |
-| eigenweb/eigen | MPL-2.0 | 只记录位置，不摘录 |
+| 仓库                     | 许可证                         | 备注                           |
+| ------------------------ | ------------------------------ | ------------------------------ |
+| fmtlib/fmt               | MIT                            | 首批                           |
+| nlohmann/json            | MIT                            | 首批                           |
+| gabime/spdlog            | MIT                            | 首批                           |
+| rui314/mold              | MIT                            | 首批；补齐 span 与字符串小工具 |
+| abseil/abseil-cpp        | Apache-2.0                     | M1                             |
+| drogonframework/drogon   | MIT                            | M1                             |
+| duckdb/duckdb            | MIT                            | M1                             |
+| llvm/llvm-project        | Apache-2.0 WITH LLVM-exception | 只扫选定子目录                 |
+| ClickHouse/ClickHouse    | Apache-2.0                     | 只扫选定子目录                 |
+| protocolbuffers/protobuf | BSD-3-Clause                   | 后续                           |
+| grpc/grpc                | Apache-2.0                     | 后续                           |
+| oneapi-src/oneTBB        | Apache-2.0                     | 后续                           |
+| chriskohlhoff/asio       | BSL-1.0                        | 后续                           |
+| taskflow/taskflow        | MIT                            | 后续                           |
+| yhirose/cpp-httplib      | MIT                            | 后续                           |
+| ericniebler/range-v3     | BSL-1.0                        | 后续                           |
+| google/googletest        | BSD-3-Clause                   | 后续                           |
+| TartanLlama/expected     | CC0-1.0                        | 后续                           |
+| eigenweb/eigen           | MPL-2.0                        | 只记录位置，不摘录             |
 
 ### 7.4 排序与去重
 
@@ -325,22 +325,22 @@ M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生�
 
 ## 9. CI 质量门
 
-| 检查 | 阻断 | 说明 |
-|---|---|---|
-| Schema 校验 | 是 | feature / evidence / library 三类数据 |
-| ID 唯一与交叉引用 | 是 | 特性、证据、库卡片的引用必须存在 |
-| 证据必填字段 | 是 | commit、path、lines、license、why_typical |
-| permalink 格式 | 是 | 必须是固定 commit，禁止 `main`/`master`/tag 浮动链接 |
-| 路径与行段存在性 | 是 | 用本地语料克隆执行 `git cat-file -e <commit>:<path>`，再核对行数；不逐链接请求网络 |
-| 许可证白名单 | 是 | 白名单之外只能记录位置 |
-| 摘录长度 | 是 | ≤15 行且 ≤1200 字符 |
-| 重复证据 | 是 | 同 repo + commit + path + 行段 + feature |
-| 示例编译 | 是 | GCC 与 Clang 对应标准；MSVC 跑核心子集 |
-| C++26 示例 | 条件 | 实验性工具链缺失时标记 `xfail`，必须写明原因 |
-| 章节完整性 | 是 | A/B 级条目缺节直接失败 |
-| 字数上限 | 警告 | 超过上限提示删减，不阻断 |
-| 内链检查 | 是 | 站内链接必须可达 |
-| 中文搜索冒烟 | 是 | 固定查询集命中率不低于阈值 |
+| 检查              | 阻断 | 说明                                                                               |
+| ----------------- | ---- | ---------------------------------------------------------------------------------- |
+| Schema 校验       | 是   | feature / evidence / library 三类数据                                              |
+| ID 唯一与交叉引用 | 是   | 特性、证据、库卡片的引用必须存在                                                   |
+| 证据必填字段      | 是   | commit、path、lines、license、why_typical                                          |
+| permalink 格式    | 是   | 必须是固定 commit，禁止 `main`/`master`/tag 浮动链接                               |
+| 路径与行段存在性  | 是   | 用本地语料克隆执行 `git cat-file -e <commit>:<path>`，再核对行数；不逐链接请求网络 |
+| 许可证白名单      | 是   | 白名单之外只能记录位置                                                             |
+| 摘录长度          | 是   | ≤15 行且 ≤1200 字符                                                                |
+| 重复证据          | 是   | 同 repo + commit + path + 行段 + feature                                           |
+| 示例编译          | 是   | GCC 与 Clang 对应标准；MSVC 跑核心子集                                             |
+| C++26 示例        | 条件 | 实验性工具链缺失时标记 `xfail`，必须写明原因                                       |
+| 章节完整性        | 是   | A/B 级条目缺节直接失败                                                             |
+| 字数上限          | 警告 | 超过上限提示删减，不阻断                                                           |
+| 内链检查          | 是   | 站内链接必须可达                                                                   |
+| 中文搜索冒烟      | 是   | 固定查询集命中率不低于阈值                                                         |
 
 PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；月度任务负责发现新用法并生成 diff。
 
@@ -396,48 +396,48 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 选择标准：C++17/20 高频、易误用、在首批语料库中证据密度高。目标为 A 级；证据不足 3 条时降为 B 级。
 
-| # | 特性 | ID | 首批重点 |
-|---|---|---|---|
-| 1 | 结构化绑定 | `cpp17.structured-bindings` | lambda 捕获限制、隐藏拷贝 |
-| 2 | `if constexpr` | `cpp17.if-constexpr` | 丢弃分支仍需语法合法 |
-| 3 | 内联变量 | `cpp17.inline-variables` | 头文件 ODR、与 `static` 的区别 |
-| 4 | CTAD | `cpp17.ctad` | 推导指引、与 `initializer_list` 的冲突 |
-| 5 | 折叠表达式 | `cpp17.fold-expressions` | 空包结果、运算符优先级 |
-| 6 | constexpr lambda | `cpp17.constexpr-lambda` | 隐式 constexpr 条件、捕获规则 |
-| 7 | if/switch 初始化语句 | `cpp17.init-statement` | 作用域、与 `if constexpr` 组合 |
-| 8 | 属性 `[[nodiscard]]` 等 | `cpp17.attributes` | 位置、实现差异、被忽略的后果 |
-| 9 | 保证的复制消除 | `cpp17.guaranteed-copy-elision` | 与 RVO/NRVO 的区别、具名返回值 |
-| 10 | `std::optional` | `cpp17.optional` | 值语义、`operator*` 不检查 |
-| 11 | `std::variant` | `cpp17.variant` | `valueless_by_exception`、访问方式 |
-| 12 | `std::string_view` | `cpp17.string-view` | 悬垂、非空终止、生命周期 |
-| 13 | `std::filesystem` | `cpp17.filesystem` | 错误码与异常、路径编码 |
-| 14 | `std::any` | `cpp17.any` | 类型擦除成本、无接口约束 |
-| 15 | `std::invoke` / `std::apply` | `cpp17.invoke-apply` | 成员指针、完美转发 |
-| 16 | `std::scoped_lock` | `cpp17.scoped-lock` | 死锁避免、与 `lock_guard` 的区别 |
-| 17 | `std::shared_mutex` | `cpp17.shared-mutex` | 读写饥饿、性能边界 |
-| 18 | 并行算法 | `cpp17.parallel-algorithms` | 执行策略、异常、线程开销 |
-| 19 | `std::byte` | `cpp17.byte` | 不是字符类型、别名规则 |
-| 20 | `std::pmr` | `cpp17.pmr` | 分配器生命周期、monotonic buffer |
-| 21 | concepts | `cpp20.concepts` | 约束顺序、错误信息、与 SFINAE 的取舍 |
-| 22 | requires 表达式 | `cpp20.requires-expressions` | 四类要求、未求值上下文 |
-| 23 | 缩写函数模板 | `cpp20.abbreviated-templates` | 与 `auto` 参数的区别、重载顺序 |
-| 24 | ranges 与 views | `cpp20.ranges` | view 悬垂、惰性求值、性能 |
-| 25 | `consteval` / `constinit` | `cpp20.consteval-constinit` | 立即函数、静态初始化顺序 |
-| 26 | 协程 | `cpp20.coroutines` | 生命周期、帧分配、调度器 |
-| 27 | modules | `cpp20.modules` | 构建系统支持、宏隔离 |
-| 28 | 三路比较 `<=>` | `cpp20.spaceship` | 自动生成规则、返回类型 |
-| 29 | 指定初始化 | `cpp20.designated-initializers` | 顺序、聚合类型限制 |
-| 30 | 模板 lambda | `cpp20.template-lambda` | 显式模板参数、捕获 |
-| 31 | `std::span` | `cpp20.span` | 生命周期、const 语义 |
-| 32 | `std::format` | `cpp20.format` | 编译期格式串、编译器支持 |
-| 33 | `std::jthread` / `stop_token` | `cpp20.jthread-stop-token` | 协作式取消、析构顺序 |
-| 34 | `std::source_location` | `cpp20.source-location` | 内联、宏包装后的位置 |
-| 35 | `std::bit_cast` | `cpp20.bit-cast` | trivially copyable、大小一致 |
-| 36 | `std::atomic_ref` | `cpp20.atomic-ref` | 对齐、对象生命周期 |
-| 37 | latch / barrier / semaphore | `cpp20.latch-barrier-semaphore` | 复用、超时、协作取消 |
-| 38 | constexpr 动态分配 | `cpp20.constexpr-allocation` | 瞬态分配规则、C++20 限制 |
-| 39 | `remove_cvref` / `type_identity` | `cpp20.remove-cvref-type-identity` | 元编程组合、转发场景 |
-| 40 | 字符串/范围小工具 | `cpp20.string-range-utilities` | `ssize`、`starts_with`、`contains`、`erase_if` 的边界 |
+| #   | 特性                             | ID                                 | 首批重点                                              |
+| --- | -------------------------------- | ---------------------------------- | ----------------------------------------------------- |
+| 1   | 结构化绑定                       | `cpp17.structured-bindings`        | lambda 捕获限制、隐藏拷贝                             |
+| 2   | `if constexpr`                   | `cpp17.if-constexpr`               | 丢弃分支仍需语法合法                                  |
+| 3   | 内联变量                         | `cpp17.inline-variables`           | 头文件 ODR、与 `static` 的区别                        |
+| 4   | CTAD                             | `cpp17.ctad`                       | 推导指引、与 `initializer_list` 的冲突                |
+| 5   | 折叠表达式                       | `cpp17.fold-expressions`           | 空包结果、运算符优先级                                |
+| 6   | constexpr lambda                 | `cpp17.constexpr-lambda`           | 隐式 constexpr 条件、捕获规则                         |
+| 7   | if/switch 初始化语句             | `cpp17.init-statement`             | 作用域、与 `if constexpr` 组合                        |
+| 8   | 属性 `[[nodiscard]]` 等          | `cpp17.attributes`                 | 位置、实现差异、被忽略的后果                          |
+| 9   | 保证的复制消除                   | `cpp17.guaranteed-copy-elision`    | 与 RVO/NRVO 的区别、具名返回值                        |
+| 10  | `std::optional`                  | `cpp17.optional`                   | 值语义、`operator*` 不检查                            |
+| 11  | `std::variant`                   | `cpp17.variant`                    | `valueless_by_exception`、访问方式                    |
+| 12  | `std::string_view`               | `cpp17.string-view`                | 悬垂、非空终止、生命周期                              |
+| 13  | `std::filesystem`                | `cpp17.filesystem`                 | 错误码与异常、路径编码                                |
+| 14  | `std::any`                       | `cpp17.any`                        | 类型擦除成本、无接口约束                              |
+| 15  | `std::invoke` / `std::apply`     | `cpp17.invoke-apply`               | 成员指针、完美转发                                    |
+| 16  | `std::scoped_lock`               | `cpp17.scoped-lock`                | 死锁避免、与 `lock_guard` 的区别                      |
+| 17  | `std::shared_mutex`              | `cpp17.shared-mutex`               | 读写饥饿、性能边界                                    |
+| 18  | 并行算法                         | `cpp17.parallel-algorithms`        | 执行策略、异常、线程开销                              |
+| 19  | `std::byte`                      | `cpp17.byte`                       | 不是字符类型、别名规则                                |
+| 20  | `std::pmr`                       | `cpp17.pmr`                        | 分配器生命周期、monotonic buffer                      |
+| 21  | concepts                         | `cpp20.concepts`                   | 约束顺序、错误信息、与 SFINAE 的取舍                  |
+| 22  | requires 表达式                  | `cpp20.requires-expressions`       | 四类要求、未求值上下文                                |
+| 23  | 缩写函数模板                     | `cpp20.abbreviated-templates`      | 与 `auto` 参数的区别、重载顺序                        |
+| 24  | ranges 与 views                  | `cpp20.ranges`                     | view 悬垂、惰性求值、性能                             |
+| 25  | `consteval` / `constinit`        | `cpp20.consteval-constinit`        | 立即函数、静态初始化顺序                              |
+| 26  | 协程                             | `cpp20.coroutines`                 | 生命周期、帧分配、调度器                              |
+| 27  | modules                          | `cpp20.modules`                    | 构建系统支持、宏隔离                                  |
+| 28  | 三路比较 `<=>`                   | `cpp20.spaceship`                  | 自动生成规则、返回类型                                |
+| 29  | 指定初始化                       | `cpp20.designated-initializers`    | 顺序、聚合类型限制                                    |
+| 30  | 模板 lambda                      | `cpp20.template-lambda`            | 显式模板参数、捕获                                    |
+| 31  | `std::span`                      | `cpp20.span`                       | 生命周期、const 语义                                  |
+| 32  | `std::format`                    | `cpp20.format`                     | 编译期格式串、编译器支持                              |
+| 33  | `std::jthread` / `stop_token`    | `cpp20.jthread-stop-token`         | 协作式取消、析构顺序                                  |
+| 34  | `std::source_location`           | `cpp20.source-location`            | 内联、宏包装后的位置                                  |
+| 35  | `std::bit_cast`                  | `cpp20.bit-cast`                   | trivially copyable、大小一致                          |
+| 36  | `std::atomic_ref`                | `cpp20.atomic-ref`                 | 对齐、对象生命周期                                    |
+| 37  | latch / barrier / semaphore      | `cpp20.latch-barrier-semaphore`    | 复用、超时、协作取消                                  |
+| 38  | constexpr 动态分配               | `cpp20.constexpr-allocation`       | 瞬态分配规则、C++20 限制                              |
+| 39  | `remove_cvref` / `type_identity` | `cpp20.remove-cvref-type-identity` | 元编程组合、转发场景                                  |
+| 40  | 字符串/范围小工具                | `cpp20.string-range-utilities`     | `ssize`、`starts_with`、`contains`、`erase_if` 的边界 |
 
 清单是目标，不是承诺。扫描后若某特性在语料库中凑不齐 3 条高质量证据，降为 B/C 级或替换，不为凑数保留。
 
@@ -445,32 +445,32 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ## 12. 风险与对策
 
-| 风险 | 影响 | 对策 |
-|---|---|---|
-| 范围爆炸，内容永远写不完 | 项目烂尾 | 三级条目；先 10 条 tracer bullet；证据不足只做 C 级；不承诺周数 |
-| 单人审核导致“verified”名不副实 | 可信度崩塌 | 单人阶段只标 `manual`；`verified` 必须第二审核者；页面明示等级 |
-| 扫描器成本失控 | 工具吞掉内容时间 | 语法扫描优先；AST 只做局部确认；不为巨型仓库建全量编译库 |
-| 固定链接失效 | 少量页面不可用 | 本地语料缓存 + `git cat-file` 校验；结构性失效才降级 `stale` |
-| 第三方许可证问题 | 法律风险 | 白名单；固定 commit 核对 LICENSE；弱 copyleft 只记位置 |
-| C++26 标准仍在变化 | 内容过期 | `status` + 提案编号 + 实验开关；草案页面顶部提示 |
-| 中文搜索质量差 | 站点不可用 | MkDocs + jieba；CI 固定查询集冒烟 |
-| 社区冷启动 | 没人投稿 | tracer bullet 先公开；证据页可独立传播；PR 模板降低门槛 |
-| 长期项目动力衰减 | 停更 | 里程碑制；每个阶段有可展示成果；范围可缩不可灌水 |
+| 风险                           | 影响             | 对策                                                            |
+| ------------------------------ | ---------------- | --------------------------------------------------------------- |
+| 范围爆炸，内容永远写不完       | 项目烂尾         | 三级条目；先 10 条 tracer bullet；证据不足只做 C 级；不承诺周数 |
+| 单人审核导致“verified”名不副实 | 可信度崩塌       | 单人阶段只标 `manual`；`verified` 必须第二审核者；页面明示等级  |
+| 扫描器成本失控                 | 工具吞掉内容时间 | 语法扫描优先；AST 只做局部确认；不为巨型仓库建全量编译库        |
+| 固定链接失效                   | 少量页面不可用   | 本地语料缓存 + `git cat-file` 校验；结构性失效才降级 `stale`    |
+| 第三方许可证问题               | 法律风险         | 白名单；固定 commit 核对 LICENSE；弱 copyleft 只记位置          |
+| C++26 标准仍在变化             | 内容过期         | `status` + 提案编号 + 实验开关；草案页面顶部提示                |
+| 中文搜索质量差                 | 站点不可用       | MkDocs + jieba；CI 固定查询集冒烟                               |
+| 社区冷启动                     | 没人投稿         | tracer bullet 先公开；证据页可独立传播；PR 模板降低门槛         |
+| 长期项目动力衰减               | 停更             | 里程碑制；每个阶段有可展示成果；范围可缩不可灌水                |
 
 ## 13. 成功度量
 
 按阶段设阈值，不以 star 数为主目标。
 
-| 指标 | M0 | M1 | v1.0 |
-|---|---|---|---|
-| A 级条目 | 10 | ≥32 | 60 |
-| 完整条目 | 10 | 40 | 150 |
-| A 级占完整条目比例 | 100% | ≥80% | ≥40% |
-| permalink 路径/行段校验通过率 | 100% | 100% | ≥95% |
-| 示例编译通过率 | 100% | 100% | 100% |
-| 库联动卡片 | 0 | 3 | 20 |
-| 外部试用反馈 | 3 人 | 3 人书面 | 持续收集 |
-| 月维护耗时 | — | — | ≤8 小时 |
+| 指标                          | M0   | M1       | v1.0     |
+| ----------------------------- | ---- | -------- | -------- |
+| A 级条目                      | 10   | ≥32      | 60       |
+| 完整条目                      | 10   | 40       | 150      |
+| A 级占完整条目比例            | 100% | ≥80%     | ≥40%     |
+| permalink 路径/行段校验通过率 | 100% | 100%     | ≥95%     |
+| 示例编译通过率                | 100% | 100%     | 100%     |
+| 库联动卡片                    | 0    | 3        | 20       |
+| 外部试用反馈                  | 3 人 | 3 人书面 | 持续收集 |
+| 月维护耗时                    | —    | —        | ≤8 小时  |
 
 ## 14. 立即可做的下一步
 

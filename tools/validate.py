@@ -77,9 +77,7 @@ def read_frontmatter(path: Path, report: Report) -> dict | None:
 
 
 def git(repo_dir: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run(
-        ["git", *args], cwd=repo_dir, text=True, capture_output=True
-    )
+    return subprocess.run(["git", *args], cwd=repo_dir, text=True, capture_output=True)
 
 
 def check_corpus_link(
@@ -160,7 +158,9 @@ def main() -> int:
         features[feature_id] = data
 
     evidence: dict[str, dict] = {}
-    evidence_files = sorted(EVIDENCE_DIR.glob("*.json")) if EVIDENCE_DIR.exists() else []
+    evidence_files = (
+        sorted(EVIDENCE_DIR.glob("*.json")) if EVIDENCE_DIR.exists() else []
+    )
     evidence_keys: dict[tuple[str, str, str, str, str], Path] = {}
     for path in evidence_files:
         try:
@@ -185,7 +185,9 @@ def main() -> int:
             data["feature"],
         )
         if key in evidence_keys:
-            report.error(path, f"duplicate evidence location, first at {evidence_keys[key]}")
+            report.error(
+                path, f"duplicate evidence location, first at {evidence_keys[key]}"
+            )
         else:
             evidence_keys[key] = path
 
@@ -260,7 +262,10 @@ def main() -> int:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except json.JSONDecodeError:
                 continue
-            if isinstance(data, dict) and {"repo", "commit", "path", "lines"} <= data.keys():
+            if (
+                isinstance(data, dict)
+                and {"repo", "commit", "path", "lines"} <= data.keys()
+            ):
                 check_corpus_link(report, path, data, corpus_by_repo)
 
     if report.errors:

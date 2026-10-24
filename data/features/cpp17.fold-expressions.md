@@ -7,7 +7,7 @@ category: [模板, 可变参数, 编译期]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "6", clang: "3.6", msvc: "19.12" }
+compilers: {gcc: "6", clang: "3.6", msvc: "19.12"}
 tags: [参数包, 编译期计算, 短路求值, 逗号折叠]
 alternatives: [递归模板, initializer_list 展开, std::apply, 手写循环]
 proposal: N4295
@@ -53,12 +53,12 @@ void print_all(const Args&... args) {
 
 四种形式：
 
-| 形式 | 展开含义 | 空包结果 |
-|---|---|---|
-| `(pack op ...)` | `E1 op (E2 op (... op EN))` | 仅 `&&` 得 `true`、`\|\|` 得 `false`、`,` 得 `void()` |
-| `(... op pack)` | `((E1 op E2) op ...) op EN` | 同上 |
-| `(pack op ... op init)` | `E1 op (... op (EN op init))` | `init` |
-| `(init op ... op pack)` | `((init op E1) op ...) op EN` | `init` |
+| 形式                    | 展开含义                      | 空包结果                                              |
+| ----------------------- | ----------------------------- | ----------------------------------------------------- |
+| `(pack op ...)`         | `E1 op (E2 op (... op EN))`   | 仅 `&&` 得 `true`、`\|\|` 得 `false`、`,` 得 `void()` |
+| `(... op pack)`         | `((E1 op E2) op ...) op EN`   | 同上                                                  |
+| `(pack op ... op init)` | `E1 op (... op (EN op init))` | `init`                                                |
+| `(init op ... op pack)` | `((init op E1) op ...) op EN` | `init`                                                |
 
 完整示例见 [`examples/cpp17/fold_expressions.cpp`](../../examples/cpp17/fold_expressions.cpp)：
 
@@ -96,11 +96,11 @@ count: 3
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| abseil/abseil-cpp | [`absl/meta/type_traits.h#L603-L609`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L603-L609) | `(true && ... && IsOwner<T>::value)` 检查 tuple 每个元素 | 用 `true` 作初值，空 tuple 直接得到 `true`，省掉递归偏特化 |
-| fmtlib/fmt | [`include/fmt/compile.h#L209-L216`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L209-L216) | `(try_format_argument(...) \|\| ...)` 查找命名参数 | 逻辑或折叠在任意参数匹配时短路，空包返回 `false` 并走统一错误分支 |
-| drogonframework/drogon | [`orm_lib/inc/drogon/orm/CoroMapper.h#L514-L518`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/CoroMapper.h#L514-L518) | `((sql += std::string(name) + " = $?,"), ...)` 拼更新语句 | `std::apply` 展开 tuple，逗号折叠按下标顺序追加列名，无中间容器 |
+| 项目                   | 位置                                                                                                                                                                                     | 用法                                                      | 为什么典型                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
+| abseil/abseil-cpp      | [`absl/meta/type_traits.h#L603-L609`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L603-L609)                              | `(true && ... && IsOwner<T>::value)` 检查 tuple 每个元素  | 用 `true` 作初值，空 tuple 直接得到 `true`，省掉递归偏特化        |
+| fmtlib/fmt             | [`include/fmt/compile.h#L209-L216`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L209-L216)                                         | `(try_format_argument(...) \|\| ...)` 查找命名参数        | 逻辑或折叠在任意参数匹配时短路，空包返回 `false` 并走统一错误分支 |
+| drogonframework/drogon | [`orm_lib/inc/drogon/orm/CoroMapper.h#L514-L518`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/CoroMapper.h#L514-L518) | `((sql += std::string(name) + " = $?,"), ...)` 拼更新语句 | `std::apply` 展开 tuple，逗号折叠按下标顺序追加列名，无中间容器   |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前两条是编译期判定，第三条是运行期副作用；它们分别展示了折叠表达式最常见的两类用途。
 
@@ -125,12 +125,12 @@ count: 3
 
 ## 横向对比
 
-| 方案 | 表达力 | 空包处理 | 编译期可用 | 主要代价 |
-|---|---|---|---|---|
-| 折叠表达式 | 任意二元运算符归约 | 由运算符或初值决定 | 是 | 语法受限，深层逻辑可读性差 |
-| 递归模板 | 任意逻辑 | 需专门基础重载 | 是 | 实例化多、递归深度、代码冗长 |
-| `initializer_list` 展开 | 仅副作用 | 天然支持 | 部分场景 | 不能直接归约出值，易触发未使用变量警告 |
-| `std::apply` + 手写循环 | 运行期 tuple 遍历 | 天然支持 | 否 | 需要运行期容器或索引展开 |
-| `std::accumulate` | 同质序列归约 | 由初值决定 | 是（C++20 起 constexpr） | 只处理同类型序列，不能直接展开参数包 |
+| 方案                    | 表达力             | 空包处理           | 编译期可用               | 主要代价                               |
+| ----------------------- | ------------------ | ------------------ | ------------------------ | -------------------------------------- |
+| 折叠表达式              | 任意二元运算符归约 | 由运算符或初值决定 | 是                       | 语法受限，深层逻辑可读性差             |
+| 递归模板                | 任意逻辑           | 需专门基础重载     | 是                       | 实例化多、递归深度、代码冗长           |
+| `initializer_list` 展开 | 仅副作用           | 天然支持           | 部分场景                 | 不能直接归约出值，易触发未使用变量警告 |
+| `std::apply` + 手写循环 | 运行期 tuple 遍历  | 天然支持           | 否                       | 需要运行期容器或索引展开               |
+| `std::accumulate`       | 同质序列归约       | 由初值决定         | 是（C++20 起 constexpr） | 只处理同类型序列，不能直接展开参数包   |
 
 跨标准演进：折叠表达式由 N4295 引入 C++17，此后语义稳定。C++11/14 只能使用递归模板或 `initializer_list` 技巧；C++20 的 `concepts` 可以把折叠结果直接放进约束，C++26 的包索引（P2662）提供按下标访问参数包元素的另一条路径，但不替代折叠的归约用途。

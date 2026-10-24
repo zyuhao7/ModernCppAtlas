@@ -117,9 +117,7 @@ def build_feature_pages(
             for record in sorted(records, key=lambda item: item["id"])
         )
         evidence_line = f"\n本站证据页：{links}\n" if links else ""
-        frontmatter = yaml.safe_dump(
-            meta, allow_unicode=True, sort_keys=False
-        ).strip()
+        frontmatter = yaml.safe_dump(meta, allow_unicode=True, sort_keys=False).strip()
         write(
             OUT_DIR / "features" / f"{feature_id}.md",
             f"---\n{frontmatter}\n---\n\n"
@@ -171,8 +169,12 @@ def build_evidence_pages(
             )
 
 
-def table_for(feature_ids: list[str], features: dict[str, dict],
-              evidence: dict[str, list[dict]], link_prefix: str = "") -> str:
+def table_for(
+    feature_ids: list[str],
+    features: dict[str, dict],
+    evidence: dict[str, list[dict]],
+    link_prefix: str = "",
+) -> str:
     lines = [
         "| 特性 | 标准 | 难度 | 分级 | 证据 | 状态 |",
         "|---|---|---|---|---|---|",
@@ -187,9 +189,7 @@ def table_for(feature_ids: list[str], features: dict[str, dict],
     return "\n".join(lines)
 
 
-def build_indexes(
-    features: dict[str, dict], evidence: dict[str, list[dict]]
-) -> None:
+def build_indexes(features: dict[str, dict], evidence: dict[str, list[dict]]) -> None:
     feature_ids = sorted(
         features, key=lambda item: (features[item]["standard"], features[item]["id"])
     )
@@ -221,9 +221,7 @@ def build_indexes(
         "- [按标准版本](features/index.md)\n"
         "- [按使用场景](features/scenarios.md)\n"
         "- [按难度](features/difficulties.md)\n\n"
-        "## 标准覆盖\n\n"
-        + "\n".join(standard_lines)
-        + "\n\n## 证据先行\n\n"
+        "## 标准覆盖\n\n" + "\n".join(standard_lines) + "\n\n## 证据先行\n\n"
         "每条证据都记录项目、固定 commit、路径、行段、许可证与审核状态；"
         "证据页可以独立阅读。\n\n"
         "- [证据索引](evidence/index.md)\n"
@@ -270,9 +268,7 @@ def build_indexes(
 
     difficulty_parts = ["# 按难度\n"]
     for level in range(1, 6):
-        ids = [
-            item for item in feature_ids if features[item]["difficulty"] == level
-        ]
+        ids = [item for item in feature_ids if features[item]["difficulty"] == level]
         if not ids:
             continue
         difficulty_parts.append(f"## 难度 {level}/5\n")

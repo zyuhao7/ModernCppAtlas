@@ -11,7 +11,8 @@ class Generator {
     T current{};
 
     Generator get_return_object() {
-      return Generator{std::coroutine_handle<promise_type>::from_promise(*this)};
+      return Generator{
+          std::coroutine_handle<promise_type>::from_promise(*this)};
     }
     std::suspend_always initial_suspend() noexcept { return {}; }
     std::suspend_always final_suspend() noexcept { return {}; }
@@ -71,8 +72,7 @@ class Task {
     void unhandled_exception() { error = std::current_exception(); }
   };
 
-  explicit Task(std::coroutine_handle<promise_type> handle)
-      : handle_(handle) {}
+  explicit Task(std::coroutine_handle<promise_type> handle) : handle_(handle) {}
   Task(Task&& other) noexcept : handle_(std::exchange(other.handle_, {})) {}
   Task(const Task&) = delete;
   Task& operator=(const Task&) = delete;

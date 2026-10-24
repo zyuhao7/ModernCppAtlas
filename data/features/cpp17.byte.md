@@ -7,7 +7,7 @@ category: [类型安全, 内存表示]
 difficulty: 2
 status: final
 tier: A
-compilers: { gcc: "7", clang: "5", msvc: "19.11" }
+compilers: {gcc: "7", clang: "5", msvc: "19.11"}
 tags: [字节, 位运算, 二进制数据]
 alternatives: [unsigned char, char, uint8_t, std::bitset]
 proposal: P0298R3
@@ -67,11 +67,11 @@ size: 1
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| fmtlib/fmt | [`include/fmt/std.h#L690-L702`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L690-L702) | 为 `std::byte` 提供格式化器，转成 `unsigned char` 复用整数格式 | 标准类型没有流运算符时，在库边界集中适配 |
-| fmtlib/fmt | [`test/std-test.cc#L471-L477`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/test/std-test.cc#L471-L477) | 验证 `std::byte(42)` 格式化为 `42` | 测试锁定“按数值而非字符输出”的语义 |
-| nlohmann/json | [`tests/src/unit-regression2.cpp#L747-L756`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-regression2.cpp#L747-L756) | 用 `std::as_bytes(std::span(DATA))` 构造字节容器并解析 JSON | 展示字节视图作为二进制输入的标准形态 |
+| 项目          | 位置                                                                                                                                                                  | 用法                                                           | 为什么典型                               |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------- |
+| fmtlib/fmt    | [`include/fmt/std.h#L690-L702`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L690-L702)                              | 为 `std::byte` 提供格式化器，转成 `unsigned char` 复用整数格式 | 标准类型没有流运算符时，在库边界集中适配 |
+| fmtlib/fmt    | [`test/std-test.cc#L471-L477`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/test/std-test.cc#L471-L477)                                | 验证 `std::byte(42)` 格式化为 `42`                             | 测试锁定“按数值而非字符输出”的语义       |
+| nlohmann/json | [`tests/src/unit-regression2.cpp#L747-L756`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-regression2.cpp#L747-L756) | 用 `std::as_bytes(std::span(DATA))` 构造字节容器并解析 JSON    | 展示字节视图作为二进制输入的标准形态     |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第 2、3 条来自测试，仅作补充；第 1 条是生产路径。
 
@@ -95,12 +95,12 @@ size: 1
 
 ## 横向对比
 
-| 类型 | 隐式转整数 | 算术 | 表示字符 | 主要用途 |
-|---|---|---|---|---|
-| `std::byte` | 否 | 无 | 否 | 原始字节、协议与内存表示 |
-| `unsigned char` | 是 | 有 | 是（窄字符） | 兼容旧代码、C API 缓冲区 |
-| `char` | 是 | 有 | 是 | 文本与字符串 |
-| `uint8_t` | 是 | 有 | 否（但可打印） | 固定 8 位整数，非所有平台都有 |
-| `std::bitset<N>` | 否 | 位运算 | 可转字符串 | 固定长度位集合 |
+| 类型             | 隐式转整数 | 算术   | 表示字符       | 主要用途                      |
+| ---------------- | ---------- | ------ | -------------- | ----------------------------- |
+| `std::byte`      | 否         | 无     | 否             | 原始字节、协议与内存表示      |
+| `unsigned char`  | 是         | 有     | 是（窄字符）   | 兼容旧代码、C API 缓冲区      |
+| `char`           | 是         | 有     | 是             | 文本与字符串                  |
+| `uint8_t`        | 是         | 有     | 否（但可打印） | 固定 8 位整数，非所有平台都有 |
+| `std::bitset<N>` | 否         | 位运算 | 可转字符串     | 固定长度位集合                |
 
 跨标准演进：C++17 引入 `std::byte` 与位运算；C++20 增加 `std::as_bytes` / `std::as_writable_bytes` 与 `std::span`；C++23 的 `std::byteswap` 补上端序转换工具。C++26 未改变 `std::byte` 的核心语义。

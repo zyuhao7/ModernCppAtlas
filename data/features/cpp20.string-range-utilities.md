@@ -7,7 +7,7 @@ category: [字符串, 容器操作]
 difficulty: 2
 status: final
 tier: A
-compilers: { gcc: "10", clang: "13", msvc: "19.24" }
+compilers: {gcc: "10", clang: "13", msvc: "19.24"}
 tags: [前缀检查, 删除元素, signed size]
 alternatives: [compare, find, remove-erase 惯用法, Boost.StringAlgo]
 proposal: P0457R2
@@ -72,11 +72,11 @@ reverse: 5 3 1
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| rui314/mold | [`lib/common.h#L957-L960`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/common.h#L957-L960) | 检查路径是否以 `/` 开头 | 把前缀判断写成单个谓词，替代 `compare` 或 `find` 的位置运算 |
-| rui314/mold | [`lib/multi-glob.cc#L80-L93`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/multi-glob.cc#L80-L93) | 同时用 `starts_with` 与 `ends_with` 处理通配符 | 前后缀检查成对出现，边界条件由标准库承担 |
-| rui314/mold | [`lib/demangle.cc#L13-L27`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/demangle.cc#L13-L27) | 在 `std::string_view` 上检查 Itanium 前缀 | 视图上直接判断，不构造 `std::string` |
+| 项目        | 位置                                                                                                                                  | 用法                                           | 为什么典型                                                  |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------- |
+| rui314/mold | [`lib/common.h#L957-L960`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/common.h#L957-L960)       | 检查路径是否以 `/` 开头                        | 把前缀判断写成单个谓词，替代 `compare` 或 `find` 的位置运算 |
+| rui314/mold | [`lib/multi-glob.cc#L80-L93`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/multi-glob.cc#L80-L93) | 同时用 `starts_with` 与 `ends_with` 处理通配符 | 前后缀检查成对出现，边界条件由标准库承担                    |
+| rui314/mold | [`lib/demangle.cc#L13-L27`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/demangle.cc#L13-L27)     | 在 `std::string_view` 上检查 Itanium 前缀      | 视图上直接判断，不构造 `std::string`                        |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 的构建配置声明 `cxx_std_20`，这些调用发生在生产路径。
 
@@ -100,13 +100,13 @@ reverse: 5 3 1
 
 ## 横向对比
 
-| 需求 | C++20 写法 | 旧写法 | 主要差异 |
-|---|---|---|---|
-| 前缀检查 | `s.starts_with(p)` | `s.compare(0, p.size(), p) == 0` | 参数顺序固定，空串与超长边界由库处理 |
-| 后缀检查 | `s.ends_with(p)` | `s.rfind(p) == s.size() - p.size()` | 避免长度下溢 |
-| 按值删除 | `std::erase(c, v)` | `c.erase(std::remove(...), c.end())` | 一步完成，返回删除数量 |
-| 按条件删除 | `std::erase_if(c, pred)` | `c.erase(std::remove_if(...), c.end())` | 对关联容器也有统一接口 |
-| 有符号大小 | `std::ssize(c)` | `static_cast<std::ptrdiff_t>(c.size())` | 避免无符号回绕 |
-| 子串包含 | C++23 `s.contains(p)` | `s.find(p) != npos` | C++20 的 `string` 与 `string_view` 均无此成员 |
+| 需求       | C++20 写法               | 旧写法                                  | 主要差异                                      |
+| ---------- | ------------------------ | --------------------------------------- | --------------------------------------------- |
+| 前缀检查   | `s.starts_with(p)`       | `s.compare(0, p.size(), p) == 0`        | 参数顺序固定，空串与超长边界由库处理          |
+| 后缀检查   | `s.ends_with(p)`         | `s.rfind(p) == s.size() - p.size()`     | 避免长度下溢                                  |
+| 按值删除   | `std::erase(c, v)`       | `c.erase(std::remove(...), c.end())`    | 一步完成，返回删除数量                        |
+| 按条件删除 | `std::erase_if(c, pred)` | `c.erase(std::remove_if(...), c.end())` | 对关联容器也有统一接口                        |
+| 有符号大小 | `std::ssize(c)`          | `static_cast<std::ptrdiff_t>(c.size())` | 避免无符号回绕                                |
+| 子串包含   | C++23 `s.contains(p)`    | `s.find(p) != npos`                     | C++20 的 `string` 与 `string_view` 均无此成员 |
 
 跨标准演进：C++20 引入 `starts_with`、`ends_with`、`std::erase`、`std::erase_if`、`std::ssize`；C++23 为 `std::string` 与 `std::string_view` 补上 `contains`。C++26 未改变这些接口的语义。

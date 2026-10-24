@@ -7,7 +7,7 @@ category: [并发, RAII, 死锁]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "7", clang: "5", msvc: "19.11" }
+compilers: {gcc: "7", clang: "5", msvc: "19.11"}
 tags: [互斥量, 多锁, 死锁避免, RAII]
 alternatives: [std::lock_guard, std::unique_lock, std::lock, 手动按序加锁]
 proposal: P0156R2
@@ -66,11 +66,11 @@ unchanged 800 1200
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| rui314/mold | [`lib/common.h#L100-L114`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/common.h#L100-L114) | 单参数锁定一次性输出，配合 `static inline std::mutex` | 输出与 `emitted` 标志作为整体更新；提前 `return` 也不会漏解锁 |
-| rui314/mold | [`src/relocatable.cc#L121-L133`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/relocatable.cc#L121-L133) | 并行循环中按符号加锁，保护多字段更新 | 检查与写入处于同一临界区，锁在循环迭代结束时自动释放 |
-| rui314/mold | [`src/passes.cc#L1947-L1955`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L1947-L1955) | 在 `tbb::parallel_for_each` 任务体内锁定单个符号 | 并行算法不消除数据竞争；按元素加锁避免全局串行化 |
+| 项目        | 位置                                                                                                                                        | 用法                                                  | 为什么典型                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------- |
+| rui314/mold | [`lib/common.h#L100-L114`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/common.h#L100-L114)             | 单参数锁定一次性输出，配合 `static inline std::mutex` | 输出与 `emitted` 标志作为整体更新；提前 `return` 也不会漏解锁 |
+| rui314/mold | [`src/relocatable.cc#L121-L133`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/relocatable.cc#L121-L133) | 并行循环中按符号加锁，保护多字段更新                  | 检查与写入处于同一临界区，锁在循环迭代结束时自动释放          |
+| rui314/mold | [`src/passes.cc#L1947-L1955`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L1947-L1955)       | 在 `tbb::parallel_for_each` 任务体内锁定单个符号      | 并行算法不消除数据竞争；按元素加锁避免全局串行化              |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 使用 TBB 并行算法，并在每个 `Symbol` 内维护独立的 `mu`。
 
@@ -95,12 +95,12 @@ unchanged 800 1200
 
 ## 横向对比
 
-| 方案 | 支持多锁 | 死锁避免 | 可提前解锁 | 主要代价 |
-|---|---|---|---|---|
-| `std::scoped_lock` | 是 | 是，构造时使用 `std::lock` 算法 | 否 | 多锁时可能重试；类型不可移动 |
-| `std::lock_guard` | 否 | 不适用 | 否 | 多锁需手写顺序与配对解锁 |
-| `std::unique_lock` | 单个 | 否 | 是 | 状态更多，略重于 `lock_guard` |
-| `std::lock` + 两个 `lock_guard` | 是 | 是 | 否 | 需要 `adopt_lock` 正确接管，写法更长 |
-| 手动 `lock` / `unlock` | 是 | 否 | 是 | 异常与提前返回路径容易漏解锁 |
+| 方案                            | 支持多锁 | 死锁避免                        | 可提前解锁 | 主要代价                             |
+| ------------------------------- | -------- | ------------------------------- | ---------- | ------------------------------------ |
+| `std::scoped_lock`              | 是       | 是，构造时使用 `std::lock` 算法 | 否         | 多锁时可能重试；类型不可移动         |
+| `std::lock_guard`               | 否       | 不适用                          | 否         | 多锁需手写顺序与配对解锁             |
+| `std::unique_lock`              | 单个     | 否                              | 是         | 状态更多，略重于 `lock_guard`        |
+| `std::lock` + 两个 `lock_guard` | 是       | 是                              | 否         | 需要 `adopt_lock` 正确接管，写法更长 |
+| 手动 `lock` / `unlock`          | 是       | 否                              | 是         | 异常与提前返回路径容易漏解锁         |
 
 跨标准演进：C++17 引入 `std::scoped_lock`（P0156R2），同时支持类模板实参推导；此后接口保持稳定。需要 C++11/14 兼容时，用 `std::lock` 加 `std::lock_guard` 与 `std::adopt_lock` 组合获得同样的死锁避免语义。

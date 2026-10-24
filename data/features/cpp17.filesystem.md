@@ -7,7 +7,7 @@ category: [文件系统, 路径处理]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "8", clang: "7", msvc: "19.14" }
+compilers: {gcc: "8", clang: "7", msvc: "19.14"}
 tags: [路径, 目录遍历, 文件属性]
 alternatives: [POSIX 系统调用, Win32 API, Boost.Filesystem]
 proposal: P0218R1
@@ -74,11 +74,11 @@ for (const auto& entry : fs::directory_iterator(dir, ec)) {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| fmtlib/fmt | [`include/fmt/std.h#L102-L111`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L102-L111) | 从 `filesystem::path` 取出指定字符类型的原生字符串 | 把 `path` 当作可查询对象，按目标字符类型选择转换路径 |
-| fmtlib/fmt | [`include/fmt/std.h#L305-L313`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L305-L313) | 为 `std::filesystem::path` 提供格式化器 | 库边界上适配标准类型，而不是要求用户先转 `string` |
-| nlohmann/json | [`include/nlohmann/detail/meta/std_fs.hpp#L21-L28`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/meta/std_fs.hpp#L21-L28) | 用命名空间别名统一 `std::filesystem` 与实验版 | 兼容旧标准库时集中隔离差异，业务代码只认 `std_fs` |
+| 项目          | 位置                                                                                                                                                                                | 用法                                               | 为什么典型                                           |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| fmtlib/fmt    | [`include/fmt/std.h#L102-L111`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L102-L111)                                            | 从 `filesystem::path` 取出指定字符类型的原生字符串 | 把 `path` 当作可查询对象，按目标字符类型选择转换路径 |
+| fmtlib/fmt    | [`include/fmt/std.h#L305-L313`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L305-L313)                                            | 为 `std::filesystem::path` 提供格式化器            | 库边界上适配标准类型，而不是要求用户先转 `string`    |
+| nlohmann/json | [`include/nlohmann/detail/meta/std_fs.hpp#L21-L28`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/meta/std_fs.hpp#L21-L28) | 用命名空间别名统一 `std::filesystem` 与实验版      | 兼容旧标准库时集中隔离差异，业务代码只认 `std_fs`    |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
 
@@ -102,12 +102,12 @@ for (const auto& entry : fs::directory_iterator(dir, ec)) {
 
 ## 横向对比
 
-| 方案 | 可移植性 | 错误模型 | 主要代价 |
-|---|---|---|---|
-| `std::filesystem` | 标准库覆盖的平台 | 异常或 `error_code` | 实现质量随标准库版本变化；路径编码差异仍在 |
-| POSIX API | 类 Unix | `errno` | Windows 需要另一套实现 |
-| Win32 API | Windows | `GetLastError` | 不可移植，宽字符路径更自然 |
-| Boost.Filesystem | 广泛 | 异常或 `error_code` | 额外依赖；与标准版行为有细微差异 |
-| C `FILE*` / `fopen` | 广泛 | 返回值 + `errno` | 只处理文件内容，不覆盖目录与属性 |
+| 方案                | 可移植性         | 错误模型            | 主要代价                                   |
+| ------------------- | ---------------- | ------------------- | ------------------------------------------ |
+| `std::filesystem`   | 标准库覆盖的平台 | 异常或 `error_code` | 实现质量随标准库版本变化；路径编码差异仍在 |
+| POSIX API           | 类 Unix          | `errno`             | Windows 需要另一套实现                     |
+| Win32 API           | Windows          | `GetLastError`      | 不可移植，宽字符路径更自然                 |
+| Boost.Filesystem    | 广泛             | 异常或 `error_code` | 额外依赖；与标准版行为有细微差异           |
+| C `FILE*` / `fopen` | 广泛             | 返回值 + `errno`    | 只处理文件内容，不覆盖目录与属性           |
 
 跨标准演进：C++17 引入 `std::filesystem`；C++20 改变 `u8string()` 的返回类型；后续标准未再改动核心接口。C++26 的文件系统扩展仍以库提案形式讨论，使用前应确认目标标准库实现。

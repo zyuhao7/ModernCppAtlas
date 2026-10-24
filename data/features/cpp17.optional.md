@@ -7,7 +7,7 @@ category: [错误处理, 值语义]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "7", clang: "5", msvc: "19.11" }
+compilers: {gcc: "7", clang: "5", msvc: "19.11"}
 tags: [可选值, 值语义, 空状态]
 alternatives: [指针, std::unique_ptr, std::variant, std::expected]
 proposal: P0220R1
@@ -79,11 +79,11 @@ none
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| fmtlib/fmt | [`include/fmt/std.h#L416-L427`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L416-L427) | 为空状态输出 `none`，有值时输出 `optional(value)` | 把可选值的两种状态显式呈现，避免日志里出现歧义 |
-| nlohmann/json | [`include/nlohmann/detail/conversions/from_json.hpp#L49-L62`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/conversions/from_json.hpp#L49-L62) | JSON `null` 映射为 `nullopt`，其他值 `emplace` | 反序列化时把“字段缺失/为空”统一成类型状态 |
-| nlohmann/json | [`include/nlohmann/detail/conversions/to_json.hpp#L267-L281`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/conversions/to_json.hpp#L267-L281) | 有值写值，空状态写 `nullptr` | 序列化时保持双向映射，避免空值变成未定义字段 |
+| 项目          | 位置                                                                                                                                                                                                    | 用法                                              | 为什么典型                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| fmtlib/fmt    | [`include/fmt/std.h#L416-L427`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L416-L427)                                                                | 为空状态输出 `none`，有值时输出 `optional(value)` | 把可选值的两种状态显式呈现，避免日志里出现歧义 |
+| nlohmann/json | [`include/nlohmann/detail/conversions/from_json.hpp#L49-L62`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/conversions/from_json.hpp#L49-L62) | JSON `null` 映射为 `nullopt`，其他值 `emplace`    | 反序列化时把“字段缺失/为空”统一成类型状态      |
+| nlohmann/json | [`include/nlohmann/detail/conversions/to_json.hpp#L267-L281`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/conversions/to_json.hpp#L267-L281) | 有值写值，空状态写 `nullptr`                      | 序列化时保持双向映射，避免空值变成未定义字段   |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
 
@@ -107,13 +107,13 @@ none
 
 ## 横向对比
 
-| 方案 | 空状态 | 携带错误原因 | 所有权 | 主要代价 |
-|---|---|---|---|---|
-| `std::optional<T>` | `nullopt` | 否 | 值语义 | 解引用需检查；有额外空间 |
-| `T*` | `nullptr` | 否 | 不拥有 | 生命周期与所有权需额外约定 |
-| `std::unique_ptr<T>` | `nullptr` | 否 | 独占 | 堆分配；不适合小值 |
-| `std::variant<T, E>` | 由替代类型表达 | 是 | 值语义 | 类型与访问代码更重 |
-| `std::expected<T, E>` | 错误状态 | 是 | 值语义 | C++23 起；错误类型需设计 |
-| 异常 | 抛出 | 是 | — | 异常路径成本与禁用异常场景不适用 |
+| 方案                  | 空状态         | 携带错误原因 | 所有权 | 主要代价                         |
+| --------------------- | -------------- | ------------ | ------ | -------------------------------- |
+| `std::optional<T>`    | `nullopt`      | 否           | 值语义 | 解引用需检查；有额外空间         |
+| `T*`                  | `nullptr`      | 否           | 不拥有 | 生命周期与所有权需额外约定       |
+| `std::unique_ptr<T>`  | `nullptr`      | 否           | 独占   | 堆分配；不适合小值               |
+| `std::variant<T, E>`  | 由替代类型表达 | 是           | 值语义 | 类型与访问代码更重               |
+| `std::expected<T, E>` | 错误状态       | 是           | 值语义 | C++23 起；错误类型需设计         |
+| 异常                  | 抛出           | 是           | —      | 异常路径成本与禁用异常场景不适用 |
 
 跨标准演进：C++17 引入 `std::optional`；C++20 增加三路比较与 `constexpr` 改进；C++23 增加 `and_then`、`transform`、`or_else` 与 `monadic` 接口。C++26 未改变核心语义。

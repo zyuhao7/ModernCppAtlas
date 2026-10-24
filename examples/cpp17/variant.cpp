@@ -13,21 +13,20 @@ Value parse(std::string_view text) {
   return std::string(text);
 }
 
-template <class... Fs> struct Overloaded : Fs... {
+template <class... Fs>
+struct Overloaded : Fs... {
   using Fs::operator()...;
 };
-template <class... Fs> Overloaded(Fs...) -> Overloaded<Fs...>;
+template <class... Fs>
+Overloaded(Fs...) -> Overloaded<Fs...>;
 
 void print(const Value &value) {
-  std::visit(Overloaded{
-                 [](std::int64_t number) {
-                   std::cout << "number " << number << '\n';
-                 },
-                 [](const std::string &text) {
-                   std::cout << "text " << text << '\n';
-                 },
-             },
-             value);
+  std::visit(
+      Overloaded{
+          [](std::int64_t number) { std::cout << "number " << number << '\n'; },
+          [](const std::string &text) { std::cout << "text " << text << '\n'; },
+      },
+      value);
 }
 
 int main() {

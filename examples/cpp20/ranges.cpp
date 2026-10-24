@@ -26,11 +26,10 @@ int main() {
 
   print(values | std::views::reverse | std::views::take(2));
 
-  const auto multiples = std::views::iota(1, 101) |
-                         std::views::filter([](int value) {
-                           return value % 7 == 0;
-                         }) |
-                         std::views::take(3);
+  const auto multiples =
+      std::views::iota(1, 101) |
+      std::views::filter([](int value) { return value % 7 == 0; }) |
+      std::views::take(3);
   print(multiples);
 
   struct Task {

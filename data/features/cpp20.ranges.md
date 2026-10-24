@@ -7,7 +7,7 @@ category: [范围, 惰性求值]
 difficulty: 4
 status: final
 tier: A
-compilers: { gcc: "10", clang: "14", msvc: "19.29" }
+compilers: {gcc: "10", clang: "14", msvc: "19.29"}
 tags: [范围算法, 视图, 投影]
 alternatives: [迭代器对算法, 手写循环, range-v3, Boost.Range]
 proposal: P0896R4
@@ -72,11 +72,11 @@ deploy build
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| nlohmann/json | [`include/nlohmann/detail/iterators/iteration_proxy.hpp#L232-L235`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/iterators/iteration_proxy.hpp#L232-L235) | 为迭代代理特化 `enable_borrowed_range` | 让标准 ranges 算法知道该视图的迭代器可安全返回，避免误判为悬垂 |
-| nlohmann/json | [`tests/src/unit-iterators2.cpp#L880-L894`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-iterators2.cpp#L880-L894) | 验证 JSON 迭代器满足 `bidirectional_range` 与 `input_range` | 用 concept 锁定容器与视图的范围属性，而不是只测运行时行为 |
-| nlohmann/json | [`tests/src/unit-iterators2.cpp#L937-L946`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-iterators2.cpp#L937-L946) | 用 `std::views::reverse` 反转 JSON 数组并与期望值比较 | 展示视图组合与 `ranges::equal` 的典型配合 |
+| 项目          | 位置                                                                                                                                                                                                                | 用法                                                        | 为什么典型                                                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------- |
+| nlohmann/json | [`include/nlohmann/detail/iterators/iteration_proxy.hpp#L232-L235`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/iterators/iteration_proxy.hpp#L232-L235) | 为迭代代理特化 `enable_borrowed_range`                      | 让标准 ranges 算法知道该视图的迭代器可安全返回，避免误判为悬垂 |
+| nlohmann/json | [`tests/src/unit-iterators2.cpp#L880-L894`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-iterators2.cpp#L880-L894)                                                 | 验证 JSON 迭代器满足 `bidirectional_range` 与 `input_range` | 用 concept 锁定容器与视图的范围属性，而不是只测运行时行为      |
+| nlohmann/json | [`tests/src/unit-iterators2.cpp#L937-L946`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-iterators2.cpp#L937-L946)                                                 | 用 `std::views::reverse` 反转 JSON 数组并与期望值比较       | 展示视图组合与 `ranges::equal` 的典型配合                      |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第 2、3 条来自测试，仅作补充；第 1 条是生产路径。
 
@@ -100,12 +100,12 @@ deploy build
 
 ## 横向对比
 
-| 方案 | 接口形态 | 惰性组合 | 投影 | 主要代价 |
-|---|---|---|---|---|
-| ranges / views | 范围 + `|` 组合 | 是 | 内置 | 编译期成本；生命周期规则更隐蔽 |
-| 迭代器对算法 | `begin` / `end` | 否 | 手写比较器 | 冗长；容器名重复 |
-| 手写循环 | 任意 | 取决于实现 | 手写 | 易出错；难以复用 |
-| range-v3 | 范围 + 视图 | 是 | 内置 | 额外依赖；与标准版有差异 |
-| Boost.Range | 范围算法 | 部分 | 有限 | 依赖 Boost；接口较旧 |
+| 方案           | 接口形态        | 惰性组合   | 投影       | 主要代价                 |
+| -------------- | --------------- | ---------- | ---------- | ------------------------ |
+| ranges / views | 范围 + \`       | \` 组合    | 是         | 内置                     |
+| 迭代器对算法   | `begin` / `end` | 否         | 手写比较器 | 冗长；容器名重复         |
+| 手写循环       | 任意            | 取决于实现 | 手写       | 易出错；难以复用         |
+| range-v3       | 范围 + 视图     | 是         | 内置       | 额外依赖；与标准版有差异 |
+| Boost.Range    | 范围算法        | 部分       | 有限       | 依赖 Boost；接口较旧     |
 
 跨标准演进：C++20 引入 ranges、views、投影与范围概念；C++23 增加 `views::zip`、`enumerate`、`chunk`、`slide`、`join_with`、`ranges::to` 等；C++26 继续补充视图适配器。使用新视图前先确认目标标准库的支持范围。

@@ -29,14 +29,41 @@ DEFAULT_CACHE = ROOT / ".cache" / "corpus"
 DEFAULT_OUTPUT = ROOT / ".cache" / "candidates.json"
 
 SOURCE_SUFFIXES = {
-    ".h", ".hh", ".hpp", ".hxx", ".inl", ".ipp", ".tpp", ".tcc",
-    ".c", ".cc", ".cpp", ".cxx",
+    ".h",
+    ".hh",
+    ".hpp",
+    ".hxx",
+    ".inl",
+    ".ipp",
+    ".tpp",
+    ".tcc",
+    ".c",
+    ".cc",
+    ".cpp",
+    ".cxx",
 }
 EXCLUDED_DIRS = {
-    ".git", ".github", "build", "builds", "cmake-build-debug", "cmake-build-release",
-    "third_party", "third-party", "3rdparty", "vendor", "vendored", "external",
-    "extern", "deps", "_deps", "node_modules", "single_include", "docs", "doc",
-    "bundled", "bundled_fmtlib",
+    ".git",
+    ".github",
+    "build",
+    "builds",
+    "cmake-build-debug",
+    "cmake-build-release",
+    "third_party",
+    "third-party",
+    "3rdparty",
+    "vendor",
+    "vendored",
+    "external",
+    "extern",
+    "deps",
+    "_deps",
+    "node_modules",
+    "single_include",
+    "docs",
+    "doc",
+    "bundled",
+    "bundled_fmtlib",
 }
 MAX_FILE_BYTES = 2 * 1024 * 1024
 MAX_EXCERPT_LINES = 15
@@ -73,33 +100,42 @@ NODE_MATCHERS = {
         lambda node, text: node.type == "structured_binding_declarator"
     ),
     "cpp17.if-constexpr": (
-        lambda node, text: node.type == "if_statement"
-        and any(child.type == "constexpr" for child in node.children)
-    ),
-    "cpp17.constexpr-lambda": (
-        lambda node, text: node.type == "lambda_expression"
-        and any(
-            child.type == "abstract_function_declarator" and "constexpr" in node_text(child)
-            for child in node.children
+        lambda node, text: (
+            node.type == "if_statement"
+            and any(child.type == "constexpr" for child in node.children)
         )
     ),
-    "cpp17.fold-expressions": (
-        lambda node, text: node.type == "fold_expression"
+    "cpp17.constexpr-lambda": (
+        lambda node, text: (
+            node.type == "lambda_expression"
+            and any(
+                child.type == "abstract_function_declarator"
+                and "constexpr" in node_text(child)
+                for child in node.children
+            )
+        )
     ),
+    "cpp17.fold-expressions": (lambda node, text: node.type == "fold_expression"),
     "cpp20.concepts": (
-        lambda node, text: node.type
-        in {"concept_definition", "requires_clause", "requires_expression"}
+        lambda node, text: (
+            node.type
+            in {"concept_definition", "requires_clause", "requires_expression"}
+        )
     ),
     "cpp20.coroutines": (
-        lambda node, text: node.type
-        in {"co_await_expression", "co_yield_expression", "co_return_statement"}
+        lambda node, text: (
+            node.type
+            in {"co_await_expression", "co_yield_expression", "co_return_statement"}
+        )
     ),
     "cpp20.modules": (
         lambda node, text: node.type in {"module_declaration", "import_declaration"}
     ),
     "cpp20.template-lambda": (
-        lambda node, text: node.type == "lambda_expression"
-        and any(child.type == "template_parameter_list" for child in node.children)
+        lambda node, text: (
+            node.type == "lambda_expression"
+            and any(child.type == "template_parameter_list" for child in node.children)
+        )
     ),
     "cpp20.spaceship": (
         lambda node, text: node.type == "binary_expression" and "<=>" in text
@@ -128,9 +164,7 @@ REGEX_QUERIES = {
     "cpp20.latch-barrier-semaphore": (
         r"\bstd::(?:latch|barrier|counting_semaphore|binary_semaphore)\b"
     ),
-    "cpp20.remove-cvref-type-identity": (
-        r"\bstd::(?:remove_cvref|type_identity)\b"
-    ),
+    "cpp20.remove-cvref-type-identity": (r"\bstd::(?:remove_cvref|type_identity)\b"),
     "cpp20.string-range-utilities": (
         r"\bstd::(?:ssize|erase_if)\b|\b(?:starts_with|ends_with)\s*\("
     ),
@@ -140,7 +174,7 @@ REGEX_QUERIES = {
 def make_excerpt(lines: list[str], start: int, end: int) -> str:
     low = max(1, start - MAX_SNIPPET_PADDING)
     high = min(len(lines), end + MAX_SNIPPET_PADDING)
-    chunk = lines[low - 1:high]
+    chunk = lines[low - 1 : high]
     if len(chunk) > MAX_EXCERPT_LINES:
         chunk = chunk[:MAX_EXCERPT_LINES]
     text = "\n".join(chunk)
@@ -230,7 +264,11 @@ def scan_file(
 
 
 def source_files(repo_dir: Path, configured_paths: list[str]) -> list[Path]:
-    roots = [repo_dir / path for path in configured_paths] if configured_paths else [repo_dir]
+    roots = (
+        [repo_dir / path for path in configured_paths]
+        if configured_paths
+        else [repo_dir]
+    )
     files: list[Path] = []
     for root in roots:
         if not root.exists():
@@ -268,9 +306,7 @@ def main() -> int:
             continue
         repo_dir = args.cache / repo.replace("/", "__")
         if not (repo_dir / ".git").exists():
-            raise SystemExit(
-                f"{repo_dir} missing; run tools/fetch_corpus.py first"
-            )
+            raise SystemExit(f"{repo_dir} missing; run tools/fetch_corpus.py first")
 
         for path in source_files(repo_dir, entry["paths"]):
             relative = path.relative_to(repo_dir)
@@ -287,7 +323,9 @@ def main() -> int:
 
         scanned_repos[repo] = scanned_files[repo]
 
-    candidates.sort(key=lambda item: (item["feature"], item["repo"], item["path"], item["lines"]))
+    candidates.sort(
+        key=lambda item: (item["feature"], item["repo"], item["path"], item["lines"])
+    )
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "corpus": [

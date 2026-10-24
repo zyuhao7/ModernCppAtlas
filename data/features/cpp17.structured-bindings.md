@@ -7,7 +7,7 @@ category: [语法糖, 解构, 泛型编程]
 difficulty: 2
 status: final
 tier: A
-compilers: { gcc: "7", clang: "4", msvc: "19.11" }
+compilers: {gcc: "7", clang: "4", msvc: "19.11"}
 tags: [解构, tuple, pair, 引用语义]
 alternatives: [std::get, .first/.second, std::tie, 自定义访问器]
 proposal: P0217R3
@@ -74,11 +74,11 @@ amy:95 bob:90
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| rui314/mold | [`src/output-chunks.cc#L515-L518`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L515-L518) | 同时接收 `insert` 返回的迭代器与插入标志 | `pair<iterator, bool>` 的两个位置被直接命名，后续逻辑不依赖 `.first`/`.second` |
-| gabime/spdlog | [`include/spdlog/details/fmt_helper.h#L33-L38`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/details/fmt_helper.h#L33-L38) | 分解 `to_chars` 返回的指针与错误码 | 成功分支用指针算长度，失败分支检查错误码，名字直接表达职责 |
-| rui314/mold | [`src/input-files.cc#L1401-L1406`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-files.cc#L1401-L1406) | 接收 `equal_range` 返回的迭代器区间 | 绑定名 `begin`/`end` 让区间长度与返回语句保持可读 |
+| 项目          | 位置                                                                                                                                                                        | 用法                                     | 为什么典型                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------ |
+| rui314/mold   | [`src/output-chunks.cc#L515-L518`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L515-L518)                             | 同时接收 `insert` 返回的迭代器与插入标志 | `pair<iterator, bool>` 的两个位置被直接命名，后续逻辑不依赖 `.first`/`.second` |
+| gabime/spdlog | [`include/spdlog/details/fmt_helper.h#L33-L38`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/details/fmt_helper.h#L33-L38) | 分解 `to_chars` 返回的指针与错误码       | 成功分支用指针算长度，失败分支检查错误码，名字直接表达职责                     |
+| rui314/mold   | [`src/input-files.cc#L1401-L1406`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-files.cc#L1401-L1406)                             | 接收 `equal_range` 返回的迭代器区间      | 绑定名 `begin`/`end` 让区间长度与返回语句保持可读                              |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。三条都来自生产路径，没有使用测试代码充当主要证据。
 
@@ -104,13 +104,13 @@ amy:95 bob:90
 
 ## 横向对比
 
-| 写法 | 拷贝/引用 | 能否跳过字段 | 适用对象 | 主要代价 |
-|---|---|---|---|---|
-| `auto [a, b] = e` | 拷贝 | 否 | 数组、tuple-like、聚合类 | 大对象会复制 |
-| `auto& [a, b] = e` | 左值引用 | 否 | 左值 | 不能接右值 |
-| `const auto& [a, b] = e` | 只读引用 | 否 | 左值与右值 | 不能修改 |
-| `std::tie(a, b) = e` | 引用赋值 | 是（`std::ignore`） | tuple-like | 变量需预先声明 |
-| `std::get<I>(e)` | 取决于表达式 | 是 | tuple-like | 位置索引可读性差 |
-| `.first` / `.second` | 取决于表达式 | 是 | `pair` | 只适用于两个字段 |
+| 写法                     | 拷贝/引用    | 能否跳过字段        | 适用对象                 | 主要代价         |
+| ------------------------ | ------------ | ------------------- | ------------------------ | ---------------- |
+| `auto [a, b] = e`        | 拷贝         | 否                  | 数组、tuple-like、聚合类 | 大对象会复制     |
+| `auto& [a, b] = e`       | 左值引用     | 否                  | 左值                     | 不能接右值       |
+| `const auto& [a, b] = e` | 只读引用     | 否                  | 左值与右值               | 不能修改         |
+| `std::tie(a, b) = e`     | 引用赋值     | 是（`std::ignore`） | tuple-like               | 变量需预先声明   |
+| `std::get<I>(e)`         | 取决于表达式 | 是                  | tuple-like               | 位置索引可读性差 |
+| `.first` / `.second`     | 取决于表达式 | 是                  | `pair`                   | 只适用于两个字段 |
 
 跨标准演进：C++17 引入结构化绑定；C++20 放宽了在 lambda 中捕获绑定名的限制；后续标准继续讨论把绑定扩展成参数包。当前代码若要在 C++17 与 C++20 之间复用，优先按 C++17 的限制写，避免依赖捕获规则。

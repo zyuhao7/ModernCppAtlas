@@ -7,7 +7,7 @@ category: [类型安全, 联合体, 值语义]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "7", clang: "4", msvc: "19.11" }
+compilers: {gcc: "7", clang: "4", msvc: "19.11"}
 tags: [标签联合, 和类型, 访问模式, 异常安全]
 alternatives: [继承 + 虚函数, 手写 union + 标签, std::any, std::optional, std::expected]
 proposal: P0088R3
@@ -86,11 +86,11 @@ template <class... Fs> Overloaded(Fs...) -> Overloaded<Fs...>;
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| rui314/mold | [`src/cmdline.cc#L530-L544`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/cmdline.cc#L530-L544) | 解析 `--defsym` 右值，返回符号或数值地址 | 两个分支直接返回不同备选类型，由转换构造选择活动成员 |
-| rui314/mold | [`src/passes.cc#L2908-L2921`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L2908-L2921) | 先用 `get_if` 判断地址，再在 `else` 中取符号 | 非空指针同时完成类型判断与取值，另一分支可直接 `get` |
-| rui314/mold | [`src/cmdline.cc#L1512-L1516`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/cmdline.cc#L1512-L1516) | 持有 variant 引用，用 `get_if` 过滤符号元素 | 只关心一个备选类型时不抛异常，数值地址成员自然跳过 |
+| 项目        | 位置                                                                                                                                    | 用法                                         | 为什么典型                                           |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| rui314/mold | [`src/cmdline.cc#L530-L544`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/cmdline.cc#L530-L544)     | 解析 `--defsym` 右值，返回符号或数值地址     | 两个分支直接返回不同备选类型，由转换构造选择活动成员 |
+| rui314/mold | [`src/passes.cc#L2908-L2921`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L2908-L2921)   | 先用 `get_if` 判断地址，再在 `else` 中取符号 | 非空指针同时完成类型判断与取值，另一分支可直接 `get` |
+| rui314/mold | [`src/cmdline.cc#L1512-L1516`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/cmdline.cc#L1512-L1516) | 持有 variant 引用，用 `get_if` 过滤符号元素  | 只关心一个备选类型时不抛异常，数值地址成员自然跳过   |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 的构建配置声明 `cxx_std_20`，因此同一份代码也在 C++20 模式下编译。
 
@@ -115,13 +115,13 @@ template <class... Fs> Overloaded(Fs...) -> Overloaded<Fs...>;
 
 ## 横向对比
 
-| 方案 | 类型安全 | 存储位置 | 开放扩展 | 主要代价 |
-|---|---|---|---|---|
-| `std::variant<Ts...>` | 是 | 内联 | 否，改类型需重编译 | 大小取最大备选；异常可能 valueless |
-| 手写 `union` + 标签 | 否 | 内联 | 否 | 必须手动管理构造、析构与标签一致性 |
-| 基类 + 虚函数 | 是 | 通常堆上 | 是 | 间接调用、分配、生命周期管理 |
-| `std::any` | 运行期检查 | 可能堆上 | 是 | 丢失备选集合，访问需精确类型 |
-| `std::optional<T>` | 是 | 内联 | 单类型 | 只能表达有或无 |
-| `std::expected<T, E>` | 是 | 内联 | 单值单错误 | 语义限定为成功/失败 |
+| 方案                  | 类型安全   | 存储位置 | 开放扩展           | 主要代价                           |
+| --------------------- | ---------- | -------- | ------------------ | ---------------------------------- |
+| `std::variant<Ts...>` | 是         | 内联     | 否，改类型需重编译 | 大小取最大备选；异常可能 valueless |
+| 手写 `union` + 标签   | 否         | 内联     | 否                 | 必须手动管理构造、析构与标签一致性 |
+| 基类 + 虚函数         | 是         | 通常堆上 | 是                 | 间接调用、分配、生命周期管理       |
+| `std::any`            | 运行期检查 | 可能堆上 | 是                 | 丢失备选集合，访问需精确类型       |
+| `std::optional<T>`    | 是         | 内联     | 单类型             | 只能表达有或无                     |
+| `std::expected<T, E>` | 是         | 内联     | 单值单错误         | 语义限定为成功/失败                |
 
 跨标准演进：C++17 引入 `std::variant` 与 `std::visit`；C++23 的 `std::expected` 覆盖“值或错误”这一更窄但更常见的场景。当前代码若要按备选类型分派，仍要靠 `std::visit` 或 `get_if` 组合。

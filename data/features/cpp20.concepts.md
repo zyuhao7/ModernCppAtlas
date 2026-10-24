@@ -7,7 +7,7 @@ category: [模板约束, 泛型编程]
 difficulty: 4
 status: final
 tier: A
-compilers: { gcc: "10", clang: "10", msvc: "19.23" }
+compilers: {gcc: "10", clang: "10", msvc: "19.23"}
 tags: [约束, 模板, 重载决议]
 alternatives: [SFINAE, enable_if, tag dispatch]
 proposal: P0898R3
@@ -74,11 +74,11 @@ int main() {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| fmtlib/fmt | [`include/fmt/base.h#L2738-L2741`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2738-L2741) | 用 concept 包装已有的 `is_formattable` 特征 | 在保留旧 trait 的同时给 C++20 用户提供约束接口，迁移成本低 |
-| nlohmann/json | [`include/nlohmann/json.hpp#L3723-L3730`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3723-L3730) | 用 `requires std::is_scalar_v<ScalarType>` 限制标量比较重载 | 约束写在声明处，避免标量重载与容器重载产生歧义 |
-| nlohmann/json | [`include/nlohmann/json.hpp#L3756-L3763`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3756-L3763) | 同一约束用于三路比较重载 | 多个运算符共享一致的标量约束，减少重复的条件编译 |
+| 项目          | 位置                                                                                                                                                            | 用法                                                        | 为什么典型                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| fmtlib/fmt    | [`include/fmt/base.h#L2738-L2741`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2738-L2741)                  | 用 concept 包装已有的 `is_formattable` 特征                 | 在保留旧 trait 的同时给 C++20 用户提供约束接口，迁移成本低 |
+| nlohmann/json | [`include/nlohmann/json.hpp#L3723-L3730`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3723-L3730) | 用 `requires std::is_scalar_v<ScalarType>` 限制标量比较重载 | 约束写在声明处，避免标量重载与容器重载产生歧义             |
+| nlohmann/json | [`include/nlohmann/json.hpp#L3756-L3763`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3756-L3763) | 同一约束用于三路比较重载                                    | 多个运算符共享一致的标量约束，减少重复的条件编译           |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
 
@@ -102,12 +102,12 @@ int main() {
 
 ## 横向对比
 
-| 方案 | 约束位置 | 参与重载决议 | 诊断质量 | 兼容性 |
-|---|---|---|---|---|
-| concepts / `requires` | 模板参数或声明 | 是 | 最好，指出失败约束 | C++20 起 |
-| `enable_if` | 返回类型或模板参数 | 是 | 差，候选被静默剔除 | C++11 起 |
-| `static_assert` | 函数体 | 否 | 中等，但已进入实例化 | C++11 起 |
-| tag dispatch | 重载参数 | 是 | 中等，需要额外类型 | C++03 起 |
-| 文档约定 | 无 | 否 | 无 | 任意 |
+| 方案                  | 约束位置           | 参与重载决议 | 诊断质量             | 兼容性   |
+| --------------------- | ------------------ | ------------ | -------------------- | -------- |
+| concepts / `requires` | 模板参数或声明     | 是           | 最好，指出失败约束   | C++20 起 |
+| `enable_if`           | 返回类型或模板参数 | 是           | 差，候选被静默剔除   | C++11 起 |
+| `static_assert`       | 函数体             | 否           | 中等，但已进入实例化 | C++11 起 |
+| tag dispatch          | 重载参数           | 是           | 中等，需要额外类型   | C++03 起 |
+| 文档约定              | 无                 | 否           | 无                   | 任意     |
 
 跨标准演进：C++20 引入 concepts 与 requires 表达式；C++23 未改变核心规则；C++26 的扩展主要围绕标准库 concept 的补充，不改变用户定义与重载决议机制。

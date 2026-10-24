@@ -35,7 +35,9 @@ def standard_for(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--compiler", default="g++")
-    parser.add_argument("--run", action="store_true", help="run each binary after linking")
+    parser.add_argument(
+        "--run", action="store_true", help="run each binary after linking"
+    )
     args = parser.parse_args()
 
     files = sorted(EXAMPLES.rglob("*.cpp")) if EXAMPLES.exists() else []

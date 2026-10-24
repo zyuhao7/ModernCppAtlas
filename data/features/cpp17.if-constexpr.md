@@ -7,7 +7,7 @@ category: [编译期分支, 泛型编程]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "7", clang: "3.9", msvc: "19.11" }
+compilers: {gcc: "7", clang: "3.9", msvc: "19.11"}
 tags: [编译期, 模板, 分支]
 alternatives: [SFINAE, tag dispatch, concepts]
 proposal: P0292R2
@@ -80,11 +80,11 @@ auto as_number(const T& value) {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| fmtlib/fmt | [`include/fmt/compile.h#L99-L107`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L99-L107) | 参数包为空时跳过递归查找 | 用编译期条件保护变参递归的终止路径 |
-| fmtlib/fmt | [`include/fmt/compile.h#L157-L166`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L157-L166) | 按 `is_named_arg` 选择读取 `.value` 还是原对象 | 编译期类型分派，避免运行期分支 |
-| nlohmann/json | [`include/nlohmann/detail/input/binary_reader.hpp#L2821-L2835`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/input/binary_reader.hpp#L2821-L2835) | 按大小与整型特性选择字节交换路径 | 丢弃分支无需对不支持的类型保持可编译 |
+| 项目          | 位置                                                                                                                                                                                                        | 用法                                           | 为什么典型                           |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------ |
+| fmtlib/fmt    | [`include/fmt/compile.h#L99-L107`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L99-L107)                                                              | 参数包为空时跳过递归查找                       | 用编译期条件保护变参递归的终止路径   |
+| fmtlib/fmt    | [`include/fmt/compile.h#L157-L166`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/compile.h#L157-L166)                                                            | 按 `is_named_arg` 选择读取 `.value` 还是原对象 | 编译期类型分派，避免运行期分支       |
+| nlohmann/json | [`include/nlohmann/detail/input/binary_reader.hpp#L2821-L2835`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/input/binary_reader.hpp#L2821-L2835) | 按大小与整型特性选择字节交换路径               | 丢弃分支无需对不支持的类型保持可编译 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
 
@@ -105,13 +105,13 @@ auto as_number(const T& value) {
 
 ## 横向对比
 
-| 方案 | 生效位置 | 优点 | 代价 |
-|---|---|---|---|
-| `if constexpr` | 函数体内部 | 写法集中，丢弃分支不实例化 | 不影响重载决议；条件需依赖模板参数 |
-| SFINAE / `enable_if` | 模板签名 | 参与重载决议，可精确控制候选集 | 签名膨胀，错误信息差 |
-| tag dispatch | 重载 + 标签类型 | 兼容 C++03，分支边界清楚 | 需要额外类型与转发层 |
-| 类模板特化 | 类型定义层 | 适合按类型提供完整实现 | 样板代码多，组合困难 |
-| concepts / `requires` | 声明约束 | 约束参与重载，诊断最好 | 需要 C++20；不能替代函数体内部署 |
-| 运行时 `if` | 执行期 | 条件可以是任意运行期值 | 两个分支都必须可编译，且有分支开销 |
+| 方案                  | 生效位置        | 优点                           | 代价                               |
+| --------------------- | --------------- | ------------------------------ | ---------------------------------- |
+| `if constexpr`        | 函数体内部      | 写法集中，丢弃分支不实例化     | 不影响重载决议；条件需依赖模板参数 |
+| SFINAE / `enable_if`  | 模板签名        | 参与重载决议，可精确控制候选集 | 签名膨胀，错误信息差               |
+| tag dispatch          | 重载 + 标签类型 | 兼容 C++03，分支边界清楚       | 需要额外类型与转发层               |
+| 类模板特化            | 类型定义层      | 适合按类型提供完整实现         | 样板代码多，组合困难               |
+| concepts / `requires` | 声明约束        | 约束参与重载，诊断最好         | 需要 C++20；不能替代函数体内部署   |
+| 运行时 `if`           | 执行期          | 条件可以是任意运行期值         | 两个分支都必须可编译，且有分支开销 |
 
 跨标准演进：C++17 引入 `if constexpr`；C++20 增加 `std::is_constant_evaluated()`，可在同一函数中区分常量求值；C++23 增加 `if consteval`，把该判断写进语法。

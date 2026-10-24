@@ -25,8 +25,7 @@ int main() {
       {"pear", 0},
       {"plum", 3},
   };
-  std::erase_if(word_count,
-                [](const auto& item) { return item.second == 0; });
+  std::erase_if(word_count, [](const auto& item) { return item.second == 0; });
   std::cout << "words:";
   for (const auto& item : word_count) std::cout << ' ' << item.first;
   std::cout << '\n';

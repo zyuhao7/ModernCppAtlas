@@ -9,7 +9,8 @@ using Config = std::map<std::string, std::string>;
 
 std::optional<int> parse_int(std::string_view text) {
   int value = 0;
-  auto [ptr, ec] = std::from_chars(text.data(), text.data() + text.size(), value);
+  auto [ptr, ec] =
+      std::from_chars(text.data(), text.data() + text.size(), value);
   if (ec != std::errc{} || ptr != text.data() + text.size()) {
     return std::nullopt;
   }

@@ -38,8 +38,7 @@ int main() {
   const std::string line = "  host = example.com  ";
   const auto equals = line.find('=');
 
-  const std::string_view key =
-      trim(std::string_view(line).substr(0, equals));
+  const std::string_view key = trim(std::string_view(line).substr(0, equals));
   const std::string_view value =
       trim(std::string_view(line).substr(equals + 1));
   std::cout << '[' << key << "] [" << value << "]\n";

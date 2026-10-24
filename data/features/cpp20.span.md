@@ -7,7 +7,7 @@ category: [视图, 内存]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "10", clang: "9", msvc: "19.26" }
+compilers: {gcc: "10", clang: "9", msvc: "19.26"}
 tags: [连续内存, 非拥有视图, 边界]
 alternatives: [指针 + 长度, std::string_view, gsl::span, std::vector]
 proposal: P0122R7
@@ -80,11 +80,11 @@ int main() {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| rui314/mold | [`src/output-chunks.cc#L880-L892`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L880-L892) | 用 `span` 与 `subspan` 把缓冲区切成固定大小的块 | 视图切片不复制数据，长度信息随视图传递 |
-| rui314/mold | [`src/arch-x86-64.cc#L367-L374`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/arch-x86-64.cc#L367-L374) | 把重定位表表示为 `span<const ElfRel<E>>` | 只读接口用 `span<const T>` 表达，调用方无需传长度 |
-| rui314/mold | [`src/gdb-index.cc#L637-L642`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/gdb-index.cc#L637-L642) | 返回可写的 `span<u8>` 指向压缩缓冲区 | 非拥有视图同时表达起始地址、长度与可写性 |
+| 项目        | 位置                                                                                                                                            | 用法                                            | 为什么典型                                        |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------- |
+| rui314/mold | [`src/output-chunks.cc#L880-L892`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L880-L892) | 用 `span` 与 `subspan` 把缓冲区切成固定大小的块 | 视图切片不复制数据，长度信息随视图传递            |
+| rui314/mold | [`src/arch-x86-64.cc#L367-L374`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/arch-x86-64.cc#L367-L374)     | 把重定位表表示为 `span<const ElfRel<E>>`        | 只读接口用 `span<const T>` 表达，调用方无需传长度 |
+| rui314/mold | [`src/gdb-index.cc#L637-L642`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/gdb-index.cc#L637-L642)         | 返回可写的 `span<u8>` 指向压缩缓冲区            | 非拥有视图同时表达起始地址、长度与可写性          |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 的构建配置声明 `cxx_std_20`。
 
@@ -108,13 +108,13 @@ int main() {
 
 ## 横向对比
 
-| 方案 | 拥有数据 | 携带长度 | 元素类型安全 | 主要代价 |
-|---|---|---|---|---|
-| `std::span<T>` | 否 | 是 | 是 | 生命周期由调用方保证 |
-| 指针 + 长度 | 否 | 手动 | 弱 | 两个参数可能不一致 |
-| `std::string_view` | 否 | 是 | 仅字符 | 不能表达可变字节或泛型元素 |
-| `gsl::span` | 否 | 是 | 是 | 额外依赖；与标准版行为略有差异 |
-| `std::vector<T>` | 是 | 是 | 是 | 堆分配与所有权转移 |
-| `std::array<T, N>` | 是 | 编译期固定 | 是 | 长度固定，不能接受动态输入 |
+| 方案               | 拥有数据 | 携带长度   | 元素类型安全 | 主要代价                       |
+| ------------------ | -------- | ---------- | ------------ | ------------------------------ |
+| `std::span<T>`     | 否       | 是         | 是           | 生命周期由调用方保证           |
+| 指针 + 长度        | 否       | 手动       | 弱           | 两个参数可能不一致             |
+| `std::string_view` | 否       | 是         | 仅字符       | 不能表达可变字节或泛型元素     |
+| `gsl::span`        | 否       | 是         | 是           | 额外依赖；与标准版行为略有差异 |
+| `std::vector<T>`   | 是       | 是         | 是           | 堆分配与所有权转移             |
+| `std::array<T, N>` | 是       | 编译期固定 | 是           | 长度固定，不能接受动态输入     |
 
 跨标准演进：C++20 引入 `std::span` 与 `std::as_bytes`；C++23 增加 `std::mdspan` 处理多维视图；C++26 计划加入 `span::at()` 等边界检查接口。当前代码若需要异常式越界检查，应自行封装。

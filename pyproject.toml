@@ -18,3 +18,20 @@ docs = [
 
 [tool.uv]
 package = false
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[dependency-groups]
+dev = [
+    "clang-format==20.1.0",
+    "mdformat>=0.7.22",
+    "mdformat-frontmatter>=2.1.2",
+    "mdformat-gfm>=1.0.0",
+    "mdformat-tables>=1.0.0",
+    "ruff>=0.17.2",
+]

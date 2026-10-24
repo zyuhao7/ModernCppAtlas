@@ -7,7 +7,7 @@ category: [字符串, 视图]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "7", clang: "7", msvc: "19.11" }
+compilers: {gcc: "7", clang: "7", msvc: "19.11"}
 tags: [非拥有视图, 零拷贝, 生命周期]
 alternatives: [const std::string&, const char*, std::span<const char>]
 proposal: P0254R2
@@ -85,11 +85,11 @@ std::string_view bad2() {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| gabime/spdlog | [`include/spdlog/common.h#L145-L156`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/common.h#L145-L156) | 在标准格式化模式下把 `string_view_t` 定义为 `std::string_view` | 库内部用别名隔离两种格式化后端，调用方只依赖统一名称 |
-| nlohmann/json | [`include/nlohmann/json.hpp#L1907-L1917`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L1907-L1917) | 用 `is_same<ValueType, std::string_view>` 排除隐式转换重载 | 防止 `string_view` 走隐式转换路径，避免悬垂与歧义 |
-| nlohmann/json | [`tests/src/unit-conversions.cpp#L496-L502`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-conversions.cpp#L496-L502) | 验证 `get<std::string_view>()` 的取值语义 | 测试锁定视图转换行为，补充生产路径 |
+| 项目          | 位置                                                                                                                                                                  | 用法                                                           | 为什么典型                                           |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------- |
+| gabime/spdlog | [`include/spdlog/common.h#L145-L156`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/common.h#L145-L156)               | 在标准格式化模式下把 `string_view_t` 定义为 `std::string_view` | 库内部用别名隔离两种格式化后端，调用方只依赖统一名称 |
+| nlohmann/json | [`include/nlohmann/json.hpp#L1907-L1917`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L1907-L1917)       | 用 `is_same<ValueType, std::string_view>` 排除隐式转换重载     | 防止 `string_view` 走隐式转换路径，避免悬垂与歧义    |
+| nlohmann/json | [`tests/src/unit-conversions.cpp#L496-L502`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-conversions.cpp#L496-L502) | 验证 `get<std::string_view>()` 的取值语义                      | 测试锁定视图转换行为，补充生产路径                   |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第 3 条来自测试，仅作补充。
 
@@ -113,12 +113,12 @@ std::string_view bad2() {
 
 ## 横向对比
 
-| 方案 | 零拷贝 | 携带长度 | 空终止保证 | 主要代价 |
-|---|---|---|---|---|
-| `std::string_view` | 是 | 是 | 否 | 生命周期由调用方保证 |
-| `const std::string&` | 否（字面量需构造临时串） | 是 | 是 | 可能分配与拷贝 |
-| `const char*` | 是 | 否 | 是 | 需 `strlen`；嵌入 `'\0'` 截断 |
-| `std::span<const char>` | 是 | 是 | 否 | 无字符串操作接口 |
-| `std::string` | 否 | 是 | 是 | 拥有数据，复制成本高 |
+| 方案                    | 零拷贝                   | 携带长度 | 空终止保证 | 主要代价                      |
+| ----------------------- | ------------------------ | -------- | ---------- | ----------------------------- |
+| `std::string_view`      | 是                       | 是       | 否         | 生命周期由调用方保证          |
+| `const std::string&`    | 否（字面量需构造临时串） | 是       | 是         | 可能分配与拷贝                |
+| `const char*`           | 是                       | 否       | 是         | 需 `strlen`；嵌入 `'\0'` 截断 |
+| `std::span<const char>` | 是                       | 是       | 否         | 无字符串操作接口              |
+| `std::string`           | 否                       | 是       | 是         | 拥有数据，复制成本高          |
 
 跨标准演进：C++17 引入 `std::string_view` 与 `sv` 字面量；C++20 增加 `starts_with`、`ends_with` 与更多 `constexpr` 支持；C++23 增加 `contains` 与范围构造。C++26 未改变核心语义。

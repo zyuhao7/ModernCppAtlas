@@ -7,9 +7,7 @@ std::tuple<int, int> divmod(int value, int divisor) {
   return {value / divisor, value % divisor};
 }
 
-std::tuple<std::string, int, bool> make_user() {
-  return {"amy", 30, true};
-}
+std::tuple<std::string, int, bool> make_user() { return {"amy", 30, true}; }
 
 struct Point {
   int x;

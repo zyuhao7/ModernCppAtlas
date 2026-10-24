@@ -5,6 +5,27 @@ on:
   pull_request:
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install formatters
+        run: uv sync --frozen --group dev
+
+      - name: Check Python formatting
+        run: |
+          uv run ruff format --check tools
+          uv run ruff check tools
+
+      - name: Check C++ formatting
+        run: uv run clang-format --dry-run --Werror examples/*/*.cpp
+
+      - name: Check Markdown formatting
+        run: uv run mdformat --check README.md todo.md data/features
+
   validate:
     runs-on: ubuntu-latest
     steps:

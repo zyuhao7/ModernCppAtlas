@@ -3,9 +3,7 @@
 #include <cstdint>
 #include <iostream>
 
-constexpr std::byte flag_bit(int index) {
-  return std::byte{1} << index;
-}
+constexpr std::byte flag_bit(int index) { return std::byte{1} << index; }
 
 bool has_flag(std::byte flags, int index) {
   return (flags & flag_bit(index)) != std::byte{0};

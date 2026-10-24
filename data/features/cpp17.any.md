@@ -7,7 +7,7 @@ category: [类型擦除, 动态类型, 容器]
 difficulty: 2
 status: final
 tier: A
-compilers: { gcc: "7", clang: "4", msvc: "19.11" }
+compilers: {gcc: "7", clang: "4", msvc: "19.11"}
 tags: [类型擦除, any_cast, 异构容器, RTTI]
 alternatives: [void*, std::variant, 基类 + 虚函数, std::shared_ptr<void>, absl::any]
 proposal: P0220R1
@@ -73,11 +73,11 @@ bad_any_cast
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| drogonframework/drogon | [`lib/inc/drogon/Attribute.h#L61-L75`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/Attribute.h#L61-L75) | 请求属性表使用 `map<string, any>`，普通值可隐式存入 | 框架与业务代码共享同一容器，类型在编译期不可枚举 |
-| drogonframework/drogon | [`lib/inc/drogon/HttpViewData.h#L40-L53`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpViewData.h#L40-L53) | 读取前比较 `typeid`，再用指针版 `any_cast` 取地址 | 精确类型匹配；类型不符时记录错误并回退到默认值 |
-| drogonframework/drogon | [`lib/inc/drogon/Session.h#L108-L122`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/Session.h#L108-L122) | 会话容器在互斥量保护下查找、校验类型并传出引用 | 跨请求异构状态；缺失时默认构造后插入 |
+| 项目                   | 位置                                                                                                                                                                     | 用法                                                | 为什么典型                                       |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- | ------------------------------------------------ |
+| drogonframework/drogon | [`lib/inc/drogon/Attribute.h#L61-L75`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/Attribute.h#L61-L75)       | 请求属性表使用 `map<string, any>`，普通值可隐式存入 | 框架与业务代码共享同一容器，类型在编译期不可枚举 |
+| drogonframework/drogon | [`lib/inc/drogon/HttpViewData.h#L40-L53`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpViewData.h#L40-L53) | 读取前比较 `typeid`，再用指针版 `any_cast` 取地址   | 精确类型匹配；类型不符时记录错误并回退到默认值   |
+| drogonframework/drogon | [`lib/inc/drogon/Session.h#L108-L122`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/Session.h#L108-L122)       | 会话容器在互斥量保护下查找、校验类型并传出引用      | 跨请求异构状态；缺失时默认构造后插入             |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。drogon 的 CMake 配置要求 C++17，三个容器都把 `std::any` 用作公开 API 的值类型。
 
@@ -102,13 +102,13 @@ bad_any_cast
 
 ## 横向对比
 
-| 方案 | 类型安全 | 类型集合 | 所有权 | 主要代价 |
-|---|---|---|---|---|
-| `std::any` | 运行期检查 | 开放 | 拥有可复制值 | 可能堆分配；读取需知道类型 |
-| `void *` | 否 | 开放 | 不拥有 | 类型与析构全部手工管理 |
-| `std::variant<Ts...>` | 编译期检查 | 封闭 | 拥有值 | 新增类型需重编译并更新访问代码 |
-| 基类 + 虚函数 | 是 | 开放（继承） | 通常堆上 | 要求共同基类；间接调用 |
-| `std::shared_ptr<void>` | 否 | 开放 | 共享 | 丢失类型信息；引用计数开销 |
-| `absl::any` | 运行期检查 | 开放 | 拥有可复制值 | 新版本已退化为 `std::any` 别名 |
+| 方案                    | 类型安全   | 类型集合     | 所有权       | 主要代价                       |
+| ----------------------- | ---------- | ------------ | ------------ | ------------------------------ |
+| `std::any`              | 运行期检查 | 开放         | 拥有可复制值 | 可能堆分配；读取需知道类型     |
+| `void *`                | 否         | 开放         | 不拥有       | 类型与析构全部手工管理         |
+| `std::variant<Ts...>`   | 编译期检查 | 封闭         | 拥有值       | 新增类型需重编译并更新访问代码 |
+| 基类 + 虚函数           | 是         | 开放（继承） | 通常堆上     | 要求共同基类；间接调用         |
+| `std::shared_ptr<void>` | 否         | 开放         | 共享         | 丢失类型信息；引用计数开销     |
+| `absl::any`             | 运行期检查 | 开放         | 拥有可复制值 | 新版本已退化为 `std::any` 别名 |
 
 跨标准演进：`std::any` 随 P0220R1 进入 C++17；此后接口保持稳定，没有加入访问器或比较操作。需要模式匹配或穷尽分派时，应改用 `std::variant`，或在 `any` 之上维护显式的标签与分派表。

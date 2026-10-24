@@ -7,7 +7,7 @@ category: [异步, 并发, 控制流]
 difficulty: 5
 status: final
 tier: A
-compilers: { gcc: "10", clang: "14", msvc: "19.28" }
+compilers: {gcc: "10", clang: "14", msvc: "19.28"}
 tags: [co_await, co_yield, co_return, promise_type, 无栈协程]
 alternatives: [回调, std::future, 手写状态机, 发送者/接收者]
 proposal: P0912R5
@@ -69,11 +69,11 @@ caught: boom
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| drogonframework/drogon | [`lib/inc/drogon/HttpBinder.h#L408-L417`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpBinder.h#L408-L417) | 按返回类型分支，在 `Task<>` 分支内 `co_await` 处理器 | 协程返回类型参与框架分派；`co_await` 使 lambda 自身成为协程 |
-| drogonframework/drogon | [`lib/inc/drogon/HttpFilter.h#L107-L121`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpFilter.h#L107-L121) | `try`/`catch` 包裹 `co_await`，异常路径 `co_return` | 展示异常如何留在协程体内处理，而不是穿透 promise |
-| drogonframework/drogon | [`lib/inc/drogon/WebSocketController.h#L186-L193`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/WebSocketController.h#L186-L193) | 回调事件用 `async_run` 启动 `Task<>`，内部 `co_await` | 旧回调接口与协程业务代码之间的适配层 |
+| 项目                   | 位置                                                                                                                                                                                       | 用法                                                  | 为什么典型                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- | ----------------------------------------------------------- |
+| drogonframework/drogon | [`lib/inc/drogon/HttpBinder.h#L408-L417`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpBinder.h#L408-L417)                   | 按返回类型分支，在 `Task<>` 分支内 `co_await` 处理器  | 协程返回类型参与框架分派；`co_await` 使 lambda 自身成为协程 |
+| drogonframework/drogon | [`lib/inc/drogon/HttpFilter.h#L107-L121`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpFilter.h#L107-L121)                   | `try`/`catch` 包裹 `co_await`，异常路径 `co_return`   | 展示异常如何留在协程体内处理，而不是穿透 promise            |
+| drogonframework/drogon | [`lib/inc/drogon/WebSocketController.h#L186-L193`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/WebSocketController.h#L186-L193) | 回调事件用 `async_run` 启动 `Task<>`，内部 `co_await` | 旧回调接口与协程业务代码之间的适配层                        |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。Drogon 的 `Task<>` 是库自定义的惰性任务类型，不是标准库类型；价值在于展示生产框架如何把协程接入既有分派与错误处理路径。
 
@@ -101,11 +101,11 @@ caught: boom
 
 ## 横向对比
 
-| 方案 | 线性代码 | 暂停/恢复 | 异常传播 | 取消与组合 | 主要代价 |
-|---|---|---|---|---|---|
-| 回调 | 否，流程被拆散 | 由回调注册隐式完成 | 需每层显式处理 | 手工维护状态 | 状态分散、易漏错误路径 |
-| `std::future` / `std::async` | 部分 | 阻塞等待，不能协作暂停 | `get()` 重新抛出 | 组合能力弱 | 占用线程，难以取消 |
-| 协程 | 是 | `co_await` / `co_yield` | promise 显式存储并重抛 | 依赖 awaiter 与执行器 | 帧分配、生命周期复杂 |
-| 发送者/接收者（P2300） | 组合式 | 由调度器恢复 | 错误通道显式传递 | 内建组合与取消 | 学习曲线与库支持 |
+| 方案                         | 线性代码       | 暂停/恢复               | 异常传播               | 取消与组合            | 主要代价               |
+| ---------------------------- | -------------- | ----------------------- | ---------------------- | --------------------- | ---------------------- |
+| 回调                         | 否，流程被拆散 | 由回调注册隐式完成      | 需每层显式处理         | 手工维护状态          | 状态分散、易漏错误路径 |
+| `std::future` / `std::async` | 部分           | 阻塞等待，不能协作暂停  | `get()` 重新抛出       | 组合能力弱            | 占用线程，难以取消     |
+| 协程                         | 是             | `co_await` / `co_yield` | promise 显式存储并重抛 | 依赖 awaiter 与执行器 | 帧分配、生命周期复杂   |
+| 发送者/接收者（P2300）       | 组合式         | 由调度器恢复            | 错误通道显式传递       | 内建组合与取消        | 学习曲线与库支持       |
 
 跨标准演进：协程进入 C++20（P0912R5）；C++23 增加 `std::generator`（P2502R2）；C++26 的 `std::execution`（P2300）补齐调度与组合模型。C++17 及以前只能使用回调、future 或第三方协程库；GCC 10、Clang 14、MSVC 19.28 起提供完整的 C++20 协程支持，早期版本的实验开关不能代表最终语义。

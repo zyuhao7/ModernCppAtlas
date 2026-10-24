@@ -7,7 +7,7 @@ category: [比较, 运算符]
 difficulty: 3
 status: final
 tier: A
-compilers: { gcc: "10", clang: "10", msvc: "19.25" }
+compilers: {gcc: "10", clang: "10", msvc: "19.25"}
 tags: [比较, 排序, 运算符重写]
 alternatives: [operator< 全家桶, std::tie, 手写 compare]
 proposal: P0515R3
@@ -73,11 +73,11 @@ int main() {
 
 ## 真实项目证据
 
-| 项目 | 位置 | 用法 | 为什么典型 |
-|---|---|---|---|
-| nlohmann/json | [`include/nlohmann/detail/json_pointer.hpp#L868-L872`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/json_pointer.hpp#L868-L872) | 用 `<=>` 比较两个 JSON Pointer 的 token 序列 | 直接委托给已有容器的三路比较，不手写六个运算符 |
-| nlohmann/json | [`include/nlohmann/detail/value_t.hpp#L95-L100`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/value_t.hpp#L95-L100) | 按预定义顺序比较 JSON 值类型，无法比较时返回 `unordered` | 偏序的典型用法：类型序不构成全序 |
-| nlohmann/json | [`include/nlohmann/json.hpp#L3745-L3754`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3745-L3754) | 为 `basic_json` 实现三路比较并保留无序结果 | 复杂类型的比较逻辑集中在一个入口，其余运算符由重写获得 |
+| 项目          | 位置                                                                                                                                                                                      | 用法                                                     | 为什么典型                                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| nlohmann/json | [`include/nlohmann/detail/json_pointer.hpp#L868-L872`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/json_pointer.hpp#L868-L872) | 用 `<=>` 比较两个 JSON Pointer 的 token 序列             | 直接委托给已有容器的三路比较，不手写六个运算符         |
+| nlohmann/json | [`include/nlohmann/detail/value_t.hpp#L95-L100`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/detail/value_t.hpp#L95-L100)             | 按预定义顺序比较 JSON 值类型，无法比较时返回 `unordered` | 偏序的典型用法：类型序不构成全序                       |
+| nlohmann/json | [`include/nlohmann/json.hpp#L3745-L3754`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3745-L3754)                           | 为 `basic_json` 实现三路比较并保留无序结果               | 复杂类型的比较逻辑集中在一个入口，其余运算符由重写获得 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
 
@@ -101,12 +101,12 @@ int main() {
 
 ## 横向对比
 
-| 方案 | 需要实现的运算符 | 一致性 | 主要代价 |
-|---|---|---|---|
-| `<=>` + `= default` | 1 个（`==` 可自动生成） | 成员顺序天然一致 | 需要 C++20；浮点成员得到偏序 |
-| 手写六个运算符 | 6 个 | 容易互相矛盾 | 维护点多，字段变动易漏 |
-| `std::tie` 比较 | 每个运算符各写一次 | 字段顺序集中 | 仍需六个函数，且返回引用元组 |
-| `compare` 成员函数 | 1 个 + 六个转发 | 逻辑集中 | 样板代码仍在，调用方要记返回值约定 |
-| C++20 前的宏/CRTP | 1 个宏 + 生成 | 取决于宏实现 | 可读性差，调试困难 |
+| 方案                | 需要实现的运算符        | 一致性           | 主要代价                           |
+| ------------------- | ----------------------- | ---------------- | ---------------------------------- |
+| `<=>` + `= default` | 1 个（`==` 可自动生成） | 成员顺序天然一致 | 需要 C++20；浮点成员得到偏序       |
+| 手写六个运算符      | 6 个                    | 容易互相矛盾     | 维护点多，字段变动易漏             |
+| `std::tie` 比较     | 每个运算符各写一次      | 字段顺序集中     | 仍需六个函数，且返回引用元组       |
+| `compare` 成员函数  | 1 个 + 六个转发         | 逻辑集中         | 样板代码仍在，调用方要记返回值约定 |
+| C++20 前的宏/CRTP   | 1 个宏 + 生成           | 取决于宏实现     | 可读性差，调试困难                 |
 
 跨标准演进：C++20 引入 `<=>`、序关系类型与运算符重写；C++23 未改变核心语义。C++26 的反射提案可能自动生成比较，但当前仍应显式声明 `= default`。
