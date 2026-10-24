@@ -54,7 +54,10 @@ def is_excluded(relative: Path) -> bool:
 
 def is_test_path(relative: Path) -> bool:
     parts = {part.lower() for part in relative.parts}
-    return bool(parts & {"test", "tests", "testing", "unittest", "unittests"})
+    if parts & {"test", "tests", "testing", "unittest", "unittests"}:
+        return True
+    stem = relative.stem.lower()
+    return stem.endswith("_test") or stem.startswith("test_") or stem.endswith("-test")
 
 
 def iter_nodes(root):

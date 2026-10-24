@@ -21,6 +21,7 @@ DEFAULT_QUERIES = [
     "std::variant",
     "std::scoped_lock",
     "std::shared_mutex",
+    "std::any",
     "span 生命周期",
     "证据 固定 commit",
     "mold insert",

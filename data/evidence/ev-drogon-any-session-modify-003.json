@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-any-session-modify-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/Session.h",
+  "lines": "108-122",
+  "feature": "cpp17.any",
+  "pattern": "会话容器按需创建 any 值，并在锁内做类型检查后调用处理器",
+  "why_typical": "sessionMap_ 存放跨请求的异构值；modify 在互斥量保护下查找、校验类型并传出引用，缺失时默认构造后插入。",
+  "excerpt": "    void modify(const std::string &key, Callable &&handler)\n    {\n        std::lock_guard<std::mutex> lck(mutex_);\n        auto it = sessionMap_.find(key);\n        if (it != sessionMap_.end())\n        {\n            if (typeid(T) == it->second.type())\n            {\n                handler(*(std::any_cast<T>(&(it->second))));\n            }\n            else\n            {\n                LOG_ERROR << \"Bad type\";\n            }\n        }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；typeid 与 any_cast 组合在加锁域内完成，缺省分支在后续代码中创建新值。"
+}

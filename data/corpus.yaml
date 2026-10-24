@@ -37,3 +37,29 @@
     - src
     - test
   notes: 补齐 std::span、std::string 前缀/后缀检查与 erase_if 的生产路径证据。
+- repo: abseil/abseil-cpp
+  url: https://github.com/abseil/abseil-cpp.git
+  commit: 2065f4ded0558c6f89fee67c8e5228feb4eb960e
+  tag: "20260817.0"
+  license: Apache-2.0
+  paths:
+    - absl
+  notes: M1 扩展；C++17 基础设施库，补充 optional、variant、string_view 等生产用法。
+- repo: drogonframework/drogon
+  url: https://github.com/drogonframework/drogon.git
+  commit: 3aae769cc405cf5abb9d477675c6430924f02c7c
+  tag: v1.9.14
+  license: MIT
+  paths:
+    - lib
+    - orm_lib
+  notes: M1 扩展；异步 Web 框架，覆盖 optional、string_view、filesystem 与并发设施。
+- repo: duckdb/duckdb
+  url: https://github.com/duckdb/duckdb.git
+  commit: 069cc9f9b5be802405797faecc284961b07c70ef
+  tag: v1.5.6
+  license: MIT
+  paths:
+    - src
+    - tools
+  notes: M1 扩展；分析型数据库，现代 C++ 用法密集，重点补充 variant、optional 与字符串处理。

@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-any-view-data-typecheck-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpViewData.h",
+  "lines": "40-53",
+  "feature": "cpp17.any",
+  "pattern": "读取前比较 typeid，再用 any_cast 指针形式取地址",
+  "why_typical": "std::any 只做精确类型匹配；先用 type() 判断再转换，可以避免 bad_any_cast，并在类型不符时记录错误而不是终止请求。",
+  "excerpt": "        static const T nullVal = T();\n        auto it = viewData_.find(key);\n        if (it != viewData_.end())\n        {\n            if (typeid(T) == it->second.type())\n            {\n                return *(std::any_cast<T>(&(it->second)));\n            }\n            else\n            {\n                LOG_ERROR << \"Bad type\";\n            }\n        }\n        return nullVal;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；模板函数返回 T，类型不匹配时回退到默认值。"
+}
