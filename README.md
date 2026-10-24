@@ -2,7 +2,9 @@
 
 > 从 C++11 到 C++26 的现代 C++ 特性图谱：**使用场景、真实项目证据、进阶用法、开源库联动**。
 
-[![Status](https://img.shields.io/badge/status-tracer--bullet-yellow)](todo.md) [![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+[![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+
+**在线阅读：** <https://zyuhao7.github.io/ModernCppAtlas/>
 
 ## 这是什么
 
@@ -14,16 +16,6 @@
 4. 能和哪些开源库组合，组合的收益与代价是什么？
 
 覆盖范围：C++11、C++14、C++17、C++20、C++23、C++26。
-
-## 建设顺序：证据优先
-
-```text
-证据流水线 → 证据页上线 → 深度正文 → 按标准版本扩张
-```
-
-基础语法已经有人做透了。本项目唯一难复制的资产是**可追溯的真实项目用法**：固定 commit、可验证路径与行号、许可证清晰、人工判断“用法典型且正确”。因此先上线证据索引，再补正文；找不到证据的特性只做索引条目，不硬写长文。
-
-范围由证据密度决定，不由标准版本铺满。详细方案见 [todo.md](todo.md)。
 
 ## 不是什么
 
@@ -110,24 +102,6 @@ B 级只写问题、基础用法、证据、陷阱、横向对比。写作规则
 - `status: draft`：仍在演进，页面顶部显示“草案，可能变更”，并注明提案编号与编译器实验性支持开关。
 - `status: deprecated`：被标记废弃，给出替代方案与迁移方式。
 - `status: removed`：被后续提案替代或移除，保留条目并指向替代方案。
-
-## 项目状态
-
-M0 完成，进入 M1（公开 Alpha）。完整设计、证据流水线、首批 40 特性清单与分期计划见 [todo.md](todo.md)。
-
-M0 目标：
-
-- [x] 候选池扫描完成：加入测试目录与 mold 后重扫，505 个源文件、1351 条候选，按证据密度选定 M0 特性
-- [x] 4 个语料仓库：fmt、nlohmann/json、spdlog、mold，全部锁定 commit
-- [x] Tree-sitter 扫描器 v0 + 候选 JSON + schema 校验
-- [x] 首个 A 级样板：`if constexpr`，3 条证据，GCC C++17 编译通过
-- [x] 其余 9 个 A 级条目，各 3 条证据，示例编译通过
-- [x] structured bindings 全流程样板：候选扫描、3 条生产证据、正文与示例
-- [x] 站点骨架：17 个特性页 + 50 个证据页，`--strict` 构建通过，中文搜索冒烟通过
-- [x] CI：schema、permalink、路径行段、许可证白名单、示例编译
-- [x] M1 起步：语料扩到 7 仓（Abseil、Drogon、DuckDB）；新增 `std::any` A 级条目
-
-退出标准：50 条证据全部可点击验证；16 个示例编译通过；外部读者能在 2 分钟内找到“某个特性在哪个项目里怎么用”。
 
 ## 本地验证
 
