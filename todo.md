@@ -51,12 +51,14 @@ standard: C++17
 kind: language            # language | library | both
 category: [语法糖, 解包]
 difficulty: 2             # 1–5
-status: active            # active | deprecated | removed
+status: final             # draft | final | deprecated | removed
 compilers: { gcc: "7", clang: "4", msvc: "19.11" }
 tags: [tuple, map, 可读性]
 alternatives: [std::tie, .first/.second]
 ---
 ```
+
+`status` 统一为四种：`draft`（C++26 草案）、`final`（已定稿）、`deprecated`、`removed`。
 
 正文固定七节：
 
@@ -226,4 +228,7 @@ ModernCppAtlas/
 - 语言策略：首发中文，英文版后续补齐。
 - 社区投稿：接受；证据采用“自动校验 + 双人复核 + 置信度分级”流程（见 README）。
 - C++26：已投票通过的提案与草案均收录；草案在元数据标记 `status: draft`，页面顶部显示“草案，可能变更”并注明提案编号与编译器实验支持。
-- 待定：内容与示例的许可证（可能分别选择）。
+
+## 11. 待定事项
+
+- 内容与示例的许可证（可能分别选择）。
