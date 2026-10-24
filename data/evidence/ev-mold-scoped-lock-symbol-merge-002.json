@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-scoped-lock-symbol-merge-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/relocatable.cc",
+  "lines": "122-134",
+  "feature": "cpp17.scoped-lock",
+  "pattern": "在并行循环中按符号加锁，保护多字段的一致性更新",
+  "why_typical": "sym.file、origin、value 与 sym_idx 必须一起更新；scoped_lock 让检查与写入处于同一临界区，离开 if 块即自动解锁。",
+  "excerpt": "      if (!esym.is_undef())\n        continue;\n\n      std::scoped_lock lock(sym.mu);\n\n      if (sym.file &&\n          (!sym.esym().is_undef() || sym.file->priority <= file->priority))\n        continue;\n\n      sym.file = file;\n      sym.origin = 0;\n      sym.value = 0;\n      sym.sym_idx = i;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；锁粒度是单个 Symbol，避免把整个并行循环串行化。"
+}

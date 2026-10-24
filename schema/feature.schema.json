@@ -73,7 +73,7 @@
     },
     "proposal": {
       "type": ["string", "null"],
-      "pattern": "^P[0-9]{4}(R[0-9]+)?$"
+      "pattern": "^(P[0-9]{4}|N[0-9]{4})(R[0-9]+)?$"
     },
     "last_verified": {
       "type": "string",

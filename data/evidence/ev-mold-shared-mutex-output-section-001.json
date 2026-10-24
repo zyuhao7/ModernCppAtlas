@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-shared-mutex-output-section-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/output-chunks.cc",
+  "lines": "2075-2089",
+  "feature": "cpp17.shared-mutex",
+  "pattern": "读路径用 shared_lock 快速命中，未命中再升级为 unique_lock 创建并二次检查",
+  "why_typical": "输出段查找是读多写少；共享锁允许并发查找，创建路径改用独占锁，并在拿到独占锁后重新查找，避免重复插入。",
+  "excerpt": "  static std::shared_mutex mu;\n  {\n    std::shared_lock lock(mu);\n    if (MergedSection *osec = find())\n      return osec;\n  }\n\n  // Create a new output section.\n  std::unique_lock lock(mu);\n  if (MergedSection *osec = find())\n    return osec;\n\n  MergedSection *osec = new MergedSection(name, flags, shdr.sh_type, entsize);\n  ctx.merged_sections.emplace_back(osec);\n  return osec;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；两次查找分别位于共享锁与独占锁下，是典型的“先乐观读、后加写锁复核”结构。"
+}

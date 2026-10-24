@@ -18,6 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_QUERIES = [
     "结构化绑定",
     "std::optional",
+    "std::variant",
+    "std::scoped_lock",
+    "std::shared_mutex",
     "span 生命周期",
     "证据 固定 commit",
     "mold insert",

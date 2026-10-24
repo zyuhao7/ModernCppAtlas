@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-variant-defsym-parse-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/cmdline.cc",
+  "lines": "530-544",
+  "feature": "cpp17.variant",
+  "pattern": "用 std::variant 表达“符号引用或数值地址”两种互斥结果",
+  "why_typical": "函数返回 variant<Symbol *, u64>，两个分支直接 return 对应类型，由 variant 的转换构造选择活动成员，调用方无需额外的标签字段。",
+  "excerpt": "template <typename E>\nstatic std::variant<Symbol<E> *, u64>\nparse_defsym_value(Context<E> &ctx, std::string_view s) {\n  if (s.starts_with(\"0x\") || s.starts_with(\"0X\")) {\n    size_t nread;\n    u64 addr = std::stoull(std::string(s), &nread, 16);\n    if (s.size() != nread)\n      return {};\n    return addr;\n  }\n\n  if (s.find_first_not_of(\"0123456789\") == s.npos)\n    return (u64)std::stoull(std::string(s), nullptr, 10);\n  return get_symbol(ctx, s);\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；--defsym 的右值既可以是符号名，也可以是地址常量，variant 把两种语义收进同一返回类型。"
+}

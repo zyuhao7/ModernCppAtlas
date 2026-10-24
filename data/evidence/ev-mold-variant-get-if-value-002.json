@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-variant-get-if-value-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/passes.cc",
+  "lines": "2908-2921",
+  "feature": "cpp17.variant",
+  "pattern": "先用 get_if 判断活动成员，再在 else 分支用 get 取另一成员",
+  "why_typical": "只有两个分支时，get_if 返回的非空指针同时完成“是否是该类型”和“取出值”两件事；else 分支已确定类型，再用 get 无需重复检查。",
+  "excerpt": "  for (i64 i = 0; i < ctx.arg.defsyms.size(); i++) {\n    Symbol<E> *sym = ctx.arg.defsyms[i].first;\n    std::variant<Symbol<E> *, u64> val = ctx.arg.defsyms[i].second;\n\n    if (u64 *addr = std::get_if<u64>(&val)) {\n      sym->origin = 0;\n      sym->value = *addr;\n    } else {\n      Symbol<E> *sym2 = std::get<Symbol<E> *>(val);\n      sym->value = sym2->value;\n      sym->origin = sym2->origin;\n      sym->visibility = sym2->visibility.load();\n    }\n  }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；值拷贝自 vector 元素，避免在循环中通过引用持有可变的 variant。"
+}

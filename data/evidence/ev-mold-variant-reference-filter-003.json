@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-variant-reference-filter-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/cmdline.cc",
+  "lines": "1512-1516",
+  "feature": "cpp17.variant",
+  "pattern": "持有 variant 的引用，并用 get_if 过滤出符号类型的元素",
+  "why_typical": "循环只需处理其中一个活动成员；get_if 不抛异常，非空结果直接解引用，空的数值地址成员被跳过。",
+  "excerpt": "  for (i64 i = 0; i < ctx.arg.defsyms.size(); i++) {\n    std::variant<Symbol<E> *, u64> &val = ctx.arg.defsyms[i].second;\n    if (Symbol<E> **sym = std::get_if<Symbol<E> *>(&val))\n      ctx.arg.undefined.push_back(*sym);\n  }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；get_if 对引用取地址，参数是 variant 指针而不是值。"
+}

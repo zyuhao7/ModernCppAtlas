@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-scoped-lock-emit-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "100-114",
+  "feature": "cpp17.scoped-lock",
+  "pattern": "用 scoped_lock 保护一次性输出，并在静态成员上直接声明 inline mutex",
+  "why_typical": "加锁范围覆盖输出与 emitted 标志的联合更新；锁对象随 emit() 返回自动释放，任何提前 return 都不会漏解锁。",
+  "excerpt": "  void emit() {\n    if (emitted)\n      return;\n\n    std::scoped_lock lock(mu);\n    out << ss.str() << '\\n';\n    emitted = true;\n  }\n\nprivate:\n  std::ostream &out;\n  std::stringstream ss;\n  bool emitted = false;\n  static inline std::mutex mu;\n};",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；scoped_lock 的单参数形式在此替代 lock_guard，与 C++17 的 inline 静态成员配合，头文件内即可定义共享互斥量。"
+}
