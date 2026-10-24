@@ -3,7 +3,7 @@
   "repo": "rui314/mold",
   "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
   "path": "src/passes.cc",
-  "lines": "570-577",
+  "lines": "571-578",
   "feature": "cpp17.shared-mutex",
   "pattern": "并行任务在 shared_lock 下复制共享映射，再在线程本地缓存上工作",
   "why_typical": "小临界区只复制指针表，随后无锁查询线程本地副本；共享锁把写者互斥与读者并发结合起来，同时避免每节都抢锁。",

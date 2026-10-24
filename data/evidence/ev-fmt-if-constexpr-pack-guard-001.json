@@ -3,7 +3,7 @@
   "repo": "fmtlib/fmt",
   "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
   "path": "include/fmt/compile.h",
-  "lines": "102-103",
+  "lines": "99-107",
   "feature": "cpp17.if-constexpr",
   "pattern": "参数包为空时跳过递归查找",
   "why_typical": "用依赖模板参数的条件保护变参递归的终止路径，是 if constexpr 的典型用途。",

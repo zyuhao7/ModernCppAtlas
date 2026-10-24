@@ -77,7 +77,7 @@ int main() {
 | 项目 | 位置 | 用法 | 为什么典型 |
 |---|---|---|---|
 | fmtlib/fmt | [`include/fmt/base.h#L2738-L2741`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2738-L2741) | 用 concept 包装已有的 `is_formattable` 特征 | 在保留旧 trait 的同时给 C++20 用户提供约束接口，迁移成本低 |
-| nlohmann/json | [`include/nlohmann/json.hpp#L3724-L3730`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3724-L3730) | 用 `requires std::is_scalar_v<ScalarType>` 限制标量比较重载 | 约束写在声明处，避免标量重载与容器重载产生歧义 |
+| nlohmann/json | [`include/nlohmann/json.hpp#L3723-L3730`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3723-L3730) | 用 `requires std::is_scalar_v<ScalarType>` 限制标量比较重载 | 约束写在声明处，避免标量重载与容器重载产生歧义 |
 | nlohmann/json | [`include/nlohmann/json.hpp#L3756-L3763`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L3756-L3763) | 同一约束用于三路比较重载 | 多个运算符共享一致的标量约束，减少重复的条件编译 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。

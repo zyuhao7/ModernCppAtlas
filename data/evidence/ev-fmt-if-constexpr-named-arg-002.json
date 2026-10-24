@@ -3,7 +3,7 @@
   "repo": "fmtlib/fmt",
   "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
   "path": "include/fmt/compile.h",
-  "lines": "161-165",
+  "lines": "157-166",
   "feature": "cpp17.if-constexpr",
   "pattern": "按 is_named_arg 在编译期选择读取 .value 或原对象",
   "why_typical": "用类型特征在编译期分派，避免运行期分支，且丢弃分支不会对普通参数生成无效访问。",

@@ -89,7 +89,7 @@ std::string_view bad2() {
 |---|---|---|---|
 | gabime/spdlog | [`include/spdlog/common.h#L145-L156`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/common.h#L145-L156) | 在标准格式化模式下把 `string_view_t` 定义为 `std::string_view` | 库内部用别名隔离两种格式化后端，调用方只依赖统一名称 |
 | nlohmann/json | [`include/nlohmann/json.hpp#L1907-L1917`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/include/nlohmann/json.hpp#L1907-L1917) | 用 `is_same<ValueType, std::string_view>` 排除隐式转换重载 | 防止 `string_view` 走隐式转换路径，避免悬垂与歧义 |
-| nlohmann/json | [`tests/src/unit-conversions.cpp#L496-L501`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-conversions.cpp#L496-L501) | 验证 `get<std::string_view>()` 的取值语义 | 测试锁定视图转换行为，补充生产路径 |
+| nlohmann/json | [`tests/src/unit-conversions.cpp#L496-L502`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-conversions.cpp#L496-L502) | 验证 `get<std::string_view>()` 的取值语义 | 测试锁定视图转换行为，补充生产路径 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第 3 条来自测试，仅作补充。
 

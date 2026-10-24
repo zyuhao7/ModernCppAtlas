@@ -22,6 +22,8 @@ DEFAULT_QUERIES = [
     "std::scoped_lock",
     "std::shared_mutex",
     "std::any",
+    "折叠表达式",
+    "协程 co_await",
     "span 生命周期",
     "证据 固定 commit",
     "mold insert",

@@ -1,0 +1,18 @@
+{
+  "id": "ev-fmt-fold-named-arg-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/compile.h",
+  "lines": "209-216",
+  "feature": "cpp17.fold-expressions",
+  "pattern": "用逻辑或折叠在参数包中查找匹配的命名格式参数",
+  "why_typical": "try_format_argument 对每个参数返回 bool；`(call || ...)` 在任一匹配时短路，空参数包得到 false 并进入统一的 format_error 分支，不需要额外的递归终止重载。",
+  "excerpt": "  template <typename OutputIt, typename... T>\n  constexpr auto format(OutputIt out, const T&... args) const -> OutputIt {\n    bool found = (try_format_argument(out, name, args) || ...);\n    if (!found) {\n      FMT_THROW(format_error(\"argument with specified name is not found\"));\n    }\n    return out;\n  }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；位于 constexpr 编译期格式串实现，逻辑或折叠直接产生是否找到参数的布尔结果。"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-coroutine-websocket-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/WebSocketController.h",
+  "lines": "186-193",
+  "feature": "cpp20.coroutines",
+  "pattern": "把回调式 WebSocket 事件适配成 Task<>，在 lambda 内 co_await 协程处理器",
+  "why_typical": "WebSocket 接口本身是回调风格；框架用 async_run 启动一个 Task<> 协程桥接旧接口，让业务侧可以写 handleNewMessageCoro 这样的协程函数而不改变公共 API。",
+  "excerpt": "        drogon::async_run([objPtr,\n                           conn,\n                           message = std::move(message),\n                           type]() mutable -> Task<> {\n            co_await objPtr->handleNewMessageCoro(conn,\n                                                  std::move(message),\n                                                  type);\n        });",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；lambda 捕获消息并按值移动进协程帧，展示回调到协程的适配边界。"
+}

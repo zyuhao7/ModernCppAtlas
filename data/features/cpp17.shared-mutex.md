@@ -56,7 +56,7 @@ private:
 | 项目 | 位置 | 用法 | 为什么典型 |
 |---|---|---|---|
 | rui314/mold | [`src/output-chunks.cc#L2075-L2089`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L2075-L2089) | 共享锁查找输出段，未命中后用独占锁创建并二次检查 | 读多写少；拿到写锁后重新查找，避免并发插入重复对象 |
-| rui314/mold | [`src/passes.cc#L570-L577`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L570-L577) | 并行任务在共享锁下复制映射，再使用线程本地副本 | 临界区只做拷贝，后续查询不持锁；注释明确说明为降低锁竞争 |
+| rui314/mold | [`src/passes.cc#L571-L578`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L571-L578) | 并行任务在共享锁下复制映射，再使用线程本地副本 | 临界区只做拷贝，后续查询不持锁；注释明确说明为降低锁竞争 |
 
 两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 在 TBB 并行算法中使用该锁，说明共享锁与任务并行可以组合。
 

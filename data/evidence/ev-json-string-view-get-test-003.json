@@ -3,7 +3,7 @@
   "repo": "nlohmann/json",
   "commit": "55f93686c01528224f448c19128836e7df245f72",
   "path": "tests/src/unit-conversions.cpp",
-  "lines": "496-501",
+  "lines": "496-502",
   "feature": "cpp17.string-view",
   "pattern": "验证 get<std::string_view>() 的取值语义",
   "why_typical": "测试锁定视图转换路径，确保升级标准库或库版本后行为不漂移。",

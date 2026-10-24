@@ -3,7 +3,7 @@
   "repo": "fmtlib/fmt",
   "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
   "path": "test/std-test.cc",
-  "lines": "471-476",
+  "lines": "471-477",
   "feature": "cpp17.byte",
   "pattern": "验证 std::byte 按数值格式化",
   "why_typical": "测试锁定“输出 42 而不是字符 *”的语义，防止格式化器退化为字符输出。",

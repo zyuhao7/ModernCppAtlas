@@ -3,7 +3,7 @@
   "repo": "nlohmann/json",
   "commit": "55f93686c01528224f448c19128836e7df245f72",
   "path": "include/nlohmann/json.hpp",
-  "lines": "3724-3730",
+  "lines": "3723-3730",
   "feature": "cpp20.concepts",
   "pattern": "用 requires 限制标量相等比较重载",
   "why_typical": "约束写在声明处，标量重载只在 ScalarType 满足条件时进入候选集，避免与容器重载竞争。",

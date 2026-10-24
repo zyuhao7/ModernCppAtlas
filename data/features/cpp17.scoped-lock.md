@@ -69,7 +69,7 @@ unchanged 800 1200
 | 项目 | 位置 | 用法 | 为什么典型 |
 |---|---|---|---|
 | rui314/mold | [`lib/common.h#L100-L114`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/lib/common.h#L100-L114) | 单参数锁定一次性输出，配合 `static inline std::mutex` | 输出与 `emitted` 标志作为整体更新；提前 `return` 也不会漏解锁 |
-| rui314/mold | [`src/relocatable.cc#L122-L134`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/relocatable.cc#L122-L134) | 并行循环中按符号加锁，保护多字段更新 | 检查与写入处于同一临界区，锁在循环迭代结束时自动释放 |
+| rui314/mold | [`src/relocatable.cc#L121-L133`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/relocatable.cc#L121-L133) | 并行循环中按符号加锁，保护多字段更新 | 检查与写入处于同一临界区，锁在循环迭代结束时自动释放 |
 | rui314/mold | [`src/passes.cc#L1947-L1955`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L1947-L1955) | 在 `tbb::parallel_for_each` 任务体内锁定单个符号 | 并行算法不消除数据竞争；按元素加锁避免全局串行化 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 使用 TBB 并行算法，并在每个 `Symbol` 内维护独立的 `mu`。

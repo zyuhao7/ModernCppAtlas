@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-fold-sql-update-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/CoroMapper.h",
+  "lines": "514-518",
+  "feature": "cpp17.fold-expressions",
+  "pattern": "用逗号折叠把 tuple 中的列名依次追加到 SQL 更新语句",
+  "why_typical": "std::apply 负责展开 tuple，逗号折叠对每个列名执行有副作用的字符串拼接；相比递归展开，代码保持在一个表达式内，且拼接顺序与 tuple 元素顺序一致。",
+  "excerpt": "        std::apply(\n            [&sql](auto &&...name) {\n                ((sql += std::string(name) + \" = $?,\"), ...);\n            },\n            colNames);",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；折叠结束后由调用方去掉末尾多余逗号，说明副作用顺序是这段代码的语义前提。"
+}

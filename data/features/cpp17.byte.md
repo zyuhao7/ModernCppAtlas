@@ -70,7 +70,7 @@ size: 1
 | 项目 | 位置 | 用法 | 为什么典型 |
 |---|---|---|---|
 | fmtlib/fmt | [`include/fmt/std.h#L690-L702`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L690-L702) | 为 `std::byte` 提供格式化器，转成 `unsigned char` 复用整数格式 | 标准类型没有流运算符时，在库边界集中适配 |
-| fmtlib/fmt | [`test/std-test.cc#L471-L476`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/test/std-test.cc#L471-L476) | 验证 `std::byte(42)` 格式化为 `42` | 测试锁定“按数值而非字符输出”的语义 |
+| fmtlib/fmt | [`test/std-test.cc#L471-L477`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/test/std-test.cc#L471-L477) | 验证 `std::byte(42)` 格式化为 `42` | 测试锁定“按数值而非字符输出”的语义 |
 | nlohmann/json | [`tests/src/unit-regression2.cpp#L747-L756`](https://github.com/nlohmann/json/blob/55f93686c01528224f448c19128836e7df245f72/tests/src/unit-regression2.cpp#L747-L756) | 用 `std::as_bytes(std::span(DATA))` 构造字节容器并解析 JSON | 展示字节视图作为二进制输入的标准形态 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第 2、3 条来自测试，仅作补充；第 1 条是生产路径。

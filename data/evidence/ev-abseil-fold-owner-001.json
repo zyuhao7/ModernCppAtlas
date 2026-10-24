@@ -1,0 +1,18 @@
+{
+  "id": "ev-abseil-fold-owner-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/meta/type_traits.h",
+  "lines": "603-609",
+  "feature": "cpp17.fold-expressions",
+  "pattern": "用带 true 初值的逻辑与折叠检查 tuple 中每个类型是否拥有资源",
+  "why_typical": "IsOwner 对 tuple 的判定需要覆盖零个到多个元素；`true && ...` 为非空包提供单位元，空 tuple 由外层 sizeof... 检查短路，避免为可变参数写递归偏特化。",
+  "excerpt": "template <typename... T>\nstruct IsOwner<std::tuple<T...>>\n    : std::bool_constant<(sizeof...(T) > 0) &&\n                         // Uses a C++17 fold expression where '...' unpacks the\n                         // parameter pack T, and 'true &&' provides the base\n                         // case for the logical AND operation across all types.\n                         (true && ... && IsOwner<T>::value)> {};",
+  "license": "Apache-2.0",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；折叠结果直接作为 bool_constant 的模板实参，属于编译期类型萃取组合。"
+}

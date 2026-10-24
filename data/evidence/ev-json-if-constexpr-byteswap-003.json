@@ -3,7 +3,7 @@
   "repo": "nlohmann/json",
   "commit": "55f93686c01528224f448c19128836e7df245f72",
   "path": "include/nlohmann/detail/input/binary_reader.hpp",
-  "lines": "2825-2833",
+  "lines": "2821-2835",
   "feature": "cpp17.if-constexpr",
   "pattern": "按大小与整型特性选择字节交换路径",
   "why_typical": "同一函数内按 sizeof 和 is_integral_v 丢弃不适用分支，是处理字节序的常见写法。",

@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-coroutine-filter-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpFilter.h",
+  "lines": "104-118",
+  "feature": "cpp20.coroutines",
+  "pattern": "在返回 Task<> 的 lambda 协程中用 try/catch 包裹 co_await，异常路径显式 co_return",
+  "why_typical": "协程不会自动把异常交给调用方；这里在协程体内捕获 doFilter 的异常并转到统一错误处理，再用 co_return 结束，展示了协程与既有异常处理路径的衔接方式。",
+  "excerpt": "            HttpResponsePtr resp;\n            try\n            {\n                resp = co_await doFilter(req);\n            }\n            catch (const std::exception &ex)\n            {\n                internal::handleException(ex, req, std::move(fcb));\n                co_return;\n            }\n            catch (...)\n            {\n                LOG_ERROR << \"Exception not derived from std::exception\";\n                co_return;\n            }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；两个 catch 分支都显式 co_return，避免异常穿过 promise 的 unhandled_exception。"
+}

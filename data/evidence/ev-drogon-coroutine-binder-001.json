@@ -1,0 +1,18 @@
+{
+  "id": "ev-drogon-coroutine-binder-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpBinder.h",
+  "lines": "408-417",
+  "feature": "cpp20.coroutines",
+  "pattern": "调度器按处理器返回类型分支，在 lambda 协程内 co_await 异步结果",
+  "why_typical": "框架同时支持普通回调、Task<> 与 Task<HttpResponsePtr>；这一段用 if constexpr 判断返回类型后直接 co_await，说明协程返回类型已被当作一等接口参与重载分派。",
+  "excerpt": "                        else if constexpr (std::is_same_v<\n                                               Task<>,\n                                               typename traits::return_type>)\n                        {\n                            // Explicit copy because `callFunction` moves it\n                            auto cb = callback;\n                            co_await callFunction(req,\n                                                  cb,\n                                                  std::move(values)...);\n                        }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；co_await 使该 lambda 自身成为协程，框架用返回类型 Task<> 表达“只等待、不产生响应对象”。"
+}
