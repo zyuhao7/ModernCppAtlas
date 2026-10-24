@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-spaceship-pointer-001",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/json_pointer.hpp",
+  "lines": "868-872",
+  "feature": "cpp20.spaceship",
+  "pattern": "用 <=> 比较 JSON Pointer 的 token 序列",
+  "why_typical": "把三路比较直接委托给已有容器的 <=>，不手写六个关系运算符，语义与容器一致。",
+  "excerpt": "    template<typename RefStringTypeRhs>\n    std::strong_ordering operator<=>(const json_pointer<RefStringTypeRhs>& rhs) const noexcept // *NOPAD*\n    {\n        return  reference_tokens <=> rhs.reference_tokens; // *NOPAD*\n    }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；仅在 JSON_HAS_THREE_WAY_COMPARISON 分支启用。"
+}

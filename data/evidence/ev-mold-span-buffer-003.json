@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-span-buffer-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/gdb-index.cc",
+  "lines": "637-642",
+  "feature": "cpp20.span",
+  "pattern": "返回可写 span<u8> 指向压缩缓冲区",
+  "why_typical": "非拥有视图同时表达起始地址、长度与可写性，避免返回裸指针后另传长度。",
+  "excerpt": "template <typename E>\nstd::span<u8> get_buffer(Context<E> &ctx, Chunk<E> *chunk) {\n  if (chunk->is_compressed)\n    return chunk->uncompressed_data;\n  return {ctx.buf + chunk->shdr.sh_offset, (size_t)chunk->shdr.sh_size};\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；用指针与长度构造动态长度 span。"
+}

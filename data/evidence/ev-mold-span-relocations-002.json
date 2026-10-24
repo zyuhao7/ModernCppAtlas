@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-span-relocations-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/arch-x86-64.cc",
+  "lines": "367-374",
+  "feature": "cpp20.span",
+  "pattern": "把重定位表表示为 span<const ElfRel<E>>",
+  "why_typical": "只读连续序列用 span<const T> 表达，长度与地址绑定，调用方无需再传 size。",
+  "excerpt": "template <>\nvoid InputSection<E>::apply_reloc_alloc(Context<E> &ctx, u8 *base) {\n  std::span<const ElfRel<E>> rels = get_rels(ctx);\n\n  for (i64 i = 0; i < rels.size(); i++) {\n    const ElfRel<E> &rel = rels[i];\n    if (rel.r_type == R_NONE)\n      continue;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；只读元素类型通过 span<const T> 表达。"
+}

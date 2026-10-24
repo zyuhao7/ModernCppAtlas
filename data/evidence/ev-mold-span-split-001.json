@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-span-split-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/output-chunks.cc",
+  "lines": "880-892",
+  "feature": "cpp20.span",
+  "pattern": "用 span 与 subspan 把缓冲区切成固定大小的块",
+  "why_typical": "视图切片不复制底层数据，长度与起始位置随视图一起传递，是 span 的核心用途。",
+  "excerpt": "template <typename T>\nstatic std::vector<std::span<T>> split(std::vector<T> &input, i64 unit) {\n  std::span<T> span(input);\n  std::vector<std::span<T>> vec;\n\n  while (span.size() >= unit) {\n    vec.push_back(span.subspan(0, unit));\n    span = span.subspan(unit);\n  }\n  if (!span.empty())\n    vec.push_back(span);\n  return vec;\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；mold 构建声明 cxx_std_20。"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ev-spdlog-string-view-alias-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "145-156",
+  "feature": "cpp17.string-view",
+  "pattern": "用别名统一标准格式化后端的 string_view 类型",
+  "why_typical": "库内部把后端差异收敛到别名，日志接口只依赖 string_view_t，调用方无需条件编译。",
+  "excerpt": "#ifdef SPDLOG_USE_STD_FORMAT\nnamespace fmt_lib = std;\n\nusing string_view_t = std::string_view;\nusing memory_buf_t = std::string;\n\ntemplate <typename... Args>\n#if __cpp_lib_format >= 202207L\nusing format_string_t = std::format_string<Args...>;\n#else\nusing format_string_t = std::string_view;\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；仅在 SPDLOG_USE_STD_FORMAT 后端下启用。"
+}

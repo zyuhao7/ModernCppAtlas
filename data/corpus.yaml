@@ -6,6 +6,7 @@
   paths:
     - include
     - src
+    - test
   notes: M0 首批；轻量标签，commit 已核对。
 - repo: nlohmann/json
   url: https://github.com/nlohmann/json.git
@@ -24,4 +25,15 @@
   paths:
     - include
     - src
+    - tests
   notes: M0 首批；轻量标签，commit 已核对。
+- repo: rui314/mold
+  url: https://github.com/rui314/mold.git
+  commit: 27162691b71a3bc84ac4c9b4b9d7c214fad317d3
+  tag: v2.35.0
+  license: MIT
+  paths:
+    - lib
+    - src
+    - test
+  notes: 补齐 std::span、std::string 前缀/后缀检查与 erase_if 的生产路径证据。

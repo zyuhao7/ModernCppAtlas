@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-optional-from-json-002",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/conversions/from_json.hpp",
+  "lines": "49-62",
+  "feature": "cpp17.optional",
+  "pattern": "JSON null 映射为 nullopt，其他值 emplace",
+  "why_typical": "反序列化时把 JSON 的空值与 C++ 的可选状态一一对应，调用方无需额外哨兵值。",
+  "excerpt": "#ifdef JSON_HAS_CPP_17\n#ifndef JSON_USE_IMPLICIT_CONVERSIONS\ntemplate<typename BasicJsonType, typename T>\nvoid from_json(const BasicJsonType& j, std::optional<T>& opt)\n{\n    if (j.is_null())\n    {\n        opt = std::nullopt;\n    }\n    else\n    {\n        opt.emplace(j.template get<T>());\n    }\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；仅在未启用隐式转换时启用。"
+}

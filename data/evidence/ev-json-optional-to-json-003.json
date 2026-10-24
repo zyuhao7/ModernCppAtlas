@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-optional-to-json-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/conversions/to_json.hpp",
+  "lines": "267-281",
+  "feature": "cpp17.optional",
+  "pattern": "有值写值，空状态写 null",
+  "why_typical": "序列化与反序列化保持双向映射，空状态不会退化成未定义字段或默认值。",
+  "excerpt": "#ifdef JSON_HAS_CPP_17\ntemplate<typename BasicJsonType, typename T,\n         enable_if_t<std::is_constructible<BasicJsonType, T>::value, int> = 0>\nvoid to_json(BasicJsonType& j, const std::optional<T>& opt)\n{\n    if (opt.has_value())\n    {\n        j = *opt;\n    }\n    else\n    {\n        j = nullptr;\n    }\n}\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；与 from_json 的空值语义对称。"
+}

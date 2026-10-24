@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-string-view-exclusion-002",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "1907-1917",
+  "feature": "cpp17.string-view",
+  "pattern": "用 is_same 排除 string_view 的隐式转换重载",
+  "why_typical": "在泛型转换约束中显式排除视图类型，避免临时视图被转换成 JSON 值后留下悬垂引用。",
+  "excerpt": "    template < typename ValueType, typename std::enable_if <\n                   detail::conjunction <\n                       detail::negation<std::is_pointer<ValueType>>,\n                       detail::negation<std::is_same<ValueType, std::nullptr_t>>,\n                       detail::negation<std::is_same<ValueType, detail::json_ref<basic_json>>>,\n                                        detail::negation<std::is_same<ValueType, typename string_t::value_type>>,\n                                        detail::negation<detail::is_basic_json<ValueType>>,\n                                        detail::negation<std::is_same<ValueType, std::initializer_list<typename string_t::value_type>>>,\n#if defined(JSON_HAS_CPP_17) && (defined(__GNUC__) || (defined(_MSC_VER) && _MSC_VER >= 1910 && _MSC_VER <= 1914))\n                                                detail::negation<std::is_same<ValueType, std::string_view>>,\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；条件编译覆盖特定编译器组合。"
+}

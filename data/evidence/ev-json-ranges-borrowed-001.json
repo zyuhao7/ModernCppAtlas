@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-ranges-borrowed-001",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/iterators/iteration_proxy.hpp",
+  "lines": "232-235",
+  "feature": "cpp20.ranges",
+  "pattern": "为迭代代理特化 enable_borrowed_range",
+  "why_typical": "显式告诉标准库该视图的迭代器可安全返回，是自定义视图接入 ranges 的关键定制点。",
+  "excerpt": "#if JSON_HAS_RANGES\n    template <typename IteratorType>\n    inline constexpr bool ::std::ranges::enable_borrowed_range<::nlohmann::detail::iteration_proxy<IteratorType>> = true;\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；由 JSON_HAS_RANGES 特性检测保护。"
+}

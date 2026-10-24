@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-concepts-scalar-spaceship-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "3756-3763",
+  "feature": "cpp20.concepts",
+  "pattern": "同一标量约束复用于三路比较重载",
+  "why_typical": "相关运算符共享一致的约束，避免一个重载接受某类型而另一个拒绝，减少条件编译分支的漂移。",
+  "excerpt": "    /// @brief comparison: 3-way\n    /// @sa https://json.nlohmann.me/api/basic_json/operator_spaceship/\n    template<typename ScalarType>\n    requires std::is_scalar_v<ScalarType>\n    std::partial_ordering operator<=>(ScalarType rhs) const noexcept // *NOPAD*\n    {\n        return *this <=> basic_json(rhs); // *NOPAD*\n    }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；与相等比较共享同一约束。"
+}

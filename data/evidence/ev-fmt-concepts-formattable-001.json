@@ -1,0 +1,18 @@
+{
+  "id": "ev-fmt-concepts-formattable-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/base.h",
+  "lines": "2738-2741",
+  "feature": "cpp20.concepts",
+  "pattern": "用 concept 包装已有的 is_formattable 特征",
+  "why_typical": "在保留旧 trait 的同时提供 C++20 约束接口，条件编译隔离版本差异，迁移成本低。",
+  "excerpt": "#if defined(__cpp_concepts) && __cpp_concepts >= 201907L\ntemplate <typename T, typename Char = char>\nconcept formattable = is_formattable<remove_reference_t<T>, Char>::value;\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；concept 定义位于 C++20 特性检测分支内。"
+}

@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-spaceship-value-type-002",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/value_t.hpp",
+  "lines": "95-100",
+  "feature": "cpp20.spaceship",
+  "pattern": "按预定义顺序比较值类型，无法比较时返回 unordered",
+  "why_typical": "JSON 类型序不构成全序，返回 partial_ordering 并显式给出 unordered，是偏序的典型用法。",
+  "excerpt": "#if JSON_HAS_THREE_WAY_COMPARISON\n    if (l_index < order.size() && r_index < order.size())\n    {\n        return order[l_index] <=> order[r_index]; // *NOPAD*\n    }\n    return std::partial_ordering::unordered;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；保留条件分支与无序返回值。"
+}

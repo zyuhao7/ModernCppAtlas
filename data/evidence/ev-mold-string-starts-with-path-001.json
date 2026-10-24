@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-string-starts-with-path-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "957-960",
+  "feature": "cpp20.string-range-utilities",
+  "pattern": "用 starts_with 判断路径是否绝对",
+  "why_typical": "把前缀判断写成单个谓词，替代 compare 或 find 的索引运算，边界由标准库处理。",
+  "excerpt": "template <typename Context>\nMappedFile *open_file(Context &ctx, std::string path) {\n  if (path.starts_with('/') && !ctx.arg.chroot.empty())\n    path = ctx.arg.chroot + \"/\" + path_clean(path);",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；mold 构建声明 cxx_std_20。"
+}

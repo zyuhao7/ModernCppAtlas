@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-string-view-get-test-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "tests/src/unit-conversions.cpp",
+  "lines": "496-501",
+  "feature": "cpp17.string-view",
+  "pattern": "验证 get<std::string_view>() 的取值语义",
+  "why_typical": "测试锁定视图转换路径，确保升级标准库或库版本后行为不漂移。",
+  "excerpt": "#if defined(JSON_HAS_CPP_17)\n        SECTION(\"std::string_view\")\n        {\n            std::string_view const s = j.get<std::string_view>();\n            CHECK(json(s) == j);\n        }\n#endif",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": true,
+  "notes": "测试证据；补充生产路径之外的行为锁定。"
+}

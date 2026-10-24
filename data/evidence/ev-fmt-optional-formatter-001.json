@@ -1,0 +1,18 @@
+{
+  "id": "ev-fmt-optional-formatter-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/std.h",
+  "lines": "416-427",
+  "feature": "cpp17.optional",
+  "pattern": "为空状态输出 none，有值时输出 optional(value)",
+  "why_typical": "把可选值的两种状态显式格式化，避免日志里把空状态与默认值混淆。",
+  "excerpt": "  template <typename FormatContext>\n  auto format(const std::optional<T>& opt, FormatContext& ctx) const\n      -> decltype(ctx.out()) {\n    if (!opt) return detail::write<Char>(ctx.out(), none);\n\n    auto out = ctx.out();\n    out = detail::write<Char>(out, optional);\n    ctx.advance_to(out);\n    out = underlying_.format(*opt, ctx);\n    return detail::write(out, ')');\n  }\n};",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；formatter 仅在 __cpp_lib_optional 可用时定义。"
+}

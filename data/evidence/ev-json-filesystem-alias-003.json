@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-filesystem-alias-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/meta/std_fs.hpp",
+  "lines": "21-28",
+  "feature": "cpp17.filesystem",
+  "pattern": "用命名空间别名统一标准与实验版 filesystem",
+  "why_typical": "兼容旧标准库时把差异限制在一个别名里，上层代码只依赖 std_fs，避免在业务路径散布条件编译。",
+  "excerpt": "#elif JSON_HAS_FILESYSTEM\n#include <filesystem> // NOLINT(build/c++17)\nNLOHMANN_JSON_NAMESPACE_BEGIN\nnamespace detail\n{\nnamespace std_fs = std::filesystem;\n}  // namespace detail\nNLOHMANN_JSON_NAMESPACE_END",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；实验版分支在文件前部，摘录保留标准版别名与命名空间边界。"
+}

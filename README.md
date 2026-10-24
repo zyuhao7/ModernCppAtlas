@@ -119,11 +119,11 @@ B 级只写问题、基础用法、证据、陷阱、横向对比。写作规则
 
 M0 目标：
 
-- [x] 候选池扫描完成：360 个源文件、368 条候选，按证据密度选定 M0 特性
-- [x] 3 个语料仓库：fmt、nlohmann/json、spdlog，全部锁定 commit
+- [x] 候选池扫描完成：加入测试目录与 mold 后重扫，505 个源文件、1351 条候选，按证据密度选定 M0 特性
+- [x] 4 个语料仓库：fmt、nlohmann/json、spdlog、mold，全部锁定 commit
 - [x] Tree-sitter 扫描器 v0 + 候选 JSON + schema 校验
 - [x] 首个 A 级样板：`if constexpr`，3 条证据，GCC C++17 编译通过
-- [ ] 其余 9 个 A 级条目
+- [x] 其余 9 个 A 级条目，各 3 条证据，示例编译通过
 - [ ] 站点骨架与 10 个证据页，中文搜索可用
 - [x] CI：schema、permalink、路径行段、许可证白名单、示例编译
 

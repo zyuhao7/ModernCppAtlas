@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-spaceship-basic-json-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "3745-3754",
+  "feature": "cpp20.spaceship",
+  "pattern": "为 basic_json 实现三路比较并保留无序结果",
+  "why_typical": "把类型序与值比较收进一个入口，其余关系运算符由重写获得，避免多处逻辑漂移。",
+  "excerpt": "    std::partial_ordering operator<=>(const_reference rhs) const noexcept // *NOPAD*\n    {\n        const_reference lhs = *this;\n        // default_result is used if we cannot compare values. In that case,\n        // we compare types.\n        JSON_IMPLEMENT_OPERATOR(<=>, // *NOPAD*\n                                std::partial_ordering::equivalent,\n                                std::partial_ordering::unordered,\n                                lhs_type <=> rhs_type) // *NOPAD*\n    }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；返回类型为 partial_ordering。"
+}

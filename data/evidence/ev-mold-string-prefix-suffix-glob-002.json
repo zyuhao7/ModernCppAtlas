@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-string-prefix-suffix-glob-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/multi-glob.cc",
+  "lines": "80-93",
+  "feature": "cpp20.string-range-utilities",
+  "pattern": "同时使用 starts_with 与 ends_with 处理通配符",
+  "why_typical": "前后缀检查成对出现，直接表达“以 * 开头/结尾”，比手写索引与长度运算更难出错。",
+  "excerpt": "static std::string handle_stars(std::string_view pat) {\n  std::string str(pat);\n\n  // Convert \"foo\" -> \"\\0foo\\0\", \"*foo\" -> \"foo\\0\", \"foo*\" -> \"\\0foo\"\n  // and \"*foo*\" -> \"foo\". Aho-Corasick can do only substring matching,\n  // so we use \\0 as beginning/end-of-string markers.\n  if (str.starts_with('*') && str.ends_with('*'))\n    return str.substr(1, str.size() - 2);\n  if (str.starts_with('*'))\n    return str.substr(1) + \"\\0\"s;\n  if (str.ends_with('*'))\n    return \"\\0\"s + str.substr(0, str.size() - 1);\n  return \"\\0\"s + str + \"\\0\"s;\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；摘录覆盖完整的通配符前缀/后缀分支。"
+}

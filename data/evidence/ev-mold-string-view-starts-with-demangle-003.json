@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-string-view-starts-with-demangle-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/demangle.cc",
+  "lines": "13-27",
+  "feature": "cpp20.string-range-utilities",
+  "pattern": "在 string_view 上检查 Itanium 名称前缀",
+  "why_typical": "视图上直接判断，不构造 std::string，也没有空终止假设；适合处理来自符号表的非拥有字符串。",
+  "excerpt": "std::optional<std::string_view> demangle_cpp(std::string_view name) {\n  static thread_local char *buf;\n  static thread_local size_t buflen;\n\n  // TODO(cwasser): Actually demangle Symbols on Windows using e.g.\n  // `UnDecorateSymbolName` from Dbghelp, maybe even Itanium symbols?\n#ifndef _WIN32\n  if (name.starts_with(\"_Z\")) {\n    int status;\n    char *p = abi::__cxa_demangle(std::string(name).c_str(), buf, &buflen, &status);\n    if (status == 0) {\n      buf = p;\n      return p;\n    }\n  }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；摘录保留平台条件与返回路径。"
+}
