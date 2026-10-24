@@ -45,3 +45,22 @@ jobs:
 
       - name: Compile examples (${{ matrix.compiler }})
         run: uv run tools/verify_examples.py --compiler ${{ matrix.compiler }}
+
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install tools
+        run: uv sync --frozen --extra docs
+
+      - name: Generate site sources
+        run: uv run tools/build_site.py
+
+      - name: Build site
+        run: uv run mkdocs build --strict
+
+      - name: Check Chinese search
+        run: uv run tools/check_search.py

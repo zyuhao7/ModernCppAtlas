@@ -2,5 +2,6 @@ __pycache__/
 *.py[cod]
 .venv/
 site/
+.site-docs/
 .cache/
 .DS_Store

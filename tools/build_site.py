@@ -1,0 +1,340 @@
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["pyyaml>=6.0"]
+# ///
+"""Generate the static site sources from features and evidence."""
+
+from __future__ import annotations
+
+import argparse
+import re
+import shutil
+from collections import Counter, defaultdict
+from pathlib import Path
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+FEATURE_DIR = ROOT / "data" / "features"
+EVIDENCE_DIR = ROOT / "data" / "evidence"
+OUT_DIR = ROOT / ".site-docs"
+
+STANDARDS = ["C++11", "C++14", "C++17", "C++20", "C++23", "C++26"]
+DEFAULT_REPO_URL = "https://github.com/zyuhao7/ModernCppAtlas"
+
+
+def read_feature(path: Path) -> tuple[dict, str]:
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---\n"):
+        raise SystemExit(f"{path}: missing frontmatter")
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        raise SystemExit(f"{path}: unterminated frontmatter")
+    meta = yaml.safe_load(text[4:end])
+    body = text[end + 5 :].lstrip("\n")
+    return meta, body
+
+
+def load_features() -> tuple[dict[str, dict], dict[str, str]]:
+    features: dict[str, dict] = {}
+    bodies: dict[str, str] = {}
+    for path in sorted(FEATURE_DIR.glob("*.md")):
+        meta, body = read_feature(path)
+        features[meta["id"]] = meta
+        bodies[meta["id"]] = body
+    return features, bodies
+
+
+def load_evidence() -> dict[str, list[dict]]:
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for path in sorted(EVIDENCE_DIR.glob("*.json")):
+        record = yaml.safe_load(path.read_text(encoding="utf-8"))
+        grouped[record["feature"]].append(record)
+    return grouped
+
+
+def standard_slug(standard: str) -> str:
+    return standard.lower().replace("c++", "cpp").replace(" ", "")
+
+
+def permalink(record: dict) -> str:
+    start, end = record["lines"].split("-")
+    return (
+        f"https://github.com/{record['repo']}/blob/{record['commit']}/"
+        f"{record['path']}#L{start}-L{end}"
+    )
+
+
+def cell(value: object) -> str:
+    return str(value).replace("|", "\\|")
+
+
+def write(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text.rstrip() + "\n", encoding="utf-8")
+
+
+def rewrite_example_links(body: str, repo_url: str, branch: str) -> str:
+    return re.sub(
+        r"\]\(\.\./\.\./examples/",
+        f"]({repo_url}/blob/{branch}/examples/",
+        body,
+    )
+
+
+def feature_meta_table(meta: dict, records: list[dict]) -> str:
+    levels = Counter(record["level"] for record in records)
+    level_text = ", ".join(f"{name} {count}" for name, count in sorted(levels.items()))
+    compilers = meta["compilers"]
+    compiler_text = (
+        f"GCC {compilers['gcc']}+ · Clang {compilers['clang']}+ · "
+        f"MSVC {compilers['msvc']}+"
+    )
+    return (
+        "| 标准 | 难度 | 状态 | 分级 | 证据 | 最后校验 |\n"
+        "|---|---|---|---|---|---|\n"
+        f"| {meta['standard']} | {meta['difficulty']}/5 | {meta['status']} | "
+        f"{meta['tier']} | {len(records)} 条（{level_text}） | "
+        f"{meta['last_verified']} |\n\n"
+        f"编译器支持：{compiler_text}。版本查询："
+        "[cppreference 编译器支持](https://en.cppreference.com/w/cpp/compiler_support)。\n"
+    )
+
+
+def build_feature_pages(
+    features: dict[str, dict],
+    bodies: dict[str, str],
+    evidence: dict[str, list[dict]],
+    repo_url: str,
+    branch: str,
+) -> None:
+    for feature_id, meta in features.items():
+        records = evidence.get(feature_id, [])
+        body = rewrite_example_links(bodies[feature_id], repo_url, branch)
+        links = " · ".join(
+            f"[{record['id']}](../evidence/{record['id']}.md)"
+            for record in sorted(records, key=lambda item: item["id"])
+        )
+        evidence_line = f"\n本站证据页：{links}\n" if links else ""
+        frontmatter = yaml.safe_dump(
+            meta, allow_unicode=True, sort_keys=False
+        ).strip()
+        write(
+            OUT_DIR / "features" / f"{feature_id}.md",
+            f"---\n{frontmatter}\n---\n\n"
+            f"# {meta['title']}\n\n"
+            f"{feature_meta_table(meta, records)}"
+            f"{evidence_line}\n"
+            f"{body}\n",
+        )
+
+
+def build_evidence_pages(
+    features: dict[str, dict], evidence: dict[str, list[dict]]
+) -> None:
+    for feature_id, records in evidence.items():
+        for record in records:
+            title = features.get(feature_id, {}).get("title", feature_id)
+            reviewers = ", ".join(record["verified_by"]) or "—"
+            tested = "是" if record["is_test"] else "否"
+            link = permalink(record)
+            notes = record["notes"].strip() or "无。"
+            excerpt = record["excerpt"].rstrip() or "（无摘录）"
+            write(
+                OUT_DIR / "evidence" / f"{record['id']}.md",
+                f"---\ntitle: {record['id']}\n---\n\n"
+                f"# {record['id']}\n\n"
+                "| 字段 | 值 |\n|---|---|\n"
+                f"| 项目 | [{record['repo']}](https://github.com/{record['repo']}) |\n"
+                f"| 固定 commit | [`{record['commit'][:12]}`]({link}) |\n"
+                f"| 路径 | [`{cell(record['path'])}`]({link}) |\n"
+                f"| 行段 | L{record['lines'].replace('-', '-L')} |\n"
+                f"| 特性 | [{title}](../features/{feature_id}.md) |\n"
+                f"| 许可证 | {record['license']} |\n"
+                f"| 级别 | {record['level']} |\n"
+                f"| 审核 | {reviewers} @ {record['verified_at'] or '—'} |\n"
+                f"| 测试代码 | {tested} |\n"
+                f"| 发现方式 | {record['discovered_by']} |\n\n"
+                "## 用法\n\n"
+                f"{record['pattern']}\n\n"
+                "## 为什么典型\n\n"
+                f"{record['why_typical']}\n\n"
+                "## 摘录\n\n"
+                "```cpp\n"
+                f"{excerpt}\n"
+                "```\n\n"
+                "## 备注\n\n"
+                f"{notes}\n\n"
+                f"[查看固定 commit 源码]({link}) · "
+                "[返回证据索引](index.md)\n",
+            )
+
+
+def table_for(feature_ids: list[str], features: dict[str, dict],
+              evidence: dict[str, list[dict]], link_prefix: str = "") -> str:
+    lines = [
+        "| 特性 | 标准 | 难度 | 分级 | 证据 | 状态 |",
+        "|---|---|---|---|---|---|",
+    ]
+    for feature_id in feature_ids:
+        meta = features[feature_id]
+        lines.append(
+            f"| [{cell(meta['title'])}]({link_prefix}{feature_id}.md) | "
+            f"{meta['standard']} | {meta['difficulty']}/5 | {meta['tier']} | "
+            f"{len(evidence.get(feature_id, []))} | {meta['status']} |"
+        )
+    return "\n".join(lines)
+
+
+def build_indexes(
+    features: dict[str, dict], evidence: dict[str, list[dict]]
+) -> None:
+    feature_ids = sorted(
+        features, key=lambda item: (features[item]["standard"], features[item]["id"])
+    )
+    total_evidence = sum(len(records) for records in evidence.values())
+    by_standard = Counter(meta["standard"] for meta in features.values())
+
+    standard_lines = []
+    feature_standard_lines = []
+    for standard in STANDARDS:
+        count = by_standard.get(standard, 0)
+        if not count:
+            continue
+        slug = standard_slug(standard)
+        feature_standard_lines.append(
+            f"- [{standard}](standard/{slug}.md)：{count} 个条目"
+        )
+        standard_lines.append(
+            f"- [{standard}](features/standard/{slug}.md)：{count} 个条目"
+        )
+
+    write(
+        OUT_DIR / "index.md",
+        "# ModernCppAtlas\n\n"
+        "从 C++11 到 C++26 的现代 C++ 特性图谱。每个条目围绕四个问题展开："
+        "解决什么问题、真实项目怎么用、进阶怎么用、能和哪些库组合。\n\n"
+        f"当前收录 **{len(features)} 个特性**、**{total_evidence} 条证据**，"
+        "全部证据指向固定 commit。\n\n"
+        "## 三个入口\n\n"
+        "- [按标准版本](features/index.md)\n"
+        "- [按使用场景](features/scenarios.md)\n"
+        "- [按难度](features/difficulties.md)\n\n"
+        "## 标准覆盖\n\n"
+        + "\n".join(standard_lines)
+        + "\n\n## 证据先行\n\n"
+        "每条证据都记录项目、固定 commit、路径、行段、许可证与审核状态；"
+        "证据页可以独立阅读。\n\n"
+        "- [证据索引](evidence/index.md)\n"
+        "- [贡献指南](https://github.com/zyuhao7/ModernCppAtlas/blob/main/README.md)\n",
+    )
+
+    write(
+        OUT_DIR / "features" / "index.md",
+        "# 特性索引\n\n"
+        "## 按标准版本\n\n"
+        + "\n".join(feature_standard_lines)
+        + "\n\n## 全部特性\n\n"
+        + table_for(feature_ids, features, evidence)
+        + "\n",
+    )
+
+    for standard in STANDARDS:
+        ids = [item for item in feature_ids if features[item]["standard"] == standard]
+        if not ids:
+            continue
+        write(
+            OUT_DIR / "features" / "standard" / f"{standard_slug(standard)}.md",
+            f"# {standard} 特性\n\n"
+            + table_for(ids, features, evidence, link_prefix="../")
+            + "\n\n[返回特性索引](../index.md)\n",
+        )
+
+    categories: dict[str, list[str]] = defaultdict(list)
+    for feature_id, meta in features.items():
+        for category in meta["category"]:
+            categories[category].append(feature_id)
+
+    scenario_parts = ["# 按使用场景\n"]
+    for category in sorted(categories):
+        scenario_parts.append(f"## {category}\n")
+        for feature_id in sorted(categories[category]):
+            meta = features[feature_id]
+            scenario_parts.append(
+                f"- [{meta['title']}]({feature_id}.md)：{meta['standard']}，"
+                f"难度 {meta['difficulty']}/5，{len(evidence.get(feature_id, []))} 条证据"
+            )
+        scenario_parts.append("")
+    write(OUT_DIR / "features" / "scenarios.md", "\n".join(scenario_parts))
+
+    difficulty_parts = ["# 按难度\n"]
+    for level in range(1, 6):
+        ids = [
+            item for item in feature_ids if features[item]["difficulty"] == level
+        ]
+        if not ids:
+            continue
+        difficulty_parts.append(f"## 难度 {level}/5\n")
+        difficulty_parts.extend(
+            f"- [{features[item]['title']}]({item}.md)（{features[item]['standard']}）"
+            for item in ids
+        )
+        difficulty_parts.append("")
+    write(OUT_DIR / "features" / "difficulties.md", "\n".join(difficulty_parts))
+
+    evidence_rows = [
+        "| 证据 | 项目 | 特性 | 位置 | 级别 | 许可证 |",
+        "|---|---|---|---|---|---|",
+    ]
+    for feature_id in sorted(evidence):
+        for record in sorted(evidence[feature_id], key=lambda item: item["id"]):
+            title = features.get(feature_id, {}).get("title", feature_id)
+            evidence_rows.append(
+                f"| [{record['id']}]({record['id']}.md) | {record['repo']} | "
+                f"[{cell(title)}](../features/{feature_id}.md) | "
+                f"`{cell(record['path'])}:L{record['lines']}` | "
+                f"{record['level']} | {record['license']} |"
+            )
+    write(
+        OUT_DIR / "evidence" / "index.md",
+        "# 证据索引\n\n"
+        "证据按固定 commit 记录；点击证据 ID 查看用法、摘录与许可证。\n\n"
+        + "\n".join(evidence_rows)
+        + "\n",
+    )
+
+
+def main() -> int:
+    global OUT_DIR
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--repo-url", default=DEFAULT_REPO_URL)
+    parser.add_argument("--branch", default="main")
+    parser.add_argument("--output", type=Path, default=OUT_DIR)
+    args = parser.parse_args()
+
+    OUT_DIR = args.output
+
+    features, bodies = load_features()
+    evidence = load_evidence()
+
+    if OUT_DIR.exists():
+        shutil.rmtree(OUT_DIR)
+    OUT_DIR.mkdir(parents=True)
+
+    build_feature_pages(
+        features, bodies, evidence, args.repo_url.rstrip("/"), args.branch
+    )
+    build_evidence_pages(features, evidence)
+    build_indexes(features, evidence)
+
+    total = sum(len(records) for records in evidence.values())
+    print(
+        f"generated {len(features)} feature pages, {total} evidence pages "
+        f"in {OUT_DIR.relative_to(ROOT)}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

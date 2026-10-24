@@ -125,7 +125,7 @@ M0 目标：
 - [x] 首个 A 级样板：`if constexpr`，3 条证据，GCC C++17 编译通过
 - [x] 其余 9 个 A 级条目，各 3 条证据，示例编译通过
 - [x] structured bindings 全流程样板：候选扫描、3 条生产证据、正文与示例
-- [ ] 站点骨架与 11 个证据页，中文搜索可用
+- [x] 站点骨架：11 个特性页 + 33 个证据页，`--strict` 构建通过，中文搜索冒烟通过
 - [x] CI：schema、permalink、路径行段、许可证白名单、示例编译
 
 退出标准：33 条证据全部可点击验证；11 个示例编译通过；外部读者能在 2 分钟内找到“某个特性在哪个项目里怎么用”。
@@ -137,6 +137,8 @@ uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
 uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
 uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段
 uv run tools/verify_examples.py --compiler g++ --run  # 按 examples/cppNN 选择标准并编译运行
+uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 生成并构建站点
+uv run tools/check_search.py                  # 中文搜索冒烟（需先构建站点）
 ```
 
 `tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径与行段。
