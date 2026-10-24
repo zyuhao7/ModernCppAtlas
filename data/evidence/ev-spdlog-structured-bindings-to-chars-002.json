@@ -1,0 +1,18 @@
+{
+  "id": "ev-spdlog-structured-bindings-to-chars-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/fmt_helper.h",
+  "lines": "33-38",
+  "feature": "cpp17.structured-bindings",
+  "pattern": "把 to_chars 返回的指针与错误码绑定为具名变量",
+  "why_typical": "to_chars 返回 pair<ptr, errc>；成功分支用 ptr 计算长度，失败分支检查 ec，两个名字分别承担一种职责。",
+  "excerpt": "    auto [ptr, ec] = std::to_chars(buf, buf + BUF_SIZE, n, 10);\n    if (ec == std::errc()) {\n        dest.append(buf, ptr);\n    } else {\n        throw_spdlog_ex(\"Failed to format int\", static_cast<int>(ec));\n    }",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；该实现只在 SPDLOG_USE_STD_FORMAT 下启用。"
+}

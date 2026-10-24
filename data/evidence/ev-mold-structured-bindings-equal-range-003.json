@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-structured-bindings-equal-range-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/input-files.cc",
+  "lines": "1401-1406",
+  "feature": "cpp17.structured-bindings",
+  "pattern": "用结构化绑定接收 equal_range 返回的迭代器区间",
+  "why_typical": "equal_range 返回 pair<iterator, iterator>；绑定名 begin/end 让后续区间计算与返回语句保持可读。",
+  "excerpt": "  auto [begin, end] = std::equal_range(sorted_syms.begin(), sorted_syms.end(),\n                                       sym, [&](Symbol<E> *a, Symbol<E> *b) {\n    return a->esym().st_value < b->esym().st_value;\n  });\n\n  return {&*begin, (size_t)(end - begin)};",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；两个绑定都参与后续区间长度计算。"
+}

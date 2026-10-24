@@ -250,12 +250,12 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB。
 | `std::bit_cast` | 2 | 1 | 不足 3 条，B 或扩语料 |
 | `std::format` | 2 | 0 | 不足 3 条，B 或扩语料 |
 | `std::source_location` | 2 | 1 | 不足 3 条，B 或扩语料 |
-| structured bindings | 9 | 18 | 不足 3 条生产证据，B 或扩语料 |
+| structured bindings | 9 | 18 | A（3 条生产证据，已作为全流程样板） |
 | `std::variant` | 6 | 16 | 不足 3 条生产证据，B 或扩语料 |
 | `std::any` | 1 | 4 | 不足 3 条，B 或扩语料 |
 | 折叠表达式 | 1 | 0 | 不足 3 条，B 或扩语料 |
 
-结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings`、`std::variant`、CTAD 等在原计划中列为优先候选，但首轮证据密度不足，不能为了凑 A 级而放宽标准。
+结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
 后续候选与许可证（以仓库固定 commit 的 LICENSE 为准）：
 

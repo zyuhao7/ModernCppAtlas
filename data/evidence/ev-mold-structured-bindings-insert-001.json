@@ -1,0 +1,18 @@
+{
+  "id": "ev-mold-structured-bindings-insert-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/output-chunks.cc",
+  "lines": "515-518",
+  "feature": "cpp17.structured-bindings",
+  "pattern": "用结构化绑定同时接收 insert 返回的迭代器与插入标志",
+  "why_typical": "insert 返回 pair<iterator, bool>；直接命名 it 与 inserted，后续代码不必依赖 .first/.second 的位置含义。",
+  "excerpt": "      auto [it, inserted] = map.insert({chunk->name, offset});\n      chunk->shdr.sh_name = it->second;\n      if (inserted)\n        offset += chunk->name.size() + 1;",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-25",
+  "is_test": false,
+  "notes": "生产路径；绑定名直接对应元素位置与插入状态。"
+}
