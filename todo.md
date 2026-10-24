@@ -233,6 +233,30 @@ example: examples/cpp20/coroutine_asio.cpp
 
 M1 扩到 6 个：增加 Abseil、Drogon、DuckDB。
 
+**M0 首轮扫描（2026-10-24，fmt 12.2.0 / json 3.12.0 / spdlog 1.17.0）**：360 个源文件，368 条候选；已排除 `single_include`、`bundled` 等生成或 vendored 目录。
+
+| 特性 | 生产候选 | 测试候选 | M0 决策 |
+|---|---:|---:|---|
+| `if constexpr` | 40 | 0 | A 级样板已完成 |
+| `std::filesystem` | 10 | 3 | A |
+| 字符串/范围小工具 | 8 | 0 | A |
+| `<=>` | 7 | 3 | A |
+| concepts | 5 | 0 | A |
+| `std::byte` | 4 | 1 | A |
+| `std::optional` | 4 | 13 | A |
+| `std::span` | 3 | 1 | A |
+| `std::string_view` | 3 | 235 | A |
+| ranges | 1 | 11 | A |
+| `std::bit_cast` | 2 | 0 | 不足 3 条，B 或扩语料 |
+| `std::format` | 2 | 0 | 不足 3 条，B 或扩语料 |
+| `std::source_location` | 2 | 0 | 不足 3 条，B 或扩语料 |
+| structured bindings | 1 | 1 | 不足 3 条，B 或扩语料 |
+| `std::variant` | 1 | 2 | 不足 3 条，B 或扩语料 |
+| `std::any` | 1 | 3 | 不足 3 条，B 或扩语料 |
+| 折叠表达式 | 1 | 0 | 不足 3 条，B 或扩语料 |
+
+结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings`、`std::variant`、CTAD 等在原计划中列为优先候选，但首轮证据密度不足，不能为了凑 A 级而放宽标准。
+
 后续候选与许可证（以仓库固定 commit 的 LICENSE 为准）：
 
 | 仓库 | 许可证 | 备注 |
@@ -321,11 +345,13 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M0 · Tracer Bullet（100–160 人时）
 
-- 候选池 20 个 C++17/20 高频特性；扫描 3 个仓库后，按证据密度选 10 个写 A 级条目。优先候选：structured bindings、`if constexpr`、`std::optional`、`std::variant`、`std::string_view`、CTAD、concepts、constexpr lambda、折叠表达式、`std::span`。
-- 3 个语料仓库：fmt、nlohmann/json、spdlog。
-- 扫描器 v0：Tree-sitter 查询 + 候选 JSON + 人工复核队列。
-- 站点上线：10 个证据页 + 中文搜索。
-- CI：schema、permalink、路径、许可证、示例编译。
+- [x] 锁定 3 个语料仓库：fmt、nlohmann/json、spdlog。
+- [x] 扫描器 v0：Tree-sitter + 正则候选，输出 `.cache/candidates.json`；首轮 360 个文件、368 条候选。
+- [x] schema、validator、固定 commit 路径与行段校验。
+- [x] 首个 A 级样板：`if constexpr`，3 条证据，GCC C++17 编译通过。
+- [ ] 其余 9 个 A 级条目，按第 7.3 节扫描结果选取。
+- [ ] 站点上线：10 个证据页 + 中文搜索。
+- [x] CI：schema、permalink、路径、许可证白名单、示例编译。
 - 退出标准：30 条证据全部可点击验证；10 个示例编译通过；3 名外部读者能在 2 分钟内找到“某个特性在哪个项目里怎么用”。
 
 ### M1 · 公开 Alpha（新增 250–350 人时）
@@ -445,12 +471,13 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ## 14. 立即可做的下一步
 
-1. 写 `schema/feature.schema.json`、`schema/evidence.schema.json`、`schema/library.schema.json`，并用一个样例条目跑通校验。
-2. 锁定 fmt、nlohmann/json、spdlog 的 commit，建立 `data/corpus.yaml` 与稀疏克隆脚本。
-3. 用 Tree-sitter 扫描三个仓库，输出前 50 条候选，人工复核 10 条。
-4. 写 3 个 A 级样板：structured bindings、`std::optional`、`std::string_view`，每条 3 条证据。
-5. 搭 MkDocs 骨架与证据页模板，配置 jieba 中文搜索。
-6. 上最小 CI：schema、permalink、路径行段、许可证、示例编译。
+- [x] 写 `schema/feature.schema.json`、`schema/evidence.schema.json`、`schema/library.schema.json`、`schema/corpus.schema.json`，并用样板条目跑通校验。
+- [x] 锁定 fmt、nlohmann/json、spdlog 的 commit，建立 `data/corpus.yaml` 与稀疏克隆脚本。
+- [x] 用 Tree-sitter 扫描三个仓库，输出 368 条候选；首轮密度见第 7.3 节。
+- [x] 写首个 A 级样板：`if constexpr`，3 条证据，示例在 GCC C++17 下编译通过。
+- [ ] 按 7.3 节结果写完其余 9 个 A 级条目，每条 3 条证据。
+- [ ] 搭 MkDocs 骨架与证据页模板，配置 jieba 中文搜索。
+- [x] 上最小 CI：schema、permalink、路径行段、许可证白名单、示例编译。
 
 ## 15. 已确定事项
 

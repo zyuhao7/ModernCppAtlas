@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moderncppatlas.dev/schema/corpus.schema.json",
+  "title": "Corpus manifest",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["repo", "url", "commit", "tag", "license", "paths", "notes"],
+    "properties": {
+      "repo": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+      },
+      "url": {
+        "type": "string",
+        "pattern": "^https://github\\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\\.git$"
+      },
+      "commit": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "tag": {
+        "type": "string",
+        "minLength": 1
+      },
+      "license": {
+        "enum": [
+          "MIT",
+          "Apache-2.0",
+          "BSD-2-Clause",
+          "BSD-3-Clause",
+          "BSL-1.0",
+          "CC0-1.0",
+          "MPL-2.0",
+          "GPL-2.0-only",
+          "GPL-3.0-only",
+          "AGPL-3.0-only",
+          "LGPL-3.0-only"
+        ]
+      },
+      "paths": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 1 },
+        "uniqueItems": true
+      },
+      "notes": {
+        "type": "string"
+      }
+    }
+  }
+}

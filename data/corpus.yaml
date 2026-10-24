@@ -1,0 +1,27 @@
+- repo: fmtlib/fmt
+  url: https://github.com/fmtlib/fmt.git
+  commit: 1be298e1bd68957e4cd352e1f676f00e07dcfb57
+  tag: 12.2.0
+  license: MIT
+  paths:
+    - include
+    - src
+  notes: M0 首批；轻量标签，commit 已核对。
+- repo: nlohmann/json
+  url: https://github.com/nlohmann/json.git
+  commit: 55f93686c01528224f448c19128836e7df245f72
+  tag: v3.12.0
+  license: MIT
+  paths:
+    - include
+    - tests
+  notes: M0 首批；annotated tag 的 peeled commit。
+- repo: gabime/spdlog
+  url: https://github.com/gabime/spdlog.git
+  commit: 79524ddd08a4ec981b7fea76afd08ee05f83755d
+  tag: v1.17.0
+  license: MIT
+  paths:
+    - include
+    - src
+  notes: M0 首批；轻量标签，commit 已核对。

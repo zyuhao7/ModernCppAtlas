@@ -1,0 +1,18 @@
+{
+  "id": "ev-json-if-constexpr-byteswap-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/input/binary_reader.hpp",
+  "lines": "2825-2833",
+  "feature": "cpp17.if-constexpr",
+  "pattern": "按大小与整型特性选择字节交换路径",
+  "why_typical": "同一函数内按 sizeof 和 is_integral_v 丢弃不适用分支，是处理字节序的常见写法。",
+  "excerpt": "    static void byte_swap(NumberType& number)\n    {\n        constexpr std::size_t sz = sizeof(number);\n#ifdef __cpp_lib_byteswap\n        if constexpr (sz == 1)\n        {\n            return;\n        }\n        if constexpr(std::is_integral_v<NumberType>)\n        {\n            number = std::byteswap(number);\n            return;\n        }\n#endif\n        auto* ptr = reinterpret_cast<std::uint8_t*>(&number);",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；固定 commit 已由 tools/validate.py --check-corpus 校验。"
+}

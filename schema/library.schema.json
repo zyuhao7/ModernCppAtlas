@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moderncppatlas.dev/schema/library.schema.json",
+  "title": "Library integration card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "library",
+    "feature",
+    "pattern",
+    "benefit",
+    "cost",
+    "evidence",
+    "example"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^lib-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "library": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "feature": {
+      "type": "string",
+      "pattern": "^cpp(11|14|17|20|23|26)\\.[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "pattern": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefit": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cost": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^ev-[a-z0-9]+(-[a-z0-9]+)*$" },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "example": {
+      "type": ["string", "null"]
+    }
+  }
+}

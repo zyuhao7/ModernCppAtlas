@@ -119,13 +119,26 @@ B 级只写问题、基础用法、证据、陷阱、横向对比。写作规则
 
 M0 目标：
 
-- [ ] 候选池 20 个 C++17/20 高频特性，扫描后按证据密度选 10 个写成 A 级条目
-- [ ] 3 个语料仓库：fmt、nlohmann/json、spdlog，全部锁定 commit
-- [ ] Tree-sitter 扫描器 v0 + 人工复核队列
+- [x] 候选池扫描完成：360 个源文件、368 条候选，按证据密度选定 M0 特性
+- [x] 3 个语料仓库：fmt、nlohmann/json、spdlog，全部锁定 commit
+- [x] Tree-sitter 扫描器 v0 + 候选 JSON + schema 校验
+- [x] 首个 A 级样板：`if constexpr`，3 条证据，GCC C++17 编译通过
+- [ ] 其余 9 个 A 级条目
 - [ ] 站点骨架与 10 个证据页，中文搜索可用
-- [ ] CI：schema、permalink、路径行段、许可证、示例编译
+- [x] CI：schema、permalink、路径行段、许可证白名单、示例编译
 
 退出标准：30 条证据全部可点击验证；10 个示例编译通过；外部读者能在 2 分钟内找到“某个特性在哪个项目里怎么用”。
+
+## 本地验证
+
+```bash
+uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
+uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
+uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段
+uv run tools/verify_examples.py --compiler g++ --run  # 按 examples/cppNN 选择标准并编译运行
+```
+
+`tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径与行段。
 
 ## 参与贡献
 

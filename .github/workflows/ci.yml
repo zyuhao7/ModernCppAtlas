@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install tools
+        run: uv sync --frozen
+
+      - name: Validate data contracts
+        run: uv run tools/validate.py
+
+      - name: Cache corpus checkouts
+        uses: actions/cache@v4
+        with:
+          path: .cache/corpus
+          key: corpus-${{ hashFiles('data/corpus.yaml') }}
+
+      - name: Fetch pinned corpus
+        run: uv run tools/fetch_corpus.py
+
+      - name: Verify pinned evidence locations
+        run: uv run tools/validate.py --check-corpus
+
+      - name: Compile examples
+        run: uv run tools/verify_examples.py --compiler g++

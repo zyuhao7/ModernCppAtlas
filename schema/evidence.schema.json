@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moderncppatlas.dev/schema/evidence.schema.json",
+  "title": "Evidence entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "repo",
+    "commit",
+    "path",
+    "lines",
+    "feature",
+    "pattern",
+    "why_typical",
+    "excerpt",
+    "license",
+    "level",
+    "discovered_by",
+    "verified_by",
+    "verified_at",
+    "is_test",
+    "notes"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ev-[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "repo": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+    },
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lines": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*-[1-9][0-9]*$"
+    },
+    "feature": {
+      "type": "string",
+      "pattern": "^cpp(11|14|17|20|23|26)\\.[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "pattern": {
+      "type": "string",
+      "minLength": 1
+    },
+    "why_typical": {
+      "type": "string",
+      "minLength": 1
+    },
+    "excerpt": {
+      "type": "string",
+      "maxLength": 1200
+    },
+    "license": {
+      "enum": [
+        "MIT",
+        "Apache-2.0",
+        "BSD-2-Clause",
+        "BSD-3-Clause",
+        "BSL-1.0",
+        "CC0-1.0",
+        "MPL-2.0",
+        "GPL-2.0-only",
+        "GPL-3.0-only",
+        "AGPL-3.0-only",
+        "LGPL-3.0-only"
+      ]
+    },
+    "level": {
+      "enum": ["verified", "manual", "candidate", "stale"]
+    },
+    "discovered_by": {
+      "enum": ["tree-sitter", "regex", "manual"]
+    },
+    "verified_by": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true
+    },
+    "verified_at": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "is_test": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

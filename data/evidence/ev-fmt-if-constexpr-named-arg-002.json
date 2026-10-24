@@ -1,0 +1,18 @@
+{
+  "id": "ev-fmt-if-constexpr-named-arg-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/compile.h",
+  "lines": "161-165",
+  "feature": "cpp17.if-constexpr",
+  "pattern": "按 is_named_arg 在编译期选择读取 .value 或原对象",
+  "why_typical": "用类型特征在编译期分派，避免运行期分支，且丢弃分支不会对普通参数生成无效访问。",
+  "excerpt": "// This ensures that the argument type is convertible to `const T&`.\ntemplate <typename T, int N, typename... Args>\nconstexpr auto get_arg_checked(const Args&... args) -> const T& {\n  const auto& arg = detail::get<N>(args...);\n  if constexpr (detail::is_named_arg<remove_cvref_t<decltype(arg)>>()) {\n    return arg.value;\n  } else {\n    return arg;\n  }\n}",
+  "license": "MIT",
+  "level": "manual",
+  "discovered_by": "tree-sitter",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-24",
+  "is_test": false,
+  "notes": "生产路径；固定 commit 已由 tools/validate.py --check-corpus 校验。"
+}
