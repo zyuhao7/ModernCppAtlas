@@ -1,0 +1,3 @@
+# Linguist treats top-level examples/ as documentation and drops it from
+# language statistics; keep the compilable example programs counted.
+examples/** linguist-documentation=false
