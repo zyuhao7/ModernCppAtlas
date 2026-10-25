@@ -13,6 +13,7 @@ import re
 import subprocess
 import sys
 from collections import defaultdict
+from datetime import date
 from pathlib import Path
 
 import yaml
@@ -202,6 +203,25 @@ def check_corpus_link(
         f"excerpt has {len(actual)} lines but line range "
         f"{evidence['lines']} has {len(expected)}",
     )
+
+
+def check_standard(
+    report: Report, path: Path, feature_id: str, standard: object
+) -> None:
+    if not isinstance(standard, str):
+        return
+    prefix = "cpp" + standard.removeprefix("C++")
+    if not feature_id.startswith(prefix + "."):
+        report.error(path, f"standard {standard} does not match id {feature_id}")
+
+
+def check_date(report: Report, path: Path, field: str, value: object) -> None:
+    if not isinstance(value, str):
+        return
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        report.error(path, f"{field} is not a valid date: {value}")
 
 
 def check_tier(
@@ -395,6 +415,8 @@ def main() -> int:
             continue
         if path.stem != feature_id:
             report.error(path, f"filename stem {path.stem!r} != id {feature_id!r}")
+        check_standard(report, path, feature_id, data.get("standard"))
+        check_date(report, path, "last_verified", data.get("last_verified"))
         if feature_id in features:
             report.error(path, f"duplicate feature id {feature_id}")
         features[feature_id] = data
@@ -418,6 +440,15 @@ def main() -> int:
         evidence_id = data["id"]
         if path.stem != evidence_id:
             report.error(path, f"filename stem {path.stem!r} != id {evidence_id!r}")
+        check_date(report, path, "verified_at", data.get("verified_at"))
+        generated_review = data.get("generated_review")
+        if isinstance(generated_review, dict):
+            check_date(
+                report,
+                path,
+                "generated_review.approved_at",
+                generated_review.get("approved_at"),
+            )
         if evidence_id in evidence:
             report.error(path, f"duplicate evidence id {evidence_id}")
         evidence[evidence_id] = data

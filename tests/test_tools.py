@@ -535,6 +535,33 @@ class LinkCheckTests(unittest.TestCase):
         self.assertTrue(any("missing target" in item for item in failures))
 
 
+class IdentityCheckTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/cpp17.example.md")
+
+    def test_standard_must_match_id(self) -> None:
+        report = self.validate.Report()
+        self.validate.check_standard(report, self.path, "cpp17.example", "C++20")
+        self.assertTrue(any("does not match id" in error for error in report.errors))
+
+    def test_matching_standard_passes(self) -> None:
+        report = self.validate.Report()
+        self.validate.check_standard(report, self.path, "cpp20.example", "C++20")
+        self.assertEqual(report.errors, [])
+
+    def test_invalid_calendar_date_is_reported(self) -> None:
+        report = self.validate.Report()
+        self.validate.check_date(report, self.path, "last_verified", "2026-02-31")
+        self.assertTrue(any("not a valid date" in error for error in report.errors))
+
+    def test_valid_or_missing_date_passes(self) -> None:
+        report = self.validate.Report()
+        self.validate.check_date(report, self.path, "last_verified", "2026-10-25")
+        self.validate.check_date(report, self.path, "verified_at", None)
+        self.assertEqual(report.errors, [])
+
+
 class ReportTests(unittest.TestCase):
     def test_path_outside_root_does_not_crash(self) -> None:
         validate = load_tool("validate")
