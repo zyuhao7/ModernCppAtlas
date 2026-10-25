@@ -7,7 +7,7 @@ category: [比较, 运算符]
 difficulty: 3
 status: final
 tier: A
-compilers: {gcc: "10", clang: "10", msvc: "19.25"}
+compilers: {gcc: "10", clang: "10", msvc: "19.20"}
 tags: [比较, 排序, 运算符重写]
 alternatives: [operator< 全家桶, std::tie, 手写 compare]
 proposal: P0515R3

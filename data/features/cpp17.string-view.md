@@ -7,7 +7,7 @@ category: [字符串, 视图]
 difficulty: 3
 status: final
 tier: A
-compilers: {gcc: "7", clang: "7", msvc: "19.11"}
+compilers: {gcc: "7", clang: "4", msvc: "19.11"}
 tags: [非拥有视图, 零拷贝, 生命周期]
 alternatives: [const std::string&, const char*, std::span<const char>]
 proposal: P0254R2
@@ -30,7 +30,7 @@ review:
 
 ## 解决什么问题
 
-只读字符串参数写成 `const std::string&` 时，传入字符串字面量会构造临时 `std::string`，产生一次分配与拷贝；写成 `const char*` 时又丢失长度，遇到嵌入 `'\0'` 的文本会截断，还要反复调用 `strlen`。两个重载都写又会造成调用歧义。
+只读字符串参数写成 `const std::string&` 时，传入字符串字面量会构造临时 `std::string`（至少一次拷贝；短字面量通常走 SSO，不一定分配）；写成 `const char*` 时又丢失长度，遇到嵌入 `'\0'` 的文本会截断，还要反复调用 `strlen`。两个重载都写又会造成调用歧义。
 
 `std::string_view` 是“指针 + 长度”的非拥有视图。它可以从字面量、`std::string`、字符数组零拷贝构造，按值传递成本低，并保留长度信息。它解决的是**只读字符串参数**问题；它不拥有字符，也不保证空终止。
 
@@ -89,7 +89,7 @@ std::string_view bad2() {
 
 **按值传递。** `string_view` 通常是两个机器字，复制廉价；参数写 `std::string_view` 而不是 `const std::string_view&`。需要修改或拥有数据时再接收 `std::string`。
 
-**与 `const std::string&` 的重载冲突。** 同时提供 `f(std::string_view)` 与 `f(const std::string&)` 时，`std::string` 实参两个都可行，可能产生歧义。通常只保留 `string_view` 版本，需要所有权时在函数内部复制。
+**与 `const std::string&` 的重载冲突。** 同时提供 `f(std::string_view)` 与 `f(const std::string&)` 时，`std::string` 左值会优先匹配 `const std::string&`；字符串字面量对两者都是用户定义转换，可能产生歧义。通常只保留 `string_view` 版本，需要所有权时在函数内部复制。
 
 **`remove_prefix` / `remove_suffix` 只移动视图。** 它们不修改原缓冲区，也不检查长度；传入超过 `size()` 的值是未定义行为。`substr` 在越界时会抛 `std::out_of_range`（位置参数），但 `remove_prefix` 不抛。
 

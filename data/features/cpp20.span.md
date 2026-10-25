@@ -7,7 +7,7 @@ category: [视图, 内存]
 difficulty: 3
 status: final
 tier: A
-compilers: {gcc: "10", clang: "9", msvc: "19.26"}
+compilers: {gcc: "10", clang: "7", msvc: "19.26"}
 tags: [连续内存, 非拥有视图, 边界]
 alternatives: [指针 + 长度, std::string_view, gsl::span, std::vector]
 proposal: P0122R7

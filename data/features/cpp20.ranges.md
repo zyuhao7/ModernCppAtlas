@@ -7,7 +7,7 @@ category: [范围, 惰性求值]
 difficulty: 4
 status: final
 tier: A
-compilers: {gcc: "10", clang: "14", msvc: "19.29"}
+compilers: {gcc: "10", clang: "15", msvc: "19.29"}
 tags: [范围算法, 视图, 投影]
 alternatives: [迭代器对算法, 手写循环, range-v3, Boost.Range]
 proposal: P0896R4

@@ -7,7 +7,7 @@ category: [字符串, 容器操作]
 difficulty: 2
 status: final
 tier: A
-compilers: {gcc: "10", clang: "13", msvc: "19.24"}
+compilers: {gcc: "10", clang: "11", msvc: "19.27"}
 tags: [前缀检查, 删除元素, signed size]
 alternatives: [compare, find, remove-erase 惯用法, Boost.StringAlgo]
 proposal: P0457R2
@@ -74,7 +74,7 @@ reverse: 5 3 1
 
 **`ends_with` 不是反向的 `find`。** `s.rfind(suffix) == s.size() - suffix.size()` 需要处理 `suffix` 比 `s` 长的下溢；`ends_with` 直接处理该边界。
 
-**`std::erase` 与 `std::erase_if` 是自由函数。** `std::erase(container, value)` 删除所有等于 `value` 的元素；`std::erase_if(container, pred)` 删除谓词为真的元素。它们对 `std::vector`、`std::string`、`std::deque` 以及关联容器都有重载。对序列容器保持剩余元素相对顺序，复杂度线性；对关联容器按节点删除。
+**`std::erase` 与 `std::erase_if` 是自由函数。** `std::erase(container, value)` 删除所有等于 `value` 的元素；`std::erase_if(container, pred)` 删除谓词为真的元素。`std::erase` 覆盖序列容器（如 `std::vector`、`std::deque`）与 `std::string`；`std::erase_if` 另外覆盖关联容器与无序关联容器。对序列容器保持剩余元素相对顺序，复杂度线性；对关联容器按节点删除。
 
 **不要和成员 `erase` 混淆。** `container.erase(it)` 仍按迭代器删除单个元素；`std::erase(container, value)` 是按值删除全部。成员 `erase` 返回迭代器，自由函数返回删除数量（C++20 起）。
 
@@ -82,7 +82,7 @@ reverse: 5 3 1
 
 **`contains` 的标准版本要分清。** 关联容器的 `contains` 是 C++20；`std::string` 与 `std::string_view` 的 `contains` 都是 C++23。写 C++20 代码时，字符串包含检查仍需 `s.find(part) != npos`。`std::map::contains` 与字符串无关，只是同名。
 
-**异构查找不在这里。** `contains` 不接受透明比较器；`std::map<std::string, V, std::less<>>` 的 `find(string_view)` 是另一项能力，别把两者混为一谈。
+**异构查找是另一项能力。** 当比较器提供 `is_transparent`（例如 `std::less<>`）时，`std::map<std::string, V, std::less<>>` 的 `find`、`contains` 等接受 `std::string_view`，无需构造 `std::string`；普通 `std::less<std::string>` 没有这个重载。不要把异构查找与字符串的 `contains` 混为一谈。
 
 ## 真实项目证据
 

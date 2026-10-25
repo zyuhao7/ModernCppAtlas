@@ -7,7 +7,7 @@ category: [模板, 可变参数, 编译期]
 difficulty: 3
 status: final
 tier: A
-compilers: {gcc: "6", clang: "3.6", msvc: "19.12"}
+compilers: {gcc: "6", clang: "3.9", msvc: "19.12"}
 tags: [参数包, 编译期计算, 短路求值, 逗号折叠]
 alternatives: [递归模板, initializer_list 展开, std::apply, 手写循环]
 proposal: N4295
