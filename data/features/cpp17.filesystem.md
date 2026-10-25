@@ -12,6 +12,20 @@ tags: [路径, 目录遍历, 文件属性]
 alternatives: [POSIX 系统调用, Win32 API, Boost.Filesystem]
 proposal: P0218R1
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "为 std::filesystem::path 特化 formatter"
+    evidence: [ev-fmt-filesystem-path-formatter-002]
+  - id: c2
+    statement: "从 path 取出指定字符类型的原生字符串"
+    evidence: [ev-fmt-filesystem-path-helper-001]
+  - id: c3
+    statement: "用命名空间别名统一标准与实验版 filesystem"
+    evidence: [ev-json-filesystem-alias-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

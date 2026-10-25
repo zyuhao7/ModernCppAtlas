@@ -12,6 +12,20 @@ tags: [前缀检查, 删除元素, signed size]
 alternatives: [compare, find, remove-erase 惯用法, Boost.StringAlgo]
 proposal: P0457R2
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "同时使用 starts_with 与 ends_with 处理通配符"
+    evidence: [ev-mold-string-prefix-suffix-glob-002]
+  - id: c2
+    statement: "用 starts_with 判断路径是否绝对"
+    evidence: [ev-mold-string-starts-with-path-001]
+  - id: c3
+    statement: "在 string_view 上检查 Itanium 名称前缀"
+    evidence: [ev-mold-string-view-starts-with-demangle-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

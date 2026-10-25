@@ -12,6 +12,20 @@ tags: [参数包, 编译期计算, 短路求值, 逗号折叠]
 alternatives: [递归模板, initializer_list 展开, std::apply, 手写循环]
 proposal: N4295
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "用带 true 初值的逻辑与折叠检查 tuple 中每个类型是否拥有资源"
+    evidence: [ev-abseil-fold-owner-001]
+  - id: c2
+    statement: "用逗号折叠把 tuple 中的列名依次追加到 SQL 更新语句"
+    evidence: [ev-drogon-fold-sql-update-003]
+  - id: c3
+    statement: "用逻辑或折叠在参数包中查找匹配的命名格式参数"
+    evidence: [ev-fmt-fold-named-arg-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

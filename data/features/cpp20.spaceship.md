@@ -12,6 +12,20 @@ tags: [比较, 排序, 运算符重写]
 alternatives: [operator< 全家桶, std::tie, 手写 compare]
 proposal: P0515R3
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "为 basic_json 实现三路比较并保留无序结果"
+    evidence: [ev-json-spaceship-basic-json-003]
+  - id: c2
+    statement: "用 <=> 比较 JSON Pointer 的 token 序列"
+    evidence: [ev-json-spaceship-pointer-001]
+  - id: c3
+    statement: "按预定义顺序比较值类型，无法比较时返回 unordered"
+    evidence: [ev-json-spaceship-value-type-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

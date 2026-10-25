@@ -12,6 +12,20 @@ tags: [解构, tuple, pair, 引用语义]
 alternatives: [std::get, .first/.second, std::tie, 自定义访问器]
 proposal: P0217R3
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "用结构化绑定接收 equal_range 返回的迭代器区间"
+    evidence: [ev-mold-structured-bindings-equal-range-003]
+  - id: c2
+    statement: "用结构化绑定同时接收 insert 返回的迭代器与插入标志"
+    evidence: [ev-mold-structured-bindings-insert-001]
+  - id: c3
+    statement: "把 to_chars 返回的指针与错误码绑定为具名变量"
+    evidence: [ev-spdlog-structured-bindings-to-chars-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

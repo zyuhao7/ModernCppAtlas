@@ -12,6 +12,20 @@ tags: [标签联合, 和类型, 访问模式, 异常安全]
 alternatives: [继承 + 虚函数, 手写 union + 标签, std::any, std::optional, std::expected]
 proposal: P0088R3
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "用 std::variant 表达“符号引用或数值地址”两种互斥结果"
+    evidence: [ev-mold-variant-defsym-parse-001]
+  - id: c2
+    statement: "先用 get_if 判断活动成员，再在 else 分支用 get 取另一成员"
+    evidence: [ev-mold-variant-get-if-value-002]
+  - id: c3
+    statement: "持有 variant 的引用，并用 get_if 过滤出符号类型的元素"
+    evidence: [ev-mold-variant-reference-filter-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

@@ -133,6 +133,14 @@ def rewrite_example_links(body: str, repo_url: str, branch: str) -> str:
     )
 
 
+def review_text(meta: dict) -> str:
+    review = meta.get("review")
+    if not review:
+        return "—"
+    label = "双审" if review["level"] == "verified" else "单审"
+    return f"{label}（{', '.join(review['reviewers'])}）"
+
+
 def feature_meta_table(meta: dict, records: list[dict]) -> str:
     levels = Counter(record["level"] for record in records)
     level_text = ", ".join(f"{name} {count}" for name, count in sorted(levels.items()))
@@ -142,14 +150,28 @@ def feature_meta_table(meta: dict, records: list[dict]) -> str:
         f"MSVC {compilers['msvc']}+"
     )
     return (
-        "| 标准 | 难度 | 状态 | 分级 | 证据 | 最后校验 |\n"
-        "|---|---|---|---|---|---|\n"
+        "| 标准 | 难度 | 状态 | 分级 | 证据 | 审阅 | 最后校验 |\n"
+        "|---|---|---|---|---|---|---|\n"
         f"| {meta['standard']} | {meta['difficulty']}/5 | {meta['status']} | "
         f"{meta['tier']} | {len(records)} 条（{level_text}） | "
-        f"{meta['last_verified']} |\n\n"
+        f"{review_text(meta)} | {meta['last_verified']} |\n\n"
         f"编译器支持：{compiler_text}。版本查询："
         "[cppreference 编译器支持](https://en.cppreference.com/w/cpp/compiler_support)。\n"
     )
+
+
+def claim_table(meta: dict) -> str:
+    claims = meta.get("claims") or []
+    if not claims:
+        return ""
+    lines = ["## 主张与证据", "", "| 主张 | 支持证据 |", "|---|---|"]
+    for claim in claims:
+        links = " · ".join(
+            f"[{evidence_id}](../evidence/{evidence_id}.md)"
+            for evidence_id in claim["evidence"]
+        )
+        lines.append(f"| {cell(claim['statement'])} | {links} |")
+    return "\n".join(lines) + "\n"
 
 
 def build_feature_pages(
@@ -173,6 +195,7 @@ def build_feature_pages(
             f"---\n{frontmatter}\n---\n\n"
             f"# {meta['title']}\n\n"
             f"{feature_meta_table(meta, records)}"
+            f"{claim_table(meta)}"
             f"{evidence_line}\n"
             f"{body}\n",
         )

@@ -12,6 +12,20 @@ tags: [编译期, 模板, 分支]
 alternatives: [SFINAE, tag dispatch, concepts]
 proposal: P0292R2
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "按 is_named_arg 在编译期选择读取 .value 或原对象"
+    evidence: [ev-fmt-if-constexpr-named-arg-002]
+  - id: c2
+    statement: "参数包为空时跳过递归查找"
+    evidence: [ev-fmt-if-constexpr-pack-guard-001]
+  - id: c3
+    statement: "按大小与整型特性选择字节交换路径"
+    evidence: [ev-json-if-constexpr-byteswap-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

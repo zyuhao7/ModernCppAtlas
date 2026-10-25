@@ -12,6 +12,20 @@ tags: [非拥有视图, 零拷贝, 生命周期]
 alternatives: [const std::string&, const char*, std::span<const char>]
 proposal: P0254R2
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "用 is_same 排除 string_view 的隐式转换重载"
+    evidence: [ev-json-string-view-exclusion-002]
+  - id: c2
+    statement: "验证 get<std::string_view>() 的取值语义"
+    evidence: [ev-json-string-view-get-test-003]
+  - id: c3
+    statement: "用别名统一标准格式化后端的 string_view 类型"
+    evidence: [ev-spdlog-string-view-alias-001]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

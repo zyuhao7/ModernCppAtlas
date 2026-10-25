@@ -12,6 +12,20 @@ tags: [约束, 模板, 重载决议]
 alternatives: [SFINAE, enable_if, tag dispatch]
 proposal: P0898R3
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "用 concept 包装已有的 is_formattable 特征"
+    evidence: [ev-fmt-concepts-formattable-001]
+  - id: c2
+    statement: "用 requires 限制标量相等比较重载"
+    evidence: [ev-json-concepts-scalar-eq-002]
+  - id: c3
+    statement: "同一标量约束复用于三路比较重载"
+    evidence: [ev-json-concepts-scalar-spaceship-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

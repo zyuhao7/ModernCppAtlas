@@ -12,6 +12,17 @@ tags: [读写锁, 共享锁, 缓存, 并发]
 alternatives: [std::mutex, std::shared_timed_mutex, std::atomic, 线程本地缓存]
 proposal: N4508
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "读路径用 shared_lock 快速命中，未命中再升级为 unique_lock 创建并二次检查"
+    evidence: [ev-mold-shared-mutex-output-section-001]
+  - id: c2
+    statement: "并行任务在 shared_lock 下复制共享映射，再在线程本地缓存上工作"
+    evidence: [ev-mold-shared-mutex-thread-cache-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

@@ -251,6 +251,172 @@ class TierTests(unittest.TestCase):
         self.assertTrue(any("at least 1" in error for error in errors))
 
 
+class ClaimsTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/cpp17.example.md")
+
+    def check(self, tier: str, claims: list[dict] | None, evidence: list[dict]):
+        report = self.validate.Report()
+        self.validate.check_claims(
+            report, self.path, {"tier": tier, "claims": claims}, evidence
+        )
+        return report.errors
+
+    def evidence(self, *ids: str, level: str = "manual") -> list[dict]:
+        return [{"id": evidence_id, "level": level} for evidence_id in ids]
+
+    def claim(self, claim_id: str, *evidence_ids: str) -> dict:
+        return {"id": claim_id, "evidence": list(evidence_ids)}
+
+    def test_tier_a_needs_a_ledger(self) -> None:
+        errors = self.check("A", None, self.evidence("ev-a"))
+        self.assertTrue(any("claims ledger" in error for error in errors))
+
+    def test_tier_b_may_omit_ledger(self) -> None:
+        self.assertEqual(self.check("B", None, self.evidence("ev-a")), [])
+
+    def test_claim_must_reference_published_evidence(self) -> None:
+        errors = self.check(
+            "A",
+            [self.claim("c1", "ev-candidate")],
+            self.evidence("ev-candidate", level="candidate"),
+        )
+        self.assertTrue(any("not published evidence" in error for error in errors))
+
+    def test_orphan_published_evidence_is_rejected(self) -> None:
+        errors = self.check(
+            "A", [self.claim("c1", "ev-a")], self.evidence("ev-a", "ev-b")
+        )
+        self.assertTrue(any("not referenced by any claim" in error for error in errors))
+
+    def test_duplicate_claim_ids_are_rejected(self) -> None:
+        errors = self.check(
+            "A",
+            [self.claim("c1", "ev-a"), self.claim("c1", "ev-a")],
+            self.evidence("ev-a"),
+        )
+        self.assertTrue(any("duplicate claim id" in error for error in errors))
+
+    def test_valid_ledger_passes(self) -> None:
+        errors = self.check(
+            "A",
+            [self.claim("c1", "ev-a"), self.claim("c2", "ev-b")],
+            self.evidence("ev-a", "ev-b"),
+        )
+        self.assertEqual(errors, [])
+
+
+class ReviewTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/cpp17.example.md")
+
+    def check(self, tier: str, review: dict | None) -> list[str]:
+        report = self.validate.Report()
+        self.validate.check_review(report, self.path, {"tier": tier, "review": review})
+        return report.errors
+
+    def review(self, level: str, *reviewers: str, author: str = "alice") -> dict:
+        return {"author": author, "level": level, "reviewers": list(reviewers)}
+
+    def test_tier_a_needs_a_review_block(self) -> None:
+        errors = self.check("A", None)
+        self.assertTrue(any("review block" in error for error in errors))
+
+    def test_manual_review_allows_one_reviewer(self) -> None:
+        self.assertEqual(self.check("B", self.review("manual", "alice")), [])
+
+    def test_manual_review_needs_a_reviewer(self) -> None:
+        errors = self.check("B", self.review("manual"))
+        self.assertTrue(any("needs a reviewer" in error for error in errors))
+
+    def test_verified_review_needs_two_reviewers(self) -> None:
+        errors = self.check("B", self.review("verified", "alice"))
+        self.assertTrue(any("two distinct reviewers" in error for error in errors))
+
+    def test_verified_review_needs_a_non_author(self) -> None:
+        errors = self.check("B", self.review("verified", "alice", "alice"))
+        self.assertTrue(
+            any("at least one non-author" in error for error in errors)
+            or any("two distinct reviewers" in error for error in errors)
+        )
+
+    def test_verified_review_passes_with_non_author(self) -> None:
+        self.assertEqual(self.check("A", self.review("verified", "alice", "bob")), [])
+
+
+class EvidenceReviewTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/ev-example.json")
+
+    def check(self, **overrides) -> list[str]:
+        evidence = {
+            "level": "manual",
+            "verified_by": ["alice"],
+            "verified_at": "2026-10-25",
+        }
+        evidence.update(overrides)
+        report = self.validate.Report()
+        self.validate.check_evidence_review(report, self.path, evidence)
+        return report.errors
+
+    def test_manual_needs_reviewer_and_date(self) -> None:
+        self.assertTrue(self.check(verified_by=[]))
+        self.assertTrue(self.check(verified_at=None))
+        self.assertEqual(self.check(), [])
+
+    def test_verified_needs_two_reviewers_and_author(self) -> None:
+        errors = self.check(
+            level="verified", verified_by=["alice"], submitted_by="alice"
+        )
+        self.assertTrue(any("two reviewers" in error for error in errors))
+        errors = self.check(
+            level="verified", verified_by=["alice", "alice"], submitted_by="alice"
+        )
+        self.assertTrue(any("non-author" in error for error in errors))
+        errors = self.check(level="verified", verified_by=["alice", "bob"])
+        self.assertTrue(any("submitted_by" in error for error in errors))
+        self.assertEqual(
+            self.check(
+                level="verified",
+                verified_by=["alice", "bob"],
+                submitted_by="alice",
+            ),
+            [],
+        )
+
+    def test_candidate_must_not_list_reviewers(self) -> None:
+        self.assertTrue(self.check(level="candidate", verified_at=None))
+        self.assertEqual(
+            self.check(level="candidate", verified_by=[], verified_at=None), []
+        )
+
+
+class ClaimTableTests(unittest.TestCase):
+    def test_renders_evidence_links_and_escapes_pipes(self) -> None:
+        build_site = load_tool("build_site")
+        table = build_site.claim_table(
+            {
+                "claims": [
+                    {
+                        "id": "c1",
+                        "statement": "读 | 写",
+                        "evidence": ["ev-one", "ev-two"],
+                    }
+                ]
+            }
+        )
+        self.assertIn("读 \\| 写", table)
+        self.assertIn("[ev-one](../evidence/ev-one.md)", table)
+        self.assertIn("[ev-two](../evidence/ev-two.md)", table)
+
+    def test_missing_ledger_renders_nothing(self) -> None:
+        build_site = load_tool("build_site")
+        self.assertEqual(build_site.claim_table({}), "")
+
+
 class ReportTests(unittest.TestCase):
     def test_path_outside_root_does_not_crash(self) -> None:
         validate = load_tool("validate")

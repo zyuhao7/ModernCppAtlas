@@ -246,6 +246,91 @@ def check_tier(
             report.error(path, f"example link does not exist: examples/{link}")
 
 
+def check_evidence_review(report: Report, path: Path, evidence: dict) -> None:
+    level = evidence["level"]
+    if level == "manual":
+        if len(evidence["verified_by"]) < 1 or evidence["verified_at"] is None:
+            report.error(path, "manual evidence needs a reviewer and verified_at")
+        return
+    if level == "verified":
+        if len(evidence["verified_by"]) < 2 or evidence["verified_at"] is None:
+            report.error(path, "verified evidence needs two reviewers and verified_at")
+        if not evidence.get("submitted_by"):
+            report.error(path, "verified evidence needs submitted_by")
+        elif not any(
+            reviewer != evidence["submitted_by"] for reviewer in evidence["verified_by"]
+        ):
+            report.error(
+                path, "verified evidence needs at least one non-author reviewer"
+            )
+        return
+    if level == "candidate" and evidence["verified_by"]:
+        report.error(path, "candidate evidence must not list reviewers")
+
+
+def check_claims(
+    report: Report,
+    path: Path,
+    feature: dict,
+    feature_evidence: list[dict],
+) -> None:
+    tier = feature.get("tier")
+    claims = feature.get("claims")
+    if tier == "A" and not claims:
+        report.error(path, "tier A needs a claims ledger")
+        return
+    if not claims:
+        return
+
+    published = {
+        item["id"]: item
+        for item in feature_evidence
+        if item["level"] in PUBLISHED_LEVELS
+    }
+    seen: set[str] = set()
+    referenced: set[str] = set()
+    for claim in claims:
+        claim_id = claim["id"]
+        if claim_id in seen:
+            report.error(path, f"duplicate claim id {claim_id}")
+        seen.add(claim_id)
+        for evidence_id in claim["evidence"]:
+            if evidence_id not in published:
+                report.error(
+                    path,
+                    f"claim {claim_id} references {evidence_id}, which is not "
+                    "published evidence for this feature",
+                )
+            referenced.add(evidence_id)
+    orphans = sorted(set(published) - referenced)
+    if orphans:
+        report.error(
+            path,
+            "published evidence not referenced by any claim: " + ", ".join(orphans),
+        )
+
+
+def check_review(report: Report, path: Path, feature: dict) -> None:
+    tier = feature.get("tier")
+    review = feature.get("review")
+    if tier == "A" and review is None:
+        report.error(path, "tier A needs a review block")
+        return
+    if review is None:
+        return
+    author = review["author"]
+    level = review["level"]
+    reviewers = review["reviewers"]
+    if level == "manual":
+        if not reviewers:
+            report.error(path, "manual review needs a reviewer")
+        return
+    if len(reviewers) < 2:
+        report.error(path, "verified review needs two distinct reviewers")
+    if not any(reviewer != author for reviewer in reviewers):
+        report.error(path, "verified review needs at least one non-author reviewer")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -329,25 +414,20 @@ def main() -> int:
                 path,
                 f"license {data['license']} allows location only, but excerpt is not empty",
             )
-        if data["level"] == "manual" and (
-            len(data["verified_by"]) < 1 or data["verified_at"] is None
-        ):
-            report.error(path, "manual evidence needs a reviewer and verified_at")
-        if data["level"] == "verified" and (
-            len(data["verified_by"]) < 2 or data["verified_at"] is None
-        ):
-            report.error(path, "verified evidence needs two reviewers and verified_at")
-        if data["level"] == "candidate" and data["verified_by"]:
-            report.error(path, "candidate evidence must not list reviewers")
+        check_evidence_review(report, path, data)
 
     for feature_id, data in features.items():
+        path = feature_paths[feature_id]
+        feature_evidence = evidence_by_feature[feature_id]
         check_tier(
             report,
-            feature_paths[feature_id],
+            path,
             data,
             feature_bodies[feature_id],
-            evidence_by_feature[feature_id],
+            feature_evidence,
         )
+        check_claims(report, path, data, feature_evidence)
+        check_review(report, path, data)
 
     libraries: dict[str, dict] = {}
     library_files = sorted(LIBRARY_DIR.glob("*.yaml")) if LIBRARY_DIR.exists() else []

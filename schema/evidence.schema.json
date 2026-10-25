@@ -80,6 +80,10 @@
     "discovered_by": {
       "enum": ["tree-sitter", "regex", "manual"]
     },
+    "submitted_by": {
+      "type": "string",
+      "minLength": 1
+    },
     "verified_by": {
       "type": "array",
       "items": { "type": "string", "minLength": 1 },

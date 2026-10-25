@@ -12,6 +12,20 @@ tags: [可选值, 值语义, 空状态]
 alternatives: [指针, std::unique_ptr, std::variant, std::expected]
 proposal: P0220R1
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "为空状态输出 none，有值时输出 optional(value)"
+    evidence: [ev-fmt-optional-formatter-001]
+  - id: c2
+    statement: "JSON null 映射为 nullopt，其他值 emplace"
+    evidence: [ev-json-optional-from-json-002]
+  - id: c3
+    statement: "有值写值，空状态写 null"
+    evidence: [ev-json-optional-to-json-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

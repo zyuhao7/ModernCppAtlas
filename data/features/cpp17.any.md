@@ -12,6 +12,20 @@ tags: [类型擦除, any_cast, 异构容器, RTTI]
 alternatives: [void*, std::variant, 基类 + 虚函数, std::shared_ptr<void>, absl::any]
 proposal: P0220R1
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "用 std::any 作为请求级键值容器的值类型"
+    evidence: [ev-drogon-any-attributes-001]
+  - id: c2
+    statement: "会话容器按需创建 any 值，并在锁内做类型检查后调用处理器"
+    evidence: [ev-drogon-any-session-modify-003]
+  - id: c3
+    statement: "读取前比较 typeid，再用 any_cast 指针形式取地址"
+    evidence: [ev-drogon-any-view-data-typecheck-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

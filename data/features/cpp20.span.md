@@ -12,6 +12,20 @@ tags: [连续内存, 非拥有视图, 边界]
 alternatives: [指针 + 长度, std::string_view, gsl::span, std::vector]
 proposal: P0122R7
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "返回可写 span<u8> 指向压缩缓冲区"
+    evidence: [ev-mold-span-buffer-003]
+  - id: c2
+    statement: "把重定位表表示为 span<const ElfRel<E>>"
+    evidence: [ev-mold-span-relocations-002]
+  - id: c3
+    statement: "用 span 与 subspan 把缓冲区切成固定大小的块"
+    evidence: [ev-mold-span-split-001]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

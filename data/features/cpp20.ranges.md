@@ -12,6 +12,20 @@ tags: [范围算法, 视图, 投影]
 alternatives: [迭代器对算法, 手写循环, range-v3, Boost.Range]
 proposal: P0896R4
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "为迭代代理特化 enable_borrowed_range"
+    evidence: [ev-json-ranges-borrowed-001]
+  - id: c2
+    statement: "用 ranges concept 验证迭代器与视图属性"
+    evidence: [ev-json-ranges-concepts-test-002]
+  - id: c3
+    statement: "用 views::reverse 反转 JSON 数组并比较"
+    evidence: [ev-json-ranges-reverse-view-test-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

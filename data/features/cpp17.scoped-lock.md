@@ -12,6 +12,20 @@ tags: [互斥量, 多锁, 死锁避免, RAII]
 alternatives: [std::lock_guard, std::unique_lock, std::lock, 手动按序加锁]
 proposal: P0156R2
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "用 scoped_lock 保护一次性输出，并在静态成员上直接声明 inline mutex"
+    evidence: [ev-mold-scoped-lock-emit-001]
+  - id: c2
+    statement: "在 tbb::parallel_for_each 的任务体内用 scoped_lock 保护共享符号状态"
+    evidence: [ev-mold-scoped-lock-parallel-export-003]
+  - id: c3
+    statement: "在并行循环中按符号加锁，保护多字段的一致性更新"
+    evidence: [ev-mold-scoped-lock-symbol-merge-002]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

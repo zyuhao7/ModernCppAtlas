@@ -27,7 +27,7 @@ jobs:
         run: uv run clang-format --dry-run --Werror examples/*/*.cpp
 
       - name: Check Markdown formatting
-        run: uv run mdformat --check README.md todo.md data/features
+        run: uv run mdformat --check README.md todo.md data/features .github/pull_request_template.md
 
   validate:
     runs-on: ubuntu-latest

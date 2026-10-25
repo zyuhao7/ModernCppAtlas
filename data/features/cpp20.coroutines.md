@@ -12,6 +12,20 @@ tags: [co_await, co_yield, co_return, promise_type, 无栈协程]
 alternatives: [回调, std::future, 手写状态机, 发送者/接收者]
 proposal: P0912R5
 last_verified: "2026-10-25"
+claims:
+  - id: c1
+    statement: "调度器按处理器返回类型分支，在 lambda 协程内 co_await 异步结果"
+    evidence: [ev-drogon-coroutine-binder-001]
+  - id: c2
+    statement: "在返回 Task<> 的 lambda 协程中用 try/catch 包裹 co_await，异常路径显式 co_return"
+    evidence: [ev-drogon-coroutine-filter-002]
+  - id: c3
+    statement: "把回调式 WebSocket 事件适配成 Task<>，在 lambda 内 co_await 协程处理器"
+    evidence: [ev-drogon-coroutine-websocket-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题

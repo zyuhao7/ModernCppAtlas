@@ -12,6 +12,20 @@ tags: [字节, 位运算, 二进制数据]
 alternatives: [unsigned char, char, uint8_t, std::bitset]
 proposal: P0298R3
 last_verified: "2026-10-24"
+claims:
+  - id: c1
+    statement: "验证 std::byte 按数值格式化"
+    evidence: [ev-fmt-byte-format-test-002]
+  - id: c2
+    statement: "为 std::byte 提供格式化器"
+    evidence: [ev-fmt-byte-formatter-001]
+  - id: c3
+    statement: "用 std::as_bytes 构造字节视图并解析"
+    evidence: [ev-json-byte-span-parse-test-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题
