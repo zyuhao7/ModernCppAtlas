@@ -9,6 +9,7 @@
   "why_typical": "反序列化时把 JSON 的空值与 C++ 的可选状态一一对应，调用方无需额外哨兵值。",
   "excerpt": "#ifdef JSON_HAS_CPP_17\n#ifndef JSON_USE_IMPLICIT_CONVERSIONS\ntemplate<typename BasicJsonType, typename T>\nvoid from_json(const BasicJsonType& j, std::optional<T>& opt)\n{\n    if (j.is_null())\n    {\n        opt = std::nullopt;\n    }\n    else\n    {\n        opt.emplace(j.template get<T>());\n    }\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

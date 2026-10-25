@@ -9,6 +9,7 @@
   "why_typical": "to_chars 返回 pair<ptr, errc>；成功分支用 ptr 计算长度，失败分支检查 ec，两个名字分别承担一种职责。",
   "excerpt": "    auto [ptr, ec] = std::to_chars(buf, buf + BUF_SIZE, n, 10);\n    if (ec == std::errc()) {\n        dest.append(buf, ptr);\n    } else {\n        throw_spdlog_ex(\"Failed to format int\", static_cast<int>(ec));\n    }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

@@ -9,6 +9,7 @@
   "why_typical": "同一函数内按 sizeof 和 is_integral_v 丢弃不适用分支，是处理字节序的常见写法。",
   "excerpt": "    static void byte_swap(NumberType& number)\n    {\n        constexpr std::size_t sz = sizeof(number);\n#ifdef __cpp_lib_byteswap\n        if constexpr (sz == 1)\n        {\n            return;\n        }\n        if constexpr(std::is_integral_v<NumberType>)\n        {\n            number = std::byteswap(number);\n            return;\n        }\n#endif\n        auto* ptr = reinterpret_cast<std::uint8_t*>(&number);",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

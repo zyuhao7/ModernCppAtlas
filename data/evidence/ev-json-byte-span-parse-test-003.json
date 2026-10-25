@@ -9,6 +9,7 @@
   "why_typical": "展示二进制缓冲区转 std::byte 视图后直接作为解析输入的标准形态，不经过字符串拷贝。",
   "excerpt": "#ifdef JSON_HAS_CPP_20\n#ifndef _LIBCPP_VERSION // see https://github.com/nlohmann/json/issues/4490\n#if __has_include(<span>)\n    SECTION(\"issue #2546 - parsing containers of std::byte\")\n    {\n        const char DATA[] = R\"(\"Hello, world!\")\"; // NOLINT(misc-const-correctness,cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)\n        const auto s = std::as_bytes(std::span(DATA));\n        const json j = json::parse(s);\n        CHECK(j.dump() == \"\\\"Hello, world!\\\"\");\n    }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

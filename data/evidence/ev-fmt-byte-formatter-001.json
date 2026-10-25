@@ -9,6 +9,7 @@
   "why_typical": "标准类型没有流运算符时，在库边界通过 format_as 转成整数并复用现有格式化路径。",
   "excerpt": "#ifdef __cpp_lib_byte\ntemplate <typename Char>\nstruct formatter<std::byte, Char> : formatter<unsigned, Char> {\n  FMT_CONSTEXPR static auto format_as(std::byte b) -> unsigned char {\n    return static_cast<unsigned char>(b);\n  }\n  template <typename Context>\n  FMT_CONSTEXPR auto format(std::byte b, Context& ctx) const\n      -> decltype(ctx.out()) {\n    return formatter<unsigned, Char>::format(format_as(b), ctx);\n  }\n};\n#endif",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

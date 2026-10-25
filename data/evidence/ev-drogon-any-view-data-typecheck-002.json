@@ -9,6 +9,7 @@
   "why_typical": "std::any 只做精确类型匹配；先用 type() 判断再转换，可以避免 bad_any_cast，并在类型不符时记录错误而不是终止请求。",
   "excerpt": "        static const T nullVal = T();\n        auto it = viewData_.find(key);\n        if (it != viewData_.end())\n        {\n            if (typeid(T) == it->second.type())\n            {\n                return *(std::any_cast<T>(&(it->second)));\n            }\n            else\n            {\n                LOG_ERROR << \"Bad type\";\n            }\n        }\n        return nullVal;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

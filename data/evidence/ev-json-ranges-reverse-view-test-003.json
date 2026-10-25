@@ -9,6 +9,7 @@
   "why_typical": "展示视图组合与 ranges 算法的典型配合：不复制数组，迭代时反向访问。",
   "excerpt": "        SECTION(\"views\")\n        {\n            SECTION(\"reverse\")\n            {\n                json j{1, 2, 3, 4, 5};\n                json j_expected{5, 4, 3, 2, 1};\n\n                auto reversed = j | std::views::reverse;\n                CHECK(std::ranges::equal(reversed, j_expected));\n            }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

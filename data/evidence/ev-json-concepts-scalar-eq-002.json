@@ -9,6 +9,7 @@
   "why_typical": "约束写在声明处，标量重载只在 ScalarType 满足条件时进入候选集，避免与容器重载竞争。",
   "excerpt": "    /// @brief comparison: equal\n    /// @sa https://json.nlohmann.me/api/basic_json/operator_eq/\n    template<typename ScalarType>\n    requires std::is_scalar_v<ScalarType>\n    bool operator==(ScalarType rhs) const noexcept\n    {\n        return *this == basic_json(rhs);\n    }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

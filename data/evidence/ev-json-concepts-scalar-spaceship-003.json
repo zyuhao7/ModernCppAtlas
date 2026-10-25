@@ -9,6 +9,7 @@
   "why_typical": "相关运算符共享一致的约束，避免一个重载接受某类型而另一个拒绝，减少条件编译分支的漂移。",
   "excerpt": "    /// @brief comparison: 3-way\n    /// @sa https://json.nlohmann.me/api/basic_json/operator_spaceship/\n    template<typename ScalarType>\n    requires std::is_scalar_v<ScalarType>\n    std::partial_ordering operator<=>(ScalarType rhs) const noexcept // *NOPAD*\n    {\n        return *this <=> basic_json(rhs); // *NOPAD*\n    }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

@@ -9,6 +9,7 @@
   "why_typical": "用类型特征在编译期分派，避免运行期分支，且丢弃分支不会对普通参数生成无效访问。",
   "excerpt": "// This ensures that the argument type is convertible to `const T&`.\ntemplate <typename T, int N, typename... Args>\nconstexpr auto get_arg_checked(const Args&... args) -> const T& {\n  const auto& arg = detail::get<N>(args...);\n  if constexpr (detail::is_named_arg<remove_cvref_t<decltype(arg)>>()) {\n    return arg.value;\n  } else {\n    return arg;\n  }\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

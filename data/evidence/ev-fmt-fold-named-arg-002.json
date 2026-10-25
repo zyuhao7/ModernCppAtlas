@@ -9,6 +9,7 @@
   "why_typical": "try_format_argument 对每个参数返回 bool；`(call || ...)` 在任一匹配时短路，空参数包得到 false 并进入统一的 format_error 分支，不需要额外的递归终止重载。",
   "excerpt": "  template <typename OutputIt, typename... T>\n  constexpr auto format(OutputIt out, const T&... args) const -> OutputIt {\n    bool found = (try_format_argument(out, name, args) || ...);\n    if (!found) {\n      FMT_THROW(format_error(\"argument with specified name is not found\"));\n    }\n    return out;\n  }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

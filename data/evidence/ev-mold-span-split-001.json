@@ -9,6 +9,7 @@
   "why_typical": "视图切片不复制底层数据，长度与起始位置随视图一起传递，是 span 的核心用途。",
   "excerpt": "template <typename T>\nstatic std::vector<std::span<T>> split(std::vector<T> &input, i64 unit) {\n  std::span<T> span(input);\n  std::vector<std::span<T>> vec;\n\n  while (span.size() >= unit) {\n    vec.push_back(span.subspan(0, unit));\n    span = span.subspan(unit);\n  }\n  if (!span.empty())\n    vec.push_back(span);\n  return vec;\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

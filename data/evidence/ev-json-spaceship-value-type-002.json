@@ -9,6 +9,7 @@
   "why_typical": "JSON 类型序不构成全序，返回 partial_ordering 并显式给出 unordered，是偏序的典型用法。",
   "excerpt": "#if JSON_HAS_THREE_WAY_COMPARISON\n    if (l_index < order.size() && r_index < order.size())\n    {\n        return order[l_index] <=> order[r_index]; // *NOPAD*\n    }\n    return std::partial_ordering::unordered;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

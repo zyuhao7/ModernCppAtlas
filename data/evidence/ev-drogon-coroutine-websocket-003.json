@@ -9,6 +9,7 @@
   "why_typical": "WebSocket 接口本身是回调风格；框架用 async_run 启动一个 Task<> 协程桥接旧接口，让业务侧可以写 handleNewMessageCoro 这样的协程函数而不改变公共 API。",
   "excerpt": "        drogon::async_run([objPtr,\n                           conn,\n                           message = std::move(message),\n                           type]() mutable -> Task<> {\n            co_await objPtr->handleNewMessageCoro(conn,\n                                                  std::move(message),\n                                                  type);\n        });",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

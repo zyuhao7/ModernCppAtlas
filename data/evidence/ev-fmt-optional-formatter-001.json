@@ -9,6 +9,7 @@
   "why_typical": "把可选值的两种状态显式格式化，避免日志里把空状态与默认值混淆。",
   "excerpt": "  template <typename FormatContext>\n  auto format(const std::optional<T>& opt, FormatContext& ctx) const\n      -> decltype(ctx.out()) {\n    if (!opt) return detail::write<Char>(ctx.out(), none);\n\n    auto out = ctx.out();\n    out = detail::write<Char>(out, optional);\n    ctx.advance_to(out);\n    out = underlying_.format(*opt, ctx);\n    return detail::write(out, ')');\n  }\n};",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

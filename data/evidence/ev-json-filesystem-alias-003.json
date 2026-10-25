@@ -9,6 +9,7 @@
   "why_typical": "兼容旧标准库时把差异限制在一个别名里，上层代码只依赖 std_fs，避免在业务路径散布条件编译。",
   "excerpt": "#elif JSON_HAS_FILESYSTEM\n#include <filesystem> // NOLINT(build/c++17)\nNLOHMANN_JSON_NAMESPACE_BEGIN\nnamespace detail\n{\nnamespace std_fs = std::filesystem;\n}  // namespace detail\nNLOHMANN_JSON_NAMESPACE_END",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

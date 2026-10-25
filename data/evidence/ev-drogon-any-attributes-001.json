@@ -9,6 +9,7 @@
   "why_typical": "HTTP 请求属性由框架与业务代码共同写入，类型在编译期无法统一；map<string, any> 保存任意可复制值，并在读取时由调用方恢复具体类型。",
   "excerpt": "    std::any &operator[](const std::string &key)\n    {\n        return attributesMap_[key];\n    }\n\n    /**\n     * @brief Insert a key-value pair\n     * @note here the any object can be created implicitly. for example\n     * @code\n       attributesPtr->insert(\"user name\", userNameString);\n       @endcode\n     */\n    void insert(const std::string &key, const std::any &obj)\n    {\n        attributesMap_[key] = obj;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

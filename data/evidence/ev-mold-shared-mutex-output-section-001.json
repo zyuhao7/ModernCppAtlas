@@ -9,6 +9,7 @@
   "why_typical": "输出段查找是读多写少；共享锁允许并发查找，创建路径改用独占锁，并在拿到独占锁后重新查找，避免重复插入。",
   "excerpt": "  static std::shared_mutex mu;\n  {\n    std::shared_lock lock(mu);\n    if (MergedSection *osec = find())\n      return osec;\n  }\n\n  // Create a new output section.\n  std::unique_lock lock(mu);\n  if (MergedSection *osec = find())\n    return osec;\n\n  MergedSection *osec = new MergedSection(name, flags, shdr.sh_type, entsize);\n  ctx.merged_sections.emplace_back(osec);\n  return osec;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

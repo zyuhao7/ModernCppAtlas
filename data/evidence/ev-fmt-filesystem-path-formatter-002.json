@@ -9,6 +9,7 @@
   "why_typical": "库在边界处适配标准类型，调用方无需先转成 string 再格式化，同时保留对齐、宽度与调试格式选项。",
   "excerpt": "template <typename Char> struct formatter<std::filesystem::path, Char> {\n private:\n  format_specs specs_;\n  detail::arg_ref<Char> width_ref_;\n  bool debug_ = false;\n  char path_type_ = 0;\n\n public:\n  FMT_CONSTEXPR void set_debug_format(bool set = true) { debug_ = set; }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

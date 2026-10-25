@@ -9,6 +9,7 @@
   "why_typical": "协程不会自动把异常交给调用方；这里在协程体内捕获 doFilter 的异常并转到统一错误处理，再用 co_return 结束，展示了协程与既有异常处理路径的衔接方式。",
   "excerpt": "            HttpResponsePtr resp;\n            try\n            {\n                resp = co_await doFilter(req);\n            }\n            catch (const std::exception &ex)\n            {\n                internal::handleException(ex, req, std::move(fcb));\n                co_return;\n            }\n            catch (...)\n            {\n                LOG_ERROR << \"Exception not derived from std::exception\";\n                co_return;\n            }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

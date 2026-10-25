@@ -9,6 +9,7 @@
   "why_typical": "小临界区只复制指针表，随后无锁查询线程本地副本；共享锁把写者互斥与读者并发结合起来，同时避免每节都抢锁。",
   "excerpt": "  tbb::parallel_for_each(ctx.objs, [&](ObjectFile<E> *file) {\n    // Make a per-thread cache of the main map to avoid lock contention.\n    // It makes a noticeable difference if we have millions of input sections.\n    MapType cache;\n    {\n      std::shared_lock lock(mu);\n      cache = map;\n    }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

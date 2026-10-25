@@ -20,6 +20,7 @@
     "verified_by",
     "verified_at",
     "is_test",
+    "generated",
     "notes"
   ],
   "properties": {
@@ -95,6 +96,22 @@
     },
     "is_test": {
       "type": "boolean"
+    },
+    "generated": {
+      "type": "boolean"
+    },
+    "generated_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approved_by", "approved_at", "rationale"],
+      "properties": {
+        "approved_by": { "type": "string", "minLength": 1 },
+        "approved_at": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
     },
     "notes": {
       "type": "string"

@@ -9,6 +9,7 @@
   "why_typical": "序列化与反序列化保持双向映射，空状态不会退化成未定义字段或默认值。",
   "excerpt": "#ifdef JSON_HAS_CPP_17\ntemplate<typename BasicJsonType, typename T,\n         enable_if_t<std::is_constructible<BasicJsonType, T>::value, int> = 0>\nvoid to_json(BasicJsonType& j, const std::optional<T>& opt)\n{\n    if (opt.has_value())\n    {\n        j = *opt;\n    }\n    else\n    {\n        j = nullptr;\n    }\n}\n#endif",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

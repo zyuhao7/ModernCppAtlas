@@ -9,6 +9,7 @@
   "why_typical": "循环只需处理其中一个活动成员；get_if 不抛异常，非空结果直接解引用，空的数值地址成员被跳过。",
   "excerpt": "  for (i64 i = 0; i < ctx.arg.defsyms.size(); i++) {\n    std::variant<Symbol<E> *, u64> &val = ctx.arg.defsyms[i].second;\n    if (Symbol<E> **sym = std::get_if<Symbol<E> *>(&val))\n      ctx.arg.undefined.push_back(*sym);\n  }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

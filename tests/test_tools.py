@@ -417,6 +417,59 @@ class ClaimTableTests(unittest.TestCase):
         self.assertEqual(build_site.claim_table({}), "")
 
 
+class GeneratedEvidenceTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/ev-example.json")
+
+    def check(self, **overrides) -> list[str]:
+        evidence = {"level": "manual", "generated": False}
+        evidence.update(overrides)
+        report = self.validate.Report()
+        self.validate.check_generated_evidence(report, self.path, evidence)
+        return report.errors
+
+    def exception(self, approver: str = "bob") -> dict:
+        return {
+            "approved_by": approver,
+            "approved_at": "2026-10-25",
+            "rationale": "生成文件是用户实际使用的唯一形式。",
+        }
+
+    def test_generated_review_requires_flag(self) -> None:
+        errors = self.check(generated_review=self.exception())
+        self.assertTrue(any("requires generated: true" in error for error in errors))
+
+    def test_generated_published_evidence_needs_exception(self) -> None:
+        errors = self.check(generated=True, submitted_by="alice")
+        self.assertTrue(any("rejected by default" in error for error in errors))
+
+    def test_generated_exception_needs_submitter(self) -> None:
+        errors = self.check(generated=True, generated_review=self.exception())
+        self.assertTrue(any("needs submitted_by" in error for error in errors))
+
+    def test_generated_exception_needs_independent_approver(self) -> None:
+        errors = self.check(
+            generated=True,
+            submitted_by="alice",
+            generated_review=self.exception("alice"),
+        )
+        self.assertTrue(any("not the submitter" in error for error in errors))
+
+    def test_generated_exception_with_independent_approver_passes(self) -> None:
+        self.assertEqual(
+            self.check(
+                generated=True,
+                submitted_by="alice",
+                generated_review=self.exception("bob"),
+            ),
+            [],
+        )
+
+    def test_unpublished_generated_candidate_needs_no_exception(self) -> None:
+        self.assertEqual(self.check(level="candidate", generated=True), [])
+
+
 class ReportTests(unittest.TestCase):
     def test_path_outside_root_does_not_crash(self) -> None:
         validate = load_tool("validate")

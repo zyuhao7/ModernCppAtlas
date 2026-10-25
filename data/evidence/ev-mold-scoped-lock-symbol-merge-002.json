@@ -9,6 +9,7 @@
   "why_typical": "sym.file、origin、value 与 sym_idx 必须一起更新；scoped_lock 让检查与写入处于同一临界区，离开 if 块即自动解锁。",
   "excerpt": "      if (!esym.is_undef())\n        continue;\n\n      std::scoped_lock lock(sym.mu);\n\n      if (sym.file &&\n          (!sym.esym().is_undef() || sym.file->priority <= file->priority))\n        continue;\n\n      sym.file = file;\n      sym.origin = 0;\n      sym.value = 0;\n      sym.sym_idx = i;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

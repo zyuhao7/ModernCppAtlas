@@ -9,6 +9,7 @@
   "why_typical": "测试锁定“输出 42 而不是字符 *”的语义，防止格式化器退化为字符输出。",
   "excerpt": "#ifdef __cpp_lib_byte\nTEST(base_test, format_byte) {\n  auto s = std::string();\n  fmt::format_to(std::back_inserter(s), \"{}\", std::byte(42));\n  EXPECT_EQ(s, \"42\");\n}\n#endif",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

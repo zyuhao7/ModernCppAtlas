@@ -9,6 +9,7 @@
   "why_typical": "把 filesystem::path 当作可查询对象，按目标字符类型选择窄字符串或 UTF-8 转换，是库适配标准类型的常见写法。",
   "excerpt": "template <typename Char, typename PathChar>\nauto get_path_string(const std::filesystem::path& p,\n                     const std::basic_string<PathChar>& native) {\n  if constexpr (std::is_same_v<Char, char> &&\n                std::is_same_v<PathChar, wchar_t>) {\n    return to_utf8<wchar_t>(native, to_utf8_error_policy::wtf);\n  } else {\n    return p.string<Char>();\n  }\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

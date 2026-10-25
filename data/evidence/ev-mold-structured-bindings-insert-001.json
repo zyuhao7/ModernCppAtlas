@@ -9,6 +9,7 @@
   "why_typical": "insert 返回 pair<iterator, bool>；直接命名 it 与 inserted，后续代码不必依赖 .first/.second 的位置含义。",
   "excerpt": "      auto [it, inserted] = map.insert({chunk->name, offset});\n      chunk->shdr.sh_name = it->second;\n      if (inserted)\n        offset += chunk->name.size() + 1;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

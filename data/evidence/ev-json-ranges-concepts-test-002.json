@@ -9,6 +9,7 @@
   "why_typical": "在编译期锁定 bidirectional_range、input_range 与 iterator_t 的关系，比只测运行时行为更早发现接口退化。",
   "excerpt": "        SECTION(\"concepts\")\n        {\n            using nlohmann::detail::iteration_proxy_value;\n            CHECK(std::bidirectional_iterator<json::iterator>);\n            CHECK(std::input_iterator<iteration_proxy_value<json::iterator>>);\n\n            CHECK(std::is_same<json::iterator, std::ranges::iterator_t<json>>::value);\n            CHECK(std::ranges::bidirectional_range<json>);\n\n            using nlohmann::detail::iteration_proxy;\n            using items_type = decltype(std::declval<json&>().items());\n            CHECK(std::is_same<items_type, iteration_proxy<json::iterator>>::value);\n            CHECK(std::is_same<iteration_proxy_value<json::iterator>, std::ranges::iterator_t<items_type>>::value);\n            CHECK(std::ranges::input_range<items_type>);\n        }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

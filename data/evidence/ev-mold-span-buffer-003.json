@@ -9,6 +9,7 @@
   "why_typical": "非拥有视图同时表达起始地址、长度与可写性，避免返回裸指针后另传长度。",
   "excerpt": "template <typename E>\nstd::span<u8> get_buffer(Context<E> &ctx, Chunk<E> *chunk) {\n  if (chunk->is_compressed)\n    return chunk->uncompressed_data;\n  return {ctx.buf + chunk->shdr.sh_offset, (size_t)chunk->shdr.sh_size};\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

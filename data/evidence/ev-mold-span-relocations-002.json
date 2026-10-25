@@ -9,6 +9,7 @@
   "why_typical": "只读连续序列用 span<const T> 表达，长度与地址绑定，调用方无需再传 size。",
   "excerpt": "template <>\nvoid InputSection<E>::apply_reloc_alloc(Context<E> &ctx, u8 *base) {\n  std::span<const ElfRel<E>> rels = get_rels(ctx);\n\n  for (i64 i = 0; i < rels.size(); i++) {\n    const ElfRel<E> &rel = rels[i];\n    if (rel.r_type == R_NONE)\n      continue;",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

@@ -9,6 +9,7 @@
   "why_typical": "显式告诉标准库该视图的迭代器可安全返回，是自定义视图接入 ranges 的关键定制点。",
   "excerpt": "#if JSON_HAS_RANGES\n    template <typename IteratorType>\n    inline constexpr bool ::std::ranges::enable_borrowed_range<::nlohmann::detail::iteration_proxy<IteratorType>> = true;\n#endif",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "regex",
   "verified_by": ["zyuhao7"],

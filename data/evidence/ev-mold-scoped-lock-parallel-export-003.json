@@ -9,6 +9,7 @@
   "why_typical": "并行算法不改变数据竞争规则；对每个 Symbol 单独加锁，使批量导出标记可以安全并发执行。",
   "excerpt": "    tbb::parallel_for_each(ctx.dsos, [&](SharedFile<E> *file) {\n      for (Symbol<E> *sym : file->symbols) {\n        if (sym->file && !sym->file->is_dso && sym->visibility != STV_HIDDEN &&\n            sym->ver_idx != VER_NDX_LOCAL) {\n          std::scoped_lock lock(sym->mu);\n          sym->is_exported = true;\n        }\n      }\n    });",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

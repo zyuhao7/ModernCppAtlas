@@ -9,6 +9,7 @@
   "why_typical": "在保留旧 trait 的同时提供 C++20 约束接口，条件编译隔离版本差异，迁移成本低。",
   "excerpt": "#if defined(__cpp_concepts) && __cpp_concepts >= 201907L\ntemplate <typename T, typename Char = char>\nconcept formattable = is_formattable<remove_reference_t<T>, Char>::value;\n#endif",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

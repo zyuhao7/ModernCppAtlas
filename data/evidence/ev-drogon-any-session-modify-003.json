@@ -9,6 +9,7 @@
   "why_typical": "sessionMap_ 存放跨请求的异构值；modify 在互斥量保护下查找、校验类型并传出引用，缺失时默认构造后插入。",
   "excerpt": "    void modify(const std::string &key, Callable &&handler)\n    {\n        std::lock_guard<std::mutex> lck(mutex_);\n        auto it = sessionMap_.find(key);\n        if (it != sessionMap_.end())\n        {\n            if (typeid(T) == it->second.type())\n            {\n                handler(*(std::any_cast<T>(&(it->second))));\n            }\n            else\n            {\n                LOG_ERROR << \"Bad type\";\n            }\n        }",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

@@ -212,6 +212,17 @@ def build_evidence_pages(
             link = permalink(record)
             notes = record["notes"].strip() or "无。"
             excerpt = record["excerpt"].rstrip() or "（无摘录）"
+            generated = record["generated"]
+            origin = "生成代码（例外已评审）" if generated else "项目源码"
+            generated_section = ""
+            if generated:
+                exception = record.get("generated_review") or {}
+                generated_section = (
+                    "## 生成代码例外\n\n"
+                    f"审核人：{exception.get('approved_by', '—')} @ "
+                    f"{exception.get('approved_at', '—')}\n\n"
+                    f"{exception.get('rationale', '—')}\n\n"
+                )
             write(
                 OUT_DIR / "evidence" / f"{record['id']}.md",
                 f"---\ntitle: {record['id']}\n---\n\n"
@@ -223,6 +234,7 @@ def build_evidence_pages(
                 f"| 行段 | L{record['lines'].replace('-', '-L')} |\n"
                 f"| 特性 | [{title}](../features/{feature_id}.md) |\n"
                 f"| 许可证 | {record['license']} |\n"
+                f"| 代码来源 | {origin} |\n"
                 f"| 级别 | {record['level']} |\n"
                 f"| 审核 | {reviewers} @ {record['verified_at'] or '—'} |\n"
                 f"| 测试代码 | {tested} |\n"
@@ -235,6 +247,7 @@ def build_evidence_pages(
                 "```cpp\n"
                 f"{excerpt}\n"
                 "```\n\n"
+                f"{generated_section}"
                 "## 备注\n\n"
                 f"{notes}\n\n"
                 f"[查看固定 commit 源码]({link}) · "

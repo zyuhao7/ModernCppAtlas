@@ -9,6 +9,7 @@
   "why_typical": "用依赖模板参数的条件保护变参递归的终止路径，是 if constexpr 的典型用途。",
   "excerpt": "template <typename... Args, typename Char>\nFMT_CONSTEXPR auto get_arg_index_by_name(basic_string_view<Char> name) -> int {\n#  if FMT_USE_NONTYPE_TEMPLATE_ARGS\n  if constexpr (sizeof...(Args) > 0)\n    return get_arg_index_by_name<0, Args...>(name);\n#  endif\n  (void)name;\n  return -1;\n}",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

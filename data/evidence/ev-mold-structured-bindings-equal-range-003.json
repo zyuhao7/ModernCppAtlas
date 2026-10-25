@@ -9,6 +9,7 @@
   "why_typical": "equal_range 返回 pair<iterator, iterator>；绑定名 begin/end 让后续区间计算与返回语句保持可读。",
   "excerpt": "  auto [begin, end] = std::equal_range(sorted_syms.begin(), sorted_syms.end(),\n                                       sym, [&](Symbol<E> *a, Symbol<E> *b) {\n    return a->esym().st_value < b->esym().st_value;\n  });\n\n  return {&*begin, (size_t)(end - begin)};",
   "license": "MIT",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

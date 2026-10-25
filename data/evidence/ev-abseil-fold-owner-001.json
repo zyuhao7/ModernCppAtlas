@@ -9,6 +9,7 @@
   "why_typical": "IsOwner 对 tuple 的判定需要覆盖零个到多个元素；`true && ...` 为非空包提供单位元，空 tuple 由外层 sizeof... 检查短路，避免为可变参数写递归偏特化。",
   "excerpt": "template <typename... T>\nstruct IsOwner<std::tuple<T...>>\n    : std::bool_constant<(sizeof...(T) > 0) &&\n                         // Uses a C++17 fold expression where '...' unpacks the\n                         // parameter pack T, and 'true &&' provides the base\n                         // case for the logical AND operation across all types.\n                         (true && ... && IsOwner<T>::value)> {};",
   "license": "Apache-2.0",
+  "generated": false,
   "level": "manual",
   "discovered_by": "tree-sitter",
   "verified_by": ["zyuhao7"],

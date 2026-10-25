@@ -268,6 +268,35 @@ def check_evidence_review(report: Report, path: Path, evidence: dict) -> None:
         report.error(path, "candidate evidence must not list reviewers")
 
 
+def check_generated_evidence(report: Report, path: Path, evidence: dict) -> None:
+    generated = evidence["generated"]
+    review = evidence.get("generated_review")
+    if not generated:
+        if review is not None:
+            report.error(path, "generated_review requires generated: true")
+        return
+    if evidence["level"] not in PUBLISHED_LEVELS:
+        return
+    if not evidence.get("submitted_by"):
+        report.error(path, "generated evidence needs submitted_by for exception review")
+    if review is None:
+        report.error(
+            path,
+            "generated code is rejected by default; add generated_review with an "
+            "independent approver and rationale",
+        )
+        return
+    if not review["rationale"].strip():
+        report.error(path, "generated_review needs a rationale")
+    if (
+        evidence.get("submitted_by")
+        and review["approved_by"] == evidence["submitted_by"]
+    ):
+        report.error(
+            path, "generated_review needs an approver who is not the submitter"
+        )
+
+
 def check_claims(
     report: Report,
     path: Path,
@@ -415,6 +444,7 @@ def main() -> int:
                 f"license {data['license']} allows location only, but excerpt is not empty",
             )
         check_evidence_review(report, path, data)
+        check_generated_evidence(report, path, data)
 
     for feature_id, data in features.items():
         path = feature_paths[feature_id]
