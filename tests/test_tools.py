@@ -474,6 +474,67 @@ class GeneratedEvidenceTests(unittest.TestCase):
         self.assertEqual(self.check(level="candidate", generated=True), [])
 
 
+class LinkCheckTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.links = load_tool("check_links")
+        self.tmp = tempfile.TemporaryDirectory()
+        self.site = Path(self.tmp.name) / "site"
+        self.site.mkdir()
+        self.config = Path(self.tmp.name) / "mkdocs.yml"
+        self.config.write_text(
+            "site_url: https://example.com/Atlas/\n", encoding="utf-8"
+        )
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def write(self, name: str, body: str) -> Path:
+        path = self.site / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body, encoding="utf-8")
+        return path
+
+    def test_relative_directory_link_and_anchor(self) -> None:
+        self.write("guide/index.html", '<h2 id="intro">intro</h2>')
+        source = self.write(
+            "index.html",
+            '<a href="guide/#intro">guide</a>'
+            '<a href="https://example.com">external</a>',
+        )
+        base = self.links.base_path(self.config)
+        checked, failures = self.links.check(self.site, base)
+        self.assertEqual(failures, [])
+        self.assertEqual(checked, 1)
+        target, fragment = self.links.target_for(
+            source, "guide/#intro", self.site, base
+        )
+        self.assertEqual(target, self.site / "guide" / "index.html")
+        self.assertEqual(fragment, "intro")
+
+    def test_missing_target_and_anchor_are_reported(self) -> None:
+        self.write("guide/index.html", "<p>no anchors</p>")
+        self.write(
+            "index.html",
+            '<a href="missing/">x</a><a href="guide/#gone">y</a>',
+        )
+        _, failures = self.links.check(self.site, "/")
+        self.assertTrue(any("missing target" in item for item in failures))
+        self.assertTrue(any("missing anchor" in item for item in failures))
+
+    def test_root_relative_link_uses_site_base(self) -> None:
+        self.write("features/index.html", "<p>ok</p>")
+        self.write("index.html", '<a href="/Atlas/features/">features</a>')
+        base = self.links.base_path(self.config)
+        self.assertEqual(base, "/Atlas/")
+        self.assertEqual(self.links.check(self.site, base)[1], [])
+
+    def test_root_relative_outside_base_is_broken(self) -> None:
+        self.write("index.html", '<a href="/elsewhere/">elsewhere</a>')
+        base = self.links.base_path(self.config)
+        failures = self.links.check(self.site, base)[1]
+        self.assertTrue(any("missing target" in item for item in failures))
+
+
 class ReportTests(unittest.TestCase):
     def test_path_outside_root_does_not_crash(self) -> None:
         validate = load_tool("validate")

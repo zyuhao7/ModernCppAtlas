@@ -150,6 +150,7 @@ uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、�
 uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
 uv run python -m unittest discover -s tests -v  # 工具与输出目录安全边界回归测试
 uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 生成并构建站点
+uv run tools/check_links.py                   # 站内链接与锚点检查（需先构建站点）
 uv run tools/check_search.py                  # 中文搜索冒烟（需先构建站点）
 ```
 

@@ -104,6 +104,9 @@ jobs:
       - name: Build site
         run: uv run mkdocs build --strict
 
+      - name: Check internal links
+        run: uv run tools/check_links.py
+
       - name: Check Chinese search
         run: uv run tools/check_search.py
 
