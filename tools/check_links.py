@@ -1,6 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
+# dependencies = ["pyyaml>=6.0"]
 # ///
 """Check internal links and anchors in a built MkDocs site."""
 
@@ -14,6 +15,8 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
+import yaml
+
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SITE_DIR = ROOT / "site"
 DEFAULT_CONFIG = ROOT / "mkdocs.yml"
@@ -25,7 +28,6 @@ LINK_ATTRS = {
     "iframe": ("src",),
     "source": ("src",),
 }
-SITE_URL = re.compile(r"^site_url:\s*(\S+)\s*$", re.MULTILINE)
 ID = re.compile(r"""\b(?:id|name)\s*=\s*["']([^"']+)["']""")
 
 
@@ -44,10 +46,11 @@ class LinkParser(HTMLParser):
 def base_path(config: Path) -> str:
     if not config.is_file():
         return "/"
-    match = SITE_URL.search(config.read_text(encoding="utf-8"))
-    if match is None:
+    options = yaml.safe_load(config.read_text(encoding="utf-8")) or {}
+    site_url = options.get("site_url")
+    if not site_url:
         return "/"
-    return urlsplit(match.group(1)).path or "/"
+    return urlsplit(site_url).path or "/"
 
 
 def target_for(
