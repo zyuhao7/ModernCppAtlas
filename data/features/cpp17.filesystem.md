@@ -70,13 +70,16 @@ relative: logs/server.log
 
 ```cpp
 std::error_code ec;
-for (const auto& entry : fs::directory_iterator(dir, ec)) {
-  if (ec) break;
+fs::directory_iterator it(dir, ec), end;
+if (ec) return;  // 构造失败，例如目录不存在或无权限
+for (; it != end; it.increment(ec)) {
+  if (ec) break;  // 自增失败，例如遍历中目录被删除
+  const auto& entry = *it;
   // ...
 }
 ```
 
-注意：范围 `for` 里的 `directory_iterator` 在自增时仍可能抛异常；要完全无异常，需要手动调用 `it.increment(ec)`。
+构造函数和 `increment` 都接收 `error_code`，所以单个无权限目录不会中断整个遍历；但构造失败时迭代器直接等于 `end`，必须在循环前检查 `ec`。范围 `for` 版本只在构造时能传 `ec`，自增失败仍会抛异常；需要完全无异常时使用上面的显式循环。
 
 **区分 `status` 与 `symlink_status`。** `status` 跟随符号链接，`symlink_status` 返回链接自身。删除链接用 `remove` 只删链接；遍历时想跳过链接目录，需先判断 `is_symlink`。
 

@@ -97,7 +97,7 @@ size: 1
 - **位运算的操作数类型要一致。** `b | 1` 不合法；写 `b | std::byte{1}`。移位量是整数，不是 `std::byte`。
 - **`std::byte{value}` 的列表初始化有范围检查。** 超出 `unsigned char` 范围的值不能用于初始化；窄化会报错。
 - **别名规则不等于可以随意重解释。** 读取对象表示合法，但把字节缓冲区当成任意类型对象使用仍受对齐、生命周期与有效表示约束。
-- **端序不会自动处理。** `std::byte` 只表示单字节；多字节整数跨平台读写仍需 `std::endian`、`std::byteswap` 或显式移位。
+- **端序不会自动处理。** `std::byte` 只表示单字节；多字节整数跨平台读写仍需结合 `std::endian` 判断，再用 `std::byteswap` 或显式移位转换。
 - **`std::as_bytes` 需要 C++20。** C++17 代码不能直接使用；跨标准复用时用条件编译隔离。
 
 ## 库联动
@@ -117,4 +117,4 @@ size: 1
 | `uint8_t`        | 是         | 有     | 否（但可打印） | 固定 8 位整数，非所有平台都有 |
 | `std::bitset<N>` | 否         | 位运算 | 可转字符串     | 固定长度位集合                |
 
-跨标准演进：C++17 引入 `std::byte` 与位运算；C++20 增加 `std::as_bytes` / `std::as_writable_bytes` 与 `std::span`；C++23 的 `std::byteswap` 补上端序转换工具。C++26 未改变 `std::byte` 的核心语义。
+跨标准演进：C++17 引入 `std::byte` 与位运算；C++20 增加 `std::as_bytes` / `std::as_writable_bytes` 与 `std::span`；C++23 的 `std::byteswap` 提供字节反转工具，但是否需要反转取决于主机端序与协议端序，仍要结合 `std::endian` 判断。C++26 未改变 `std::byte` 的核心语义。

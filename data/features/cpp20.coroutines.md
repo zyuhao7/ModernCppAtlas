@@ -7,7 +7,7 @@ category: [异步, 并发, 控制流]
 difficulty: 5
 status: final
 tier: A
-compilers: {gcc: "10", clang: "14", msvc: "19.28"}
+compilers: {gcc: "10", clang: "17", msvc: "19.28"}
 tags: [co_await, co_yield, co_return, promise_type, 无栈协程]
 alternatives: [回调, std::future, 手写状态机, 发送者/接收者]
 proposal: P0912R5
@@ -122,4 +122,4 @@ caught: boom
 | 协程                         | 是             | `co_await` / `co_yield` | promise 显式存储并重抛 | 依赖 awaiter 与执行器 | 帧分配、生命周期复杂   |
 | 发送者/接收者（P2300）       | 组合式         | 由调度器恢复            | 错误通道显式传递       | 内建组合与取消        | 学习曲线与库支持       |
 
-跨标准演进：协程进入 C++20（P0912R5）；C++23 增加 `std::generator`（P2502R2）；C++26 的 `std::execution`（P2300）补齐调度与组合模型。C++17 及以前只能使用回调、future 或第三方协程库；GCC 10、Clang 14、MSVC 19.28 起提供完整的 C++20 协程支持，早期版本的实验开关不能代表最终语义。
+跨标准演进：协程进入 C++20（P0912R5）；C++23 增加 `std::generator`（P2502R2）；C++26 的 `std::execution`（P2300）补齐调度与组合模型。C++17 及以前只能使用回调、future 或第三方协程库。cppreference 将 GCC 10 列为完整支持；Clang 17 与 MSVC 19.28 仍带 partial 标记，实际可用性取决于标准库与具体子特性，不能把版本号当作完整语义保证。

@@ -225,11 +225,15 @@ class TierTests(unittest.TestCase):
         errors = self.check("A", body, self.evidence(2))
         self.assertTrue(any("at least 3" in error for error in errors))
 
-    def test_tier_a_requires_production_evidence(self) -> None:
-        self.make_example("cpp17/example.cpp")
-        body = self.body("A", example="cpp17/example.cpp")
-        errors = self.check("A", body, self.evidence(3, tests=True))
-        self.assertTrue(any("non-test" in error for error in errors))
+    def test_published_evidence_requires_non_test_entry(self) -> None:
+        report = self.validate.Report()
+        self.validate.check_evidence_mix(
+            report, self.feature_path, self.evidence(3, tests=True)
+        )
+        self.assertTrue(any("non-test" in error for error in report.errors))
+        report = self.validate.Report()
+        self.validate.check_evidence_mix(report, self.feature_path, self.evidence(1))
+        self.assertEqual(report.errors, [])
 
     def test_tier_a_requires_sections_and_example(self) -> None:
         body = self.body("A", omit="横向对比")

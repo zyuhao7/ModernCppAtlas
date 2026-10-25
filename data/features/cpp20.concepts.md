@@ -7,7 +7,7 @@ category: [模板约束, 泛型编程]
 difficulty: 4
 status: final
 tier: A
-compilers: {gcc: "10", clang: "10", msvc: "19.23"}
+compilers: {gcc: "10", clang: "10", msvc: "19.30"}
 tags: [约束, 模板, 重载决议]
 alternatives: [SFINAE, enable_if, tag dispatch]
 proposal: P0898R3
@@ -84,7 +84,7 @@ int main() {
 
 **`requires` 子句与 `requires` 表达式是两件事。** 前者是写在声明上的约束（`template<class T> requires C<T>`），后者是产生布尔值的表达式（`requires(T t) { ... }`）。`requires requires` 是合法的，但通常拆成具名 concept 更易读。
 
-**约束默认在返回类型之前求值。** `template<class T> requires C<T> auto f(T) -> R;` 中，`C<T>` 先于函数体；默认参数、`noexcept` 说明符里的约束顺序也要注意。
+**约束与返回类型错误是两类诊断。** 约束在候选筛选阶段检查；返回类型或函数体内部的错误发生在约束满足之后。不要把返回类型里的硬错误误认为约束失败，也不要指望约束能替代对函数体的完整检查。
 
 ## 真实项目证据
 
@@ -99,7 +99,7 @@ int main() {
 ## 陷阱与边界
 
 - **concept 不保证语义正确。** 满足语法要求不代表满足数学性质；相等、排序、哈希的一致性仍需作者保证。
-- **检查顺序影响诊断。** 原子约束按书写顺序替换；把最容易失败、最能说明问题的约束放前面，错误信息更短。
+- **诊断指向失败的原子约束。** 把最容易失败、最能说明问题的约束放前面，通常能得到更短的信息；不要依赖短路求值来组织编译期逻辑。
 - **不要在 concept 里做重计算。** 每个候选、每次重载决议都可能实例化约束；复杂元编程会显著拖慢编译。
 - **`requires` 表达式不求值，但有副作用类型检查。** 表达式中的类型必须可解析；未定义的类型名会导致硬错误，而不是 `false`。
 - **concept 不能替代 `if constexpr`。** concept 控制“是否接受这个类型”，`if constexpr` 控制“在函数体内走哪条实现”。两者经常一起用，但职责不同。

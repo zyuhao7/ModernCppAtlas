@@ -7,7 +7,7 @@ category: [类型安全, 联合体, 值语义]
 difficulty: 3
 status: final
 tier: A
-compilers: {gcc: "7", clang: "4", msvc: "19.11"}
+compilers: {gcc: "7.1", clang: "4", msvc: "19.10"}
 tags: [标签联合, 和类型, 访问模式, 异常安全]
 alternatives: [继承 + 虚函数, 手写 union + 标签, std::any, std::optional, std::expected]
 proposal: P0088R3
@@ -38,7 +38,9 @@ review:
 
 ```cpp
 #include <cstdint>
+#include <iostream>
 #include <string>
+#include <string_view>
 #include <variant>
 
 using Value = std::variant<std::int64_t, std::string>;

@@ -40,7 +40,6 @@ EXAMPLE_LINK = re.compile(r"\]\(\.\./\.\./examples/([^)\s]+\.cpp)\)")
 TIER_RULES = {
     "A": {
         "min_evidence": 3,
-        "require_production": True,
         "require_example": True,
         "headings": [
             "解决什么问题",
@@ -54,7 +53,6 @@ TIER_RULES = {
     },
     "B": {
         "min_evidence": 2,
-        "require_production": False,
         "require_example": False,
         "headings": [
             "解决什么问题",
@@ -66,7 +64,6 @@ TIER_RULES = {
     },
     "C": {
         "min_evidence": 1,
-        "require_production": False,
         "require_example": False,
         "headings": [],
     },
@@ -225,10 +222,6 @@ def check_tier(
             f"tier {tier} needs at least {rule['min_evidence']} published "
             f"evidence entries, found {len(published)}",
         )
-    if rule["require_production"] and not any(
-        not item["is_test"] for item in published
-    ):
-        report.error(path, f"tier {tier} needs at least one non-test evidence entry")
     headings = {
         line[3:].strip() for line in body.splitlines() if line.startswith("## ")
     }
@@ -244,6 +237,16 @@ def check_tier(
         example = (path.parent / "../../examples" / link).resolve()
         if not example.is_file():
             report.error(path, f"example link does not exist: examples/{link}")
+
+
+def check_evidence_mix(
+    report: Report, path: Path, feature_evidence: list[dict]
+) -> None:
+    published = [item for item in feature_evidence if item["level"] in PUBLISHED_LEVELS]
+    if published and not any(not item["is_test"] for item in published):
+        report.error(
+            path, "published evidence must include at least one non-test entry"
+        )
 
 
 def check_evidence_review(report: Report, path: Path, evidence: dict) -> None:
@@ -456,6 +459,7 @@ def main() -> int:
             feature_bodies[feature_id],
             feature_evidence,
         )
+        check_evidence_mix(report, path, feature_evidence)
         check_claims(report, path, data, feature_evidence)
         check_review(report, path, data)
 

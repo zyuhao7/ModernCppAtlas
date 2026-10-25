@@ -7,7 +7,7 @@ category: [并发, 读写锁]
 difficulty: 3
 status: final
 tier: B
-compilers: {gcc: "5", clang: "3.7", msvc: "19.0"}
+compilers: {gcc: "6", clang: "3.7", msvc: "19.0"}
 tags: [读写锁, 共享锁, 缓存, 并发]
 alternatives: [std::mutex, std::shared_timed_mutex, std::atomic, 线程本地缓存]
 proposal: N4508
@@ -97,7 +97,7 @@ insert(key);
 
 **生命周期仍然由调用方保证。** `shared_lock`、`unique_lock` 都只借用互斥量；锁对象不能比 `shared_mutex` 活得更久。
 
-**与条件变量不兼容。** `std::condition_variable` 只接受 `std::unique_lock<std::mutex>`；等待/通知场景用普通互斥量，不要为了读并发强行换成读写锁。
+**条件变量需要区分类型。** `std::condition_variable` 只接受 `std::unique_lock<std::mutex>`；`std::condition_variable_any` 可以配合 `std::shared_lock` 和 `std::unique_lock` 使用，但等待/通知场景仍要重新检查条件，读多写少的缓存通常不需要它。不要为了读并发把普通等待队列强行换成读写锁。
 
 ## 横向对比
 
@@ -109,4 +109,4 @@ insert(key);
 | `std::atomic<T>`          | 是     | 是（单值） | 只适合单个可原子操作的值         |
 | 线程本地缓存 + 定期发布   | 是     | 少量       | 需要处理快照一致性               |
 
-跨标准演进：`std::shared_timed_mutex` 在 C++14 引入，`std::shared_mutex` 在 C++17 通过 N4508 加入，去掉了超时接口以获得更轻的实现。C++20 的 `std::atomic<std::shared_ptr<T>>` 为“整体替换快照”提供了另一条路径，适合读多写少且写操作只做整体替换的场景。
+跨标准演进：`std::shared_timed_mutex` 在 C++14 引入，`std::shared_mutex` 在 C++17 通过 N4508 加入，去掉了超时接口以获得更轻的实现。MSVC 从 19.0 Update 2（VS 2015 Update 2）起提供 `<shared_mutex>`；旧工具集上不能只按 `_MSC_VER >= 1900` 判断。C++20 的 `std::atomic<std::shared_ptr<T>>` 为“整体替换快照”提供了另一条路径，适合读多写少且写操作只做整体替换的场景。
