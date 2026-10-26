@@ -6,7 +6,7 @@ kind: language
 category: [控制流, 作用域]
 difficulty: 1
 status: final
-tier: B
+tier: A
 compilers: {gcc: "7", clang: "3.9", msvc: "19.11"}
 tags: [if, switch, 作用域, 局部变量, 初始化]
 alternatives: [外层声明, 额外代码块, 提前查找]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "在 if 初始化语句中保存三路比较结果，供条件与提前返回共同使用"
     evidence: [ev-abseil-init-statement-comparison-002]
+  - id: c3
+    statement: "在 if 初始化语句中声明 optional 解复用结果，把声明与判空合并"
+    evidence: [ev-mold-init-statement-optional-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -68,14 +71,36 @@ int main() {
 
 `it` 只在 `if` 语句内存在，条件里检查查找结果，分支里直接使用迭代器。`code` 在 `switch` 的条件和所有 `case` 中可见，作用域同样在语句结束时关闭。
 
+## 进阶用法
+
+初始化部分不限于一条简单声明。它可以和结构化绑定、RAII 锁以及 `switch` 一起使用，常见于“先取得资源或结果，再判断”的路径。
+
+```cpp
+if (auto [it, inserted] = counts.try_emplace("pear", 5); inserted) {
+  std::cout << it->first << '=' << it->second << '\n';
+}
+
+std::mutex mu;
+if (std::lock_guard lock(mu); pending > 0) {
+  std::cout << "pending " << pending << '\n';
+}
+```
+
+`try_emplace` 返回 `pair<iterator, bool>`；结构化绑定把两个结果拆开，`inserted` 直接作为条件，`it` 在分支内使用。锁的写法把加锁和条件放在同一条语句里，锁对象在条件求值前构造，离开 `if` 时析构；即使条件为假，锁也已经获取并释放。
+
+`switch` 的初始化变量在所有 `case` 中可见，但 `case` 标签之间不建立新作用域；在某个 `case` 里声明变量仍然要加花括号，初始化语句不会改变这条规则。
+
+完整示例见 [`examples/cpp17/init_statement.cpp`](../../examples/cpp17/init_statement.cpp)。
+
 ## 真实项目证据
 
 | 项目       | 位置                                                                                                                                              | 用法                                                        | 为什么典型                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------- |
 | mold       | [`src/input-sections.cc#L303-L313`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-sections.cc#L303-L313) | 在 `if` 条件中声明 `std::string_view` 并检查是否为空        | 诊断路径需要先取源码位置再决定输出，变量不应泄漏到外围 lambda |
 | abseil-cpp | [`absl/time/time.h#L1767-L1771`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/time/time.h#L1767-L1771) | 在 `if` 初始化语句中保存 `<=>` 结果，条件与返回分支共同使用 | 比较结果只在当前分支有意义，初始化语句避免额外的外层变量      |
+| mold       | [`src/input-files.cc#L43-L52`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-files.cc#L43-L52)           | 在 `if` 条件中声明 `std::optional<std::string_view>` 并判空 | 解复用结果只在成功分支使用，optional 不泄漏到后续控制流        |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前者是链接器的实际诊断代码，后者是时间库的公共头文件实现。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都来自生产代码，覆盖诊断输出、时间比较和解复用三条路径。
 
 ## 陷阱与边界
 
@@ -90,6 +115,12 @@ int main() {
 **初始化语句不是逗号表达式。** 条件前只能有一条声明或表达式语句，末尾的分号是语法的一部分，不能省略。
 
 **C++17 之前的工具链不认识这种语法。** 需要同时支持旧标准时，用外层声明加花括号，或把查找结果封装成小函数；预处理器分支会让控制流更难读。
+
+## 库联动
+
+- **mold**：诊断与解析路径反复用 `if` 初始化语句保存 `optional`、`string_view` 结果，避免把中间状态扩散到外围 lambda。
+- **Abseil**：时间比较结果直接进入 `if` 初始化，随后被条件与返回语句共同使用；标准库的 `map::try_emplace`、`set::insert` 返回的 `pair` 也适合与结构化绑定组合。
+- **与 RAII 的分工**：初始化语句只负责限定作用域；锁、文件句柄的释放仍由析构函数完成，把两者放进同一条语句可以减少状态泄漏。
 
 ## 横向对比
 

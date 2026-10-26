@@ -6,7 +6,7 @@ kind: library
 category: [并发, 读写锁]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "6", clang: "3.7", msvc: "19.0"}
 tags: [读写锁, 共享锁, 缓存, 并发]
 alternatives: [std::mutex, std::shared_timed_mutex, std::atomic, 线程本地缓存]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "并行任务在 shared_lock 下复制共享映射，再在线程本地缓存上工作"
     evidence: [ev-mold-shared-mutex-thread-cache-002]
+  - id: c3
+    statement: "发布路径用 shared_lock 读取订阅表快照，再在锁外分发消息"
+    evidence: [ev-drogon-shared-mutex-pubsub-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -65,14 +68,38 @@ private:
 
 读操作只持有共享锁，多个线程可以同时执行 `get`；`set` 获取独占锁后会等待所有读者退出。`mu_` 加 `mutable` 是因为 `get` 是 `const` 成员函数，但仍需锁定互斥量。
 
+## 进阶用法
+
+最常见的进阶写法是“共享锁快速命中，未命中再升级为独占锁”，因为标准没有原子的锁升级操作，必须释放共享锁后重新获取独占锁，并在拿到写锁后二次检查。
+
+```cpp
+std::string get_or_create(const std::string& key) {
+  {
+    std::shared_lock lock(mu_);
+    if (auto it = values_.find(key); it != values_.end())
+      return it->second;
+  }
+  std::unique_lock lock(mu_);
+  auto [it, inserted] = values_.try_emplace(key, key + "-value");
+  return it->second;
+}
+```
+
+`try_emplace` 在写锁内二次检查，避免两个线程都未命中后重复创建。锁对象用 CTAD 写成 `std::shared_lock lock(mu_)`，模板参数由构造函数推导。
+
+另一个方向是“读锁内只取快照，锁外处理”。读者在共享锁下复制 `shared_ptr` 或容器，释放锁后再遍历；这样慢操作不会阻塞写者，代价是快照可能短暂落后于最新状态。
+
+完整示例见 [`examples/cpp17/shared_mutex.cpp`](../../examples/cpp17/shared_mutex.cpp)。
+
 ## 真实项目证据
 
 | 项目        | 位置                                                                                                                                                | 用法                                             | 为什么典型                                               |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------- |
 | rui314/mold | [`src/output-chunks.cc#L2075-L2089`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/output-chunks.cc#L2075-L2089) | 共享锁查找输出段，未命中后用独占锁创建并二次检查 | 读多写少；拿到写锁后重新查找，避免并发插入重复对象       |
 | rui314/mold | [`src/passes.cc#L571-L578`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/passes.cc#L571-L578)                   | 并行任务在共享锁下复制映射，再使用线程本地副本   | 临界区只做拷贝，后续查询不持锁；注释明确说明为降低锁竞争 |
+| Drogon      | [`lib/inc/drogon/PubSubService.h#L51-L57`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/PubSubService.h#L51-L57) | 发布路径用共享锁读取订阅表快照，锁外分发消息     | 回调可能很慢，不能持锁执行；快照复制把临界区压到最短     |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 在 TBB 并行算法中使用该锁，说明共享锁与任务并行可以组合。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 与 Drogon 都把共享锁限制在快照复制或查找阶段，写锁路径再单独处理。
 
 ## 陷阱与边界
 
@@ -101,6 +128,12 @@ insert(key);
 **生命周期仍然由调用方保证。** `shared_lock`、`unique_lock` 都只借用互斥量；锁对象不能比 `shared_mutex` 活得更久。
 
 **条件变量需要区分类型。** `std::condition_variable` 只接受 `std::unique_lock<std::mutex>`；`std::condition_variable_any` 可以配合 `std::shared_lock` 和 `std::unique_lock` 使用，但等待/通知场景仍要重新检查条件，读多写少的缓存通常不需要它。不要为了读并发把普通等待队列强行换成读写锁。
+
+## 库联动
+
+- **mold**：输出段缓存用共享锁命中、独占锁创建；并行任务在共享锁下复制映射后改用线程本地缓存。
+- **Drogon**：发布订阅服务在共享锁下复制处理器表，锁外执行用户回调；同一类型用特性宏在 `shared_mutex` 与 `shared_timed_mutex` 间切换。
+- **与 `std::atomic<std::shared_ptr<T>>` 的分工**：读写锁适合“原地修改共享容器”；如果写操作总是整体替换只读快照，C++20 的原子 `shared_ptr` 可以完全去掉读锁。
 
 ## 横向对比
 

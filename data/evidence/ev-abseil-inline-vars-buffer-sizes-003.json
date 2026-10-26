@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-inline-vars-buffer-sizes-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/strings/numbers.h",
+  "lines": "177-179",
+  "feature": "cpp17.inline-variables",
+  "pattern": "在头文件中用 inline constexpr 定义多个翻译单元共享的缓冲区大小常量",
+  "why_typical": "格式化缓冲区上限需要被多个翻译单元看到；inline 变量保证全程序一个实体，又不必把定义搬到 .cc 文件。",
+  "excerpt": "inline constexpr int kFastToBuffer128Size = 41;\ninline constexpr int kFastToBufferSize = 32;\ninline constexpr int kSixDigitsToBufferSize = 16;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；命名空间级 inline constexpr 整型常量。"
+}

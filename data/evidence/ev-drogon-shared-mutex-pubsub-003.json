@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-shared-mutex-pubsub-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/PubSubService.h",
+  "lines": "51-57",
+  "feature": "cpp17.shared-mutex",
+  "pattern": "发布路径用 shared_lock 读取订阅表快照，再在锁外分发消息",
+  "why_typical": "读多写少的发布订阅场景；共享锁只保护快照复制，真正的回调分发不持锁，避免写者被长回调阻塞。",
+  "excerpt": "    void publish(const MessageType &message) const\n    {\n        std::shared_ptr<const HandlerMap> handlers;\n        {\n            std::shared_lock<SharedMutex> lock(mutex_);\n            handlers = handlersMap_;\n        }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；同一类型用特性宏在 shared_mutex 与 shared_timed_mutex 间切换。"
+}

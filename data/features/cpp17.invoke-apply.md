@@ -6,7 +6,7 @@ kind: library
 category: [泛型, 可调用对象]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "7.1", clang: "16", msvc: "19.13"}
 tags: [invoke, apply, 成员指针, tuple, 完美转发]
 alternatives: [直接调用, std::bind, lambda, std::mem_fn]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "用 std::invoke 在 call_once 路径上调用任意可调用对象"
     evidence: [ev-abseil-invoke-once-callable-002]
+  - id: c3
+    statement: "用 std::invoke 实现带返回类型归一化的通用调用器"
+    evidence: [ev-abseil-invoke-r-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -56,14 +59,32 @@ int main() {
 
 `std::invoke(&Counter::get, counter)` 等价于 `counter.get()`；成员指针、对象引用和参数由 `invoke` 统一拼装。`std::apply` 把 `args` 的两个元素依次传给 lambda，返回 `6`。
 
+## 进阶用法
+
+类型擦除层和分发表都依赖同一条性质：调用形式在编译期确定，但可调用对象的种类未知。`std::invoke` 把成员函数指针、数据成员指针、普通函数和仿函数都归一到同一种调用语法。
+
+```cpp
+int (Counter::*getter)() const = &Counter::get;
+int Counter::*member = &Counter::value;
+std::cout << std::invoke(getter, counter) << ' '
+          << std::invoke(member, counter) << '\n';
+```
+
+成员函数指针和对象分开保存后，调用点仍写 `std::invoke(pointer, object, args...)`，不必为每种可调用对象写分支。`std::apply` 则处理另一侧：实参已经在一个 tuple-like 对象里，展开时按 `std::get` 的顺序传给可调用对象。
+
+`std::apply` 展开的是 `std::tuple_size` 与 `std::get` 定义的结构；`std::tuple`、`std::pair`、`std::array` 都可以直接使用。自定义 tuple-like 类型要提供对应特化和 `get`，否则不能展开。
+
+完整示例见 [`examples/cpp17/invoke_apply.cpp`](../../examples/cpp17/invoke_apply.cpp)。
+
 ## 真实项目证据
 
 | 项目       | 位置                                                                                                                                                                                 | 用法                                             | 为什么典型                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------- |
 | Drogon     | [`orm_lib/inc/drogon/orm/Criteria.h#L119-L128`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/Criteria.h#L119-L128) | 用 `std::apply` 展开捕获的 tuple 并绑定 SQL 参数 | 参数个数在构造时确定，展开逻辑集中在一处，避免手写下标     |
 | abseil-cpp | [`absl/base/call_once.h#L180-L190`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/call_once.h#L180-L190)                              | 用 `std::invoke` 调用任意 Callable 并转发参数    | 同步原语必须支持函数指针、仿函数和成员指针，同时保留值类别 |
+| abseil-cpp | [`absl/functional/internal/any_invocable.h#L116-L124`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/internal/any_invocable.h#L116-L124) | 用 `std::invoke` 实现返回类型归一化的调用器      | 类型擦除层用同一入口处理 void 与非 void 返回值              |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前者展示 tuple 展开，后者展示通用调用。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们分别展示 tuple 展开、通用调用和类型擦除调用器。
 
 ## 陷阱与边界
 
@@ -80,6 +101,12 @@ int main() {
 **异常会原样传播。** `invoke` 和 `apply` 不捕获异常，也不改变调用约定；回调边界需要自己处理错误与清理。
 
 **C++20 起可用于常量求值。** `std::invoke` 与 `std::apply` 在 C++20 成为 `constexpr`，可以在编译期展开 tuple；C++17 代码不能依赖这一点。
+
+## 库联动
+
+- **Abseil**：`call_once` 用 `std::invoke` 转发任意可调用对象；`any_invocable`、`function_ref` 在类型擦除层复用它，并按返回值是否为 `void` 分支。
+- **Drogon**：ORM 的参数绑定用 `std::apply` 展开 tuple，协程映射器用 `std::apply` 把列名包展开进 SQL 拼接。
+- **与 `std::bind` 的分工**：`invoke`/`apply` 只负责“按统一规则调用”，不绑定参数；需要预绑定或占位符时仍用 lambda 或 `bind`，但转发层应优先保持单一调用入口。
 
 ## 横向对比
 

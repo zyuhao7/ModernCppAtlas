@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-init-statement-optional-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/input-files.cc",
+  "lines": "43-52",
+  "feature": "cpp17.init-statement",
+  "pattern": "在 if 条件中声明 optional 结果，把声明与判空合并到同一条语句",
+  "why_typical": "解复用结果只在成功时使用；初始化变量随 if 结束销毁，不会把 optional 泄漏到后续控制流。",
+  "excerpt": "template <typename E>\nstd::string_view demangle(const Symbol<E> &sym) {\n  if (is_rust_symbol(sym)) {\n    if (std::optional<std::string_view> s = demangle_rust(sym.name()))\n      return *s;\n  } else {\n    if (std::optional<std::string_view> s = demangle_cpp(sym.name()))\n      return *s;\n  }\n  return sym.name();",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产链接器代码；Rust 与 C++ 两条解复用路径都使用同一写法。"
+}

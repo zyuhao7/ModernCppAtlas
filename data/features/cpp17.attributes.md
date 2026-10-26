@@ -6,7 +6,7 @@ kind: language
 category: [语言机制, 诊断]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "7", clang: "3.9", msvc: "19.11"}
 tags: [nodiscard, maybe_unused, fallthrough, deprecated, 警告]
 alternatives: [编译器扩展属性, 文档约定, 静态分析]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "在虚接口上标注 [[deprecated]] 并给出替代函数名"
     evidence: [ev-drogon-deprecated-create-db-client-002]
+  - id: c3
+    statement: "在转换函数模板上标注 [[nodiscard]]，强制调用方消费转换结果"
+    evidence: [ev-abseil-nodiscard-downcast-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -67,14 +70,35 @@ int main() {
 
 `[[nodiscard]]` 让“丢弃 `compute` 的返回值”触发警告；`[[maybe_unused]]` 说明变量是有意保留但当前未读取；`[[fallthrough]]` 明确表示 `case 0` 故意继续执行 `case 1`；`[[deprecated]]` 把迁移方向写进诊断信息。
 
+## 进阶用法
+
+属性标注的位置决定它约束哪个实体。同一组标准属性可以标在函数、类、形参、变量和语句上；标错位置时，编译器要么忽略，要么直接报错。
+
+```cpp
+struct [[nodiscard]] Outcome {
+  int code;
+};
+
+Outcome make_outcome(int code) { return Outcome{code}; }
+
+int parse_or_default([[maybe_unused]] const char* text) { return 0; }
+```
+
+`[[nodiscard]]` 标在类上，约束的是所有返回 `Outcome` 的函数：调用 `make_outcome` 后不接住返回值会触发警告。标在形参上的 `[[maybe_unused]]` 表示接口保留了参数，但当前实现没有读取它；调试构建、平台分支和回调签名里很常见。
+
+属性说明符里可以一次写多个属性，例如 `[[nodiscard, maybe_unused]]`；也可以拆成多个说明符。标准属性之外的 `[[gnu::...]]`、`[[clang::...]]` 属于实现扩展，未识别的命名空间允许被忽略，不能把它们当成可移植保证。
+
+完整示例见 [`examples/cpp17/attributes.cpp`](../../examples/cpp17/attributes.cpp)，包含类级 `[[nodiscard]]`、`[[deprecated]]` 与 `[[fallthrough]]` 的组合。
+
 ## 真实项目证据
 
 | 项目   | 位置                                                                                                                                                                                     | 用法                                         | 为什么典型                                             |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------ |
 | Drogon | [`orm_lib/inc/drogon/orm/DbClient.h#L59-L64`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/DbClient.h#L59-L64)         | 在协程 awaiter 类型上标注 `[[nodiscard]]`    | awaiter 必须被 `co_await` 消费，丢弃临时对象通常是错误 |
 | Drogon | [`lib/inc/drogon/HttpAppFramework.h#L1511-L1516`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpAppFramework.h#L1511-L1516) | 在旧虚接口上标注 `[[deprecated]]` 与替代名称 | 保留源码兼容性，同时在编译期把调用方引向新 API         |
+| Abseil | [`absl/base/casts.h#L254-L256`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/casts.h#L254-L256) | 在 `down_cast` 函数模板上标注 `[[nodiscard]]` | 转换结果被丢弃通常是漏写赋值；属性把错误提前到调用点   |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。两者都位于生产头文件，而不是测试或示例。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都位于生产头文件或公共接口，而不是测试或示例。
 
 ## 陷阱与边界
 
@@ -91,6 +115,12 @@ int main() {
 **`[[deprecated]]` 的消息是实现定义的。** 消息字符串不保证原样出现在所有编译器的诊断里；迁移说明还应写进文档和发布说明，不能只依赖属性。
 
 **属性列表可以合并，但顺序与位置有规则。** 多个属性写在同一个 `[[...]]` 里，或分成多个属性说明符；声明、参数、类型上的可用位置由标准规定，放错位置可能被忽略或拒绝。
+
+## 库联动
+
+- **Drogon**：协程 awaiter 与 ORM 接口用 `[[nodiscard]]`、`[[deprecated]]` 表达调用契约；把项目警告当作错误后，误用会在构建阶段失败。
+- **Abseil**：`absl/base/attributes.h` 把标准属性与编译器扩展分层封装，对外提供 `ABSL_MUST_USE_RESULT` 等宏；对照源码可以看旧编译器上的降级写法。
+- **与静态分析的分工**：属性只把意图交给编译器；跨翻译单元、依赖数据流的约束仍要静态分析或运行时断言补足。
 
 ## 横向对比
 

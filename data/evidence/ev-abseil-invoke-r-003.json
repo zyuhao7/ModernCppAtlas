@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-invoke-r-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/functional/internal/any_invocable.h",
+  "lines": "116-124",
+  "feature": "cpp17.invoke-apply",
+  "pattern": "用 std::invoke 实现带返回类型归一化的通用调用器",
+  "why_typical": "类型擦除层必须同时处理成员指针、函数指针和仿函数；std::invoke 统一调用规则，再按 void 与非 void 分支处理返回值。",
+  "excerpt": "// An implementation of std::invoke_r of C++23.\ntemplate <class ReturnType, class F, class... P>\nReturnType InvokeR(F&& f, P&&... args) {\n  if constexpr (std::is_void_v<ReturnType>) {\n    std::invoke(std::forward<F>(f), std::forward<P>(args)...);\n  } else {\n    return std::invoke(std::forward<F>(f), std::forward<P>(args)...);\n  }\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；std::invoke_r 的提前实现，展示 invoke 在类型擦除中的作用。"
+}

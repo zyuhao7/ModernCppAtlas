@@ -6,7 +6,7 @@ kind: language
 category: [模板, 类型推导]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "7", clang: "5", msvc: "19.14"}
 tags: [CTAD, 类模板实参推导, 推导指引, initializer_list]
 alternatives: [显式模板实参, make_pair 与 make_tuple, 类型别名, C++20 聚合 CTAD]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "为作用域清理类型提供推导指引，同时保留旧工厂函数"
     evidence: [ev-abseil-ctad-cleanup-002]
+  - id: c3
+    statement: "为变参聚合类型手写推导指引，补足 C++17 缺少的聚合 CTAD"
+    evidence: [ev-abseil-ctad-overload-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -58,14 +61,35 @@ int main() {
 
 推导只发生在没有显式模板实参时。写 `std::pair<int, double> p{...}` 仍然完全合法，CTAD 不是强制的新语法。
 
+## 进阶用法
+
+显式指引不是注释，它和构造函数、隐式指引一起参与重载决议。多个指引都能匹配时，编译器按普通重载规则选择更特化的那一个；不能假设后写的优先。
+
+```cpp
+template <typename T> struct PtrBox {
+  T *ptr;
+};
+
+template <typename T> PtrBox(T *) -> PtrBox<T>;
+
+PtrBox box{new int{7}};  // 推导为 PtrBox<int>，不是 PtrBox<int*>
+```
+
+如果没有这条指引，隐式指引会把构造函数参数 `T*` 中的 `T` 推导成 `int*`，得到 `PtrBox<int*>`；显式指引表达的是“指针指向的类型才是参数”，这是库作者才能提供的语义。
+
+指引必须对调用点可见：它要和类模板放在同一命名空间，并在使用前声明。只在某个 `.cpp` 里定义的指引不会影响其他翻译单元；标准库的 `std::pair`、`std::vector` 指南由各自头文件统一提供。
+
+完整示例见 [`examples/cpp17/ctad.cpp`](../../examples/cpp17/ctad.cpp)，演示指针包装与标准容器两种推导。
+
 ## 真实项目证据
 
 | 项目       | 位置                                                                                                                                                                      | 用法                                    | 为什么典型                                                                 |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
 | abseil-cpp | [`absl/functional/function_ref.h#L226-L227`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/function_ref.h#L226-L227) | 从函数指针推导 `FunctionRef` 的签名参数 | 构造函数拿不到完整函数类型，显式指引补上从 `F*` 到 `FunctionRef<F>` 的映射 |
 | abseil-cpp | [`absl/cleanup/cleanup.h#L120-L124`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/cleanup/cleanup.h#L120-L124)                 | 为 `Cleanup` 提供 C++17 推导指引        | 新写法与 C++11 的 `MakeCleanup` 工厂并存，调用方按标准选择                 |
+| abseil-cpp | [`absl/functional/overload.h#L63-L67`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/overload.h#L63-L67)   | 为变参 `Overload` 聚合类型手写指引      | C++20 才有聚合 CTAD；C++17 必须显式补上，注释直接说明这条分界              |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。两者都是公共头文件中的用户定义推导指引，不是测试代码。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都是公共头文件中的用户定义推导指引，不是测试代码。
 
 ## 陷阱与边界
 
@@ -80,6 +104,12 @@ int main() {
 **指引必须对调用点可见。** 用户定义指引要和类模板放在同一命名空间，并在使用前声明；只在某个实现文件里定义的指引不会影响其他翻译单元。
 
 **显式模板实参会关闭推导。** 一旦写出 `Box<int> b{42}`，编译器不再寻找指引；混用显式和推导写法时，要确认模板参数与实参类型一致。
+
+## 库联动
+
+- **Abseil**：`Overload` 用显式指引支撑 C++17，`NoDestructor`、`optional_ref` 也用同类写法表达“从实参推导包装类型”的语义。
+- **标准库**：`std::pair`、`std::tuple`、`std::vector` 以及 `std::lock_guard`、`std::unique_lock` 都带推导指引；读标准库头文件可以对照隐式指引与显式指引的分工。
+- **与工厂函数的分工**：CTAD 解决“构造时省掉模板实参”，工厂函数解决“返回类型需要统一或调整”；库同时提供两者时，优先保留带名字的工厂接口以维持源码兼容。
 
 ## 横向对比
 

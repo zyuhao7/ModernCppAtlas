@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-nodiscard-downcast-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/casts.h",
+  "lines": "254-256",
+  "feature": "cpp17.attributes",
+  "pattern": "在模板转换函数上标注 [[nodiscard]]，提醒调用方必须使用转换结果",
+  "why_typical": "down_cast 返回转换后的指针；把它当语句丢弃几乎总是漏写赋值或误用。属性让这类错误在调用点触发警告，而不是等到解引用空指针。",
+  "excerpt": "template <typename To, typename From>  // use like this: down_cast<T*>(foo);\n[[nodiscard]]\ninline To down_cast(From* f) {  // so we only accept pointers",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；[[nodiscard]] 直接作用于函数模板。"
+}
