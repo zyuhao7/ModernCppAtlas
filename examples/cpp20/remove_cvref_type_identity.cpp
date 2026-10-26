@@ -1,11 +1,13 @@
 #include <iostream>
 #include <type_traits>
 
-template <typename T> struct Holder {
+template <typename T>
+struct Holder {
   using value_type = std::remove_cvref_t<T>;
   T value;
 };
-template <typename T> Holder(T &&) -> Holder<T>;
+template <typename T>
+Holder(T &&) -> Holder<T>;
 
 template <typename T>
 void select(T value, std::type_identity_t<T> same) {

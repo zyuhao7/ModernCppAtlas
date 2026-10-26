@@ -78,11 +78,11 @@ std::cout << std::invoke(getter, counter) << ' '
 
 ## 真实项目证据
 
-| 项目       | 位置                                                                                                                                                                                 | 用法                                             | 为什么典型                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ | ---------------------------------------------------------- |
-| Drogon     | [`orm_lib/inc/drogon/orm/Criteria.h#L119-L128`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/Criteria.h#L119-L128) | 用 `std::apply` 展开捕获的 tuple 并绑定 SQL 参数 | 参数个数在构造时确定，展开逻辑集中在一处，避免手写下标     |
-| abseil-cpp | [`absl/base/call_once.h#L180-L190`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/call_once.h#L180-L190)                              | 用 `std::invoke` 调用任意 Callable 并转发参数    | 同步原语必须支持函数指针、仿函数和成员指针，同时保留值类别 |
-| abseil-cpp | [`absl/functional/internal/any_invocable.h#L116-L124`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/internal/any_invocable.h#L116-L124) | 用 `std::invoke` 实现返回类型归一化的调用器      | 类型擦除层用同一入口处理 void 与非 void 返回值              |
+| 项目       | 位置                                                                                                                                                                                          | 用法                                             | 为什么典型                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------- |
+| Drogon     | [`orm_lib/inc/drogon/orm/Criteria.h#L119-L128`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/Criteria.h#L119-L128)          | 用 `std::apply` 展开捕获的 tuple 并绑定 SQL 参数 | 参数个数在构造时确定，展开逻辑集中在一处，避免手写下标     |
+| abseil-cpp | [`absl/base/call_once.h#L180-L190`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/call_once.h#L180-L190)                                       | 用 `std::invoke` 调用任意 Callable 并转发参数    | 同步原语必须支持函数指针、仿函数和成员指针，同时保留值类别 |
+| abseil-cpp | [`absl/functional/internal/any_invocable.h#L116-L124`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/internal/any_invocable.h#L116-L124) | 用 `std::invoke` 实现返回类型归一化的调用器      | 类型擦除层用同一入口处理 void 与非 void 返回值             |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们分别展示 tuple 展开、通用调用和类型擦除调用器。
 

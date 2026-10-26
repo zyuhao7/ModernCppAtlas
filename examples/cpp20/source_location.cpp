@@ -7,8 +7,8 @@ void trace(std::string_view tag,
   std::cout << tag << ' ' << loc.line() << '\n';
 }
 
-void wrapper(std::string_view tag,
-             const std::source_location &loc = std::source_location::current()) {
+void wrapper(std::string_view tag, const std::source_location &loc =
+                                       std::source_location::current()) {
   trace(tag, loc);
 }
 

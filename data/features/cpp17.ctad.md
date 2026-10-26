@@ -87,7 +87,7 @@ PtrBox box{new int{7}};  // 推导为 PtrBox<int>，不是 PtrBox<int*>
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- |
 | abseil-cpp | [`absl/functional/function_ref.h#L226-L227`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/function_ref.h#L226-L227) | 从函数指针推导 `FunctionRef` 的签名参数 | 构造函数拿不到完整函数类型，显式指引补上从 `F*` 到 `FunctionRef<F>` 的映射 |
 | abseil-cpp | [`absl/cleanup/cleanup.h#L120-L124`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/cleanup/cleanup.h#L120-L124)                 | 为 `Cleanup` 提供 C++17 推导指引        | 新写法与 C++11 的 `MakeCleanup` 工厂并存，调用方按标准选择                 |
-| abseil-cpp | [`absl/functional/overload.h#L63-L67`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/overload.h#L63-L67)   | 为变参 `Overload` 聚合类型手写指引      | C++20 才有聚合 CTAD；C++17 必须显式补上，注释直接说明这条分界              |
+| abseil-cpp | [`absl/functional/overload.h#L63-L67`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/functional/overload.h#L63-L67)             | 为变参 `Overload` 聚合类型手写指引      | C++20 才有聚合 CTAD；C++17 必须显式补上，注释直接说明这条分界              |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都是公共头文件中的用户定义推导指引，不是测试代码。
 

@@ -2,17 +2,21 @@
 #include <utility>
 #include <vector>
 
-template <typename T> struct Box {
+template <typename T>
+struct Box {
   T value;
 };
 
-template <typename T> Box(T) -> Box<T>;
+template <typename T>
+Box(T) -> Box<T>;
 
-template <typename T> struct PtrBox {
+template <typename T>
+struct PtrBox {
   T *ptr;
 };
 
-template <typename T> PtrBox(T *) -> PtrBox<T>;
+template <typename T>
+PtrBox(T *) -> PtrBox<T>;
 
 int main() {
   Box box{42};

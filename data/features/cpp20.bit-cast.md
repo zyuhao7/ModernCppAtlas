@@ -75,11 +75,11 @@ std::uint32_t mantissa = raw & 0x7fffff;
 
 ## 真实项目证据
 
-| 项目       | 位置                                                                                                                                            | 用法                                                  | 为什么典型                                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
-| fmt        | [`include/fmt/format.h#L266-L276`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/format.h#L266-L276)  | 常量求值时调用 `std::bit_cast`，运行期回退到 `memcpy` | 兼容层要支持 C++17，同时让 C++20 的常量求值路径使用标准实现 |
-| abseil-cpp | [`absl/base/casts.h#L168-L175`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/casts.h#L168-L175) | 特性可用时把 `absl::bit_cast` 别名到 `std::bit_cast`  | 保留旧接口名，同时让 C++20 用户直接使用标准实现             |
-| abseil-cpp | [`absl/base/internal/endian.h#L139-L147`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/internal/endian.h#L139-L147) | 用 `bit_cast` 在有符号与无符号整数间搬运位模式 | 端序转换不能改变位模式，数值转换会破坏原始字节             |
+| 项目       | 位置                                                                                                                                                                | 用法                                                  | 为什么典型                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------- |
+| fmt        | [`include/fmt/format.h#L266-L276`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/format.h#L266-L276)                      | 常量求值时调用 `std::bit_cast`，运行期回退到 `memcpy` | 兼容层要支持 C++17，同时让 C++20 的常量求值路径使用标准实现 |
+| abseil-cpp | [`absl/base/casts.h#L168-L175`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/casts.h#L168-L175)                     | 特性可用时把 `absl::bit_cast` 别名到 `std::bit_cast`  | 保留旧接口名，同时让 C++20 用户直接使用标准实现             |
+| abseil-cpp | [`absl/base/internal/endian.h#L139-L147`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/internal/endian.h#L139-L147) | 用 `bit_cast` 在有符号与无符号整数间搬运位模式        | 端序转换不能改变位模式，数值转换会破坏原始字节              |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前两条展示兼容层，第三条展示运行期位级转换的生产用法。
 

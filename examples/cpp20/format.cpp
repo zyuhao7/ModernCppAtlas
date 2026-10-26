@@ -9,14 +9,15 @@ struct Point {
 };
 
 namespace std {
-template <> struct formatter<Point> {
+template <>
+struct formatter<Point> {
   constexpr auto parse(format_parse_context &ctx) { return ctx.begin(); }
 
   auto format(const Point &p, format_context &ctx) const {
     return std::format_to(ctx.out(), "({}, {})", p.x, p.y);
   }
 };
-} // namespace std
+}  // namespace std
 
 int main() {
   std::string line = std::format("{:>8.2f}|{:<5}|{:04d}", 3.14159, "ab", 42);

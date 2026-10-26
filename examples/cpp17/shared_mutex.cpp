@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 class Registry {
-public:
+ public:
   std::string get_or_create(const std::string &key) {
     {
       std::shared_lock lock(mu_);
@@ -19,7 +19,7 @@ public:
     return it->second;
   }
 
-private:
+ private:
   mutable std::shared_mutex mu_;
   std::unordered_map<std::string, std::string> values_;
 };

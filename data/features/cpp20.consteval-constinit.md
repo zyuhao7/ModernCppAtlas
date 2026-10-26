@@ -77,11 +77,11 @@ static_assert(square(5) == 25);
 
 ## 真实项目证据
 
-| 项目        | 位置                                                                                                                                                      | 用法                                              | 为什么典型                                                   |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ |
-| rui314/mold | [`src/thunks.cc#L36-L43`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/thunks.cc#L36-L43)                             | 用 `consteval` 计算目标平台的分支距离上限         | 目标架构在编译期已知，结果参与代码生成，不应在运行时重复计算 |
-| abseil-cpp  | [`absl/base/attributes.h#L842-L847`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/attributes.h#L842-L847) | 用 `__cpp_constinit` 检测并映射到标准 `constinit` | 兼容层在可用时直接使用标准关键字，明确静态初始化保证         |
-| fmt         | [`include/fmt/base.h#L2698-L2709`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2698-L2709)         | 用 `consteval` 构造函数在编译期校验格式串         | 立即函数保证格式串检查只发生在常量求值中，运行期字符串无法绕过 |
+| 项目        | 位置                                                                                                                                                      | 用法                                              | 为什么典型                                                     |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| rui314/mold | [`src/thunks.cc#L36-L43`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/thunks.cc#L36-L43)                             | 用 `consteval` 计算目标平台的分支距离上限         | 目标架构在编译期已知，结果参与代码生成，不应在运行时重复计算   |
+| abseil-cpp  | [`absl/base/attributes.h#L842-L847`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/attributes.h#L842-L847) | 用 `__cpp_constinit` 检测并映射到标准 `constinit` | 兼容层在可用时直接使用标准关键字，明确静态初始化保证           |
+| fmt         | [`include/fmt/base.h#L2698-L2709`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2698-L2709)            | 用 `consteval` 构造函数在编译期校验格式串         | 立即函数保证格式串检查只发生在常量求值中，运行期字符串无法绕过 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们覆盖 `consteval` 的两种生产用法与 `constinit` 的跨标准落地方式。
 

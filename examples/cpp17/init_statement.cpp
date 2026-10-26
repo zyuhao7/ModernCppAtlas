@@ -21,10 +21,10 @@ int main() {
   }
 
   switch (int code = 3; code) {
-  case 3:
-    std::cout << "three\n";
-    break;
-  default:
-    break;
+    case 3:
+      std::cout << "three\n";
+      break;
+    default:
+      break;
   }
 }

@@ -82,11 +82,11 @@ void select(T value, std::type_identity_t<T> same) {
 
 ## 真实项目证据
 
-| 项目       | 位置                                                                                                                                                        | 用法                                        | 为什么典型                                           |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------------------------------------- |
-| abseil-cpp | [`absl/meta/type_traits.h#L235-L240`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L235-L240) | 特性可用时把 `remove_cvref` 别名到标准实现  | 兼容层保留旧名称，让 C++20 编译器使用标准库实现      |
-| abseil-cpp | [`absl/meta/type_traits.h#L255-L257`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L255-L257) | 特性可用时把 `type_identity` 别名到标准实现 | 同一个头文件统一新旧类型工具，调用方不必区分标准版本 |
-| Drogon      | [`lib/inc/drogon/utils/coroutine.h#L858-L860`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/utils/coroutine.h#L858-L860) | 用 `std::remove_cvref_t` 还原成员 tuple 类型 | `decltype(member)` 带引用，剥掉后才能用 `tuple_element_t` 取元素 |
+| 项目       | 位置                                                                                                                                                                               | 用法                                         | 为什么典型                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------- |
+| abseil-cpp | [`absl/meta/type_traits.h#L235-L240`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L235-L240)                        | 特性可用时把 `remove_cvref` 别名到标准实现   | 兼容层保留旧名称，让 C++20 编译器使用标准库实现                  |
+| abseil-cpp | [`absl/meta/type_traits.h#L255-L257`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/meta/type_traits.h#L255-L257)                        | 特性可用时把 `type_identity` 别名到标准实现  | 同一个头文件统一新旧类型工具，调用方不必区分标准版本             |
+| Drogon     | [`lib/inc/drogon/utils/coroutine.h#L858-L860`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/utils/coroutine.h#L858-L860) | 用 `std::remove_cvref_t` 还原成员 tuple 类型 | `decltype(member)` 带引用，剥掉后才能用 `tuple_element_t` 取元素 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前两条由特性测试宏保护，第三条是协程等待器中的实际类型计算。
 

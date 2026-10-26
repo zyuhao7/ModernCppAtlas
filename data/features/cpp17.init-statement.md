@@ -98,7 +98,7 @@ if (std::lock_guard lock(mu); pending > 0) {
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------- |
 | mold       | [`src/input-sections.cc#L303-L313`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-sections.cc#L303-L313) | 在 `if` 条件中声明 `std::string_view` 并检查是否为空        | 诊断路径需要先取源码位置再决定输出，变量不应泄漏到外围 lambda |
 | abseil-cpp | [`absl/time/time.h#L1767-L1771`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/time/time.h#L1767-L1771) | 在 `if` 初始化语句中保存 `<=>` 结果，条件与返回分支共同使用 | 比较结果只在当前分支有意义，初始化语句避免额外的外层变量      |
-| mold       | [`src/input-files.cc#L43-L52`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-files.cc#L43-L52)           | 在 `if` 条件中声明 `std::optional<std::string_view>` 并判空 | 解复用结果只在成功分支使用，optional 不泄漏到后续控制流        |
+| mold       | [`src/input-files.cc#L43-L52`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/input-files.cc#L43-L52)           | 在 `if` 条件中声明 `std::optional<std::string_view>` 并判空 | 解复用结果只在成功分支使用，optional 不泄漏到后续控制流       |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都来自生产代码，覆盖诊断输出、时间比较和解复用三条路径。
 

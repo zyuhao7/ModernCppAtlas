@@ -79,7 +79,7 @@ template <typename T> inline T cache;
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
 | Drogon     | [`orm_lib/src/postgresql_impl/PgConnection.h#L40-L50`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/src/postgresql_impl/PgConnection.h#L40-L50) | 在头文件中定义一组 SQLSTATE 常量                     | 多个翻译单元共享同一份错误码常量，定义不必搬到 `.cpp` |
 | abseil-cpp | [`absl/utility/utility.h#L69-L75`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/utility/utility.h#L69-L75)                                              | 用 inline constexpr 引用绑定标准库的 `in_place` 对象 | 兼容别名需要头文件自足，同时保持单一实体              |
-| abseil-cpp | [`absl/strings/numbers.h#L177-L179`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/strings/numbers.h#L177-L179)                                     | 在头文件中定义格式化缓冲区大小常量                   | 缓冲区上限被多个翻译单元使用，inline 变量免除类外定义 |
+| abseil-cpp | [`absl/strings/numbers.h#L177-L179`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/strings/numbers.h#L177-L179)                                          | 在头文件中定义格式化缓冲区大小常量                   | 缓冲区上限被多个翻译单元使用，inline 变量免除类外定义 |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都把定义放在头文件中，而不是依赖单独的 `.cpp`。
 

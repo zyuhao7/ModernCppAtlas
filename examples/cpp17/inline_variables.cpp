@@ -4,7 +4,7 @@
 namespace config {
 inline constexpr int kMaxRetries = 3;
 inline constexpr std::string_view kServiceName = "atlas";
-} // namespace config
+}  // namespace config
 
 struct Limits {
   static inline int calls = 0;

@@ -92,11 +92,11 @@ int parse_or_default([[maybe_unused]] const char* text) { return 0; }
 
 ## 真实项目证据
 
-| 项目   | 位置                                                                                                                                                                                     | 用法                                         | 为什么典型                                             |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------ |
-| Drogon | [`orm_lib/inc/drogon/orm/DbClient.h#L59-L64`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/DbClient.h#L59-L64)         | 在协程 awaiter 类型上标注 `[[nodiscard]]`    | awaiter 必须被 `co_await` 消费，丢弃临时对象通常是错误 |
-| Drogon | [`lib/inc/drogon/HttpAppFramework.h#L1511-L1516`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpAppFramework.h#L1511-L1516) | 在旧虚接口上标注 `[[deprecated]]` 与替代名称 | 保留源码兼容性，同时在编译期把调用方引向新 API         |
-| Abseil | [`absl/base/casts.h#L254-L256`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/casts.h#L254-L256) | 在 `down_cast` 函数模板上标注 `[[nodiscard]]` | 转换结果被丢弃通常是漏写赋值；属性把错误提前到调用点   |
+| 项目   | 位置                                                                                                                                                                                     | 用法                                          | 为什么典型                                             |
+| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| Drogon | [`orm_lib/inc/drogon/orm/DbClient.h#L59-L64`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/inc/drogon/orm/DbClient.h#L59-L64)         | 在协程 awaiter 类型上标注 `[[nodiscard]]`     | awaiter 必须被 `co_await` 消费，丢弃临时对象通常是错误 |
+| Drogon | [`lib/inc/drogon/HttpAppFramework.h#L1511-L1516`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpAppFramework.h#L1511-L1516) | 在旧虚接口上标注 `[[deprecated]]` 与替代名称  | 保留源码兼容性，同时在编译期把调用方引向新 API         |
+| Abseil | [`absl/base/casts.h#L254-L256`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/casts.h#L254-L256)                                          | 在 `down_cast` 函数模板上标注 `[[nodiscard]]` | 转换结果被丢弃通常是漏写赋值；属性把错误提前到调用点   |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们都位于生产头文件或公共接口，而不是测试或示例。
 

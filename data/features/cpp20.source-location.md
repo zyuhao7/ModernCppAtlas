@@ -77,11 +77,11 @@ void wrapper(std::string_view tag,
 
 ## 真实项目证据
 
-| 项目       | 位置                                                                                                                                                              | 用法                                             | 为什么典型                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------- |
-| fmt        | [`include/fmt/std.h#L480-L494`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L480-L494)                          | 为 `std::source_location` 特化格式化器           | 日志库需要在格式串里直接输出调用位置，格式化器让调用点保持简洁 |
-| abseil-cpp | [`absl/types/source_location.h#L57-L65`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/types/source_location.h#L57-L65) | 标准类型可用时把 `absl::SourceLocation` 别名过去 | 兼容层避免维护两套位置类型，接口可以逐步迁移到标准类型         |
-| abseil-cpp | [`absl/log/internal/log_message.h#L182-L187`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/log/internal/log_message.h#L182-L187) | 日志消息重载接收位置对象并输出文件与行号 | 生产日志接口把位置类型作为一等参数，调用方不必展开位置宏 |
+| 项目       | 位置                                                                                                                                                                        | 用法                                             | 为什么典型                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------- |
+| fmt        | [`include/fmt/std.h#L480-L494`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/std.h#L480-L494)                                    | 为 `std::source_location` 特化格式化器           | 日志库需要在格式串里直接输出调用位置，格式化器让调用点保持简洁 |
+| abseil-cpp | [`absl/types/source_location.h#L57-L65`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/types/source_location.h#L57-L65)           | 标准类型可用时把 `absl::SourceLocation` 别名过去 | 兼容层避免维护两套位置类型，接口可以逐步迁移到标准类型         |
+| abseil-cpp | [`absl/log/internal/log_message.h#L182-L187`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/log/internal/log_message.h#L182-L187) | 日志消息重载接收位置对象并输出文件与行号         | 生产日志接口把位置类型作为一等参数，调用方不必展开位置宏       |
 
 三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。三者都用特性测试宏保护标准类型；前两条覆盖格式化器与兼容别名，第三条展示日志接口如何消费位置对象。
 
