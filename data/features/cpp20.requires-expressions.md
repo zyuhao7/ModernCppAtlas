@@ -6,7 +6,7 @@ kind: language
 category: [概念, 模板]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "10", clang: "10", msvc: "19.30"}
 tags: [requires, concepts, 约束, SFINAE, 模板]
 alternatives: [SFINAE 与 enable_if, if constexpr 探测, 类型特征特化, 手写检测惯用法]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "用 requires 表达式把静态成员存在性封装成可复用的 concept"
     evidence: [ev-mold-requires-expression-concepts-002]
+  - id: c3
+    statement: "解构器测试覆盖 lambda 签名中 requires 表达式的修饰名"
+    evidence: [ev-abseil-requires-expression-mangling-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -67,14 +70,41 @@ int main() {
 
 `requires(T t) { ... }` 的参数是假设变量，只用于书写检查表达式，不会真的构造对象。`t.value;` 是简单要求，只检查成员访问是否合法；`typename T::value_type;` 是类型要求；`{ t.size() } -> std::convertible_to<std::size_t>;` 是复合要求，同时检查表达式合法且返回类型可转换。
 
+## 进阶用法
+
+requires 表达式通常包装成 concept，再用于约束重载。复合要求可以同时检查表达式合法、返回类型可转换，以及是否 `noexcept`。
+
+```cpp
+template <typename T>
+concept Sized = requires(const T &value) {
+  typename T::value_type;
+  { value.size() } -> std::convertible_to<std::size_t>;
+};
+
+template <Sized T>
+std::size_t length(const T &value) {
+  return value.size();
+}
+
+template <typename T>
+std::size_t length(const T &) {
+  return 0;
+}
+```
+
+`Sized<T>` 为真时，第一个重载比无约束版本更特殊，重载选择会优先选它；不满足时退回到返回 0 的版本。整个过程只检查表达式能否编译，不会调用 `value.size()`，因此 requires 表达式不能替代运行期前置条件检查。
+
+完整示例见 [`examples/cpp20/requires_expressions.cpp`](../../examples/cpp20/requires_expressions.cpp)。
+
 ## 真实项目证据
 
-| 项目 | 位置                                                                                                                                    | 用法                                                       | 为什么典型                                                 |
-| ---- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
-| mold | [`src/gdb-index.cc#L188-L192`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/gdb-index.cc#L188-L192) | 用 `requires { hdr.unit_type; }` 判断 DWARF 头是否有该字段 | 不同 DWARF 版本字段不同，条件表达式让旧格式仍能参与编译    |
-| mold | [`src/elf.h#L1796-L1798`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/elf.h#L1796-L1798)           | 用 `requires { E::R_IRELATIVE; }` 等定义架构能力概念       | 把“某架构是否提供某个静态成员”封装成概念，后续约束直接复用 |
+| 项目       | 位置                                                                                                                                                                                          | 用法                                                       | 为什么典型                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
+| mold       | [`src/gdb-index.cc#L188-L192`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/gdb-index.cc#L188-L192)                                                       | 用 `requires { hdr.unit_type; }` 判断 DWARF 头是否有该字段 | 不同 DWARF 版本字段不同，条件表达式让旧格式仍能参与编译    |
+| mold       | [`src/elf.h#L1796-L1798`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/elf.h#L1796-L1798)                                                                 | 用 `requires { E::R_IRELATIVE; }` 等定义架构能力概念       | 把“某架构是否提供某个静态成员”封装成概念，后续约束直接复用 |
+| abseil-cpp | [`absl/debugging/internal/demangle_test.cc#L295-L300`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/debugging/internal/demangle_test.cc#L295-L300) | 用测试覆盖 lambda 签名中 requires 表达式的修饰名           | requires 表达式进入符号修饰规则，解构器必须能处理嵌套检查  |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。两者都只用简单要求，正好展示 requires 表达式最基础的用法。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前两条来自 mold 生产路径，第三条是 Abseil 解构器测试，覆盖 requires 表达式在修饰名中的表示。
 
 ## 陷阱与边界
 
@@ -91,6 +121,12 @@ int main() {
 **requires 表达式不能吞掉所有错误。** 它把紧邻的无效表达式变成“不满足”，但模板实例化深处的硬错误仍可能直接报错。约束应尽量写在接口层，而不是依赖 requires 捕获所有实现细节。
 
 **概念约束按从左到右的合取求值。** `C<T> && requires { ... }` 中，左侧不满足时右侧不会继续检查。这个顺序可以用来先排除明显不合适的类型，但要避免把副作用写进约束。
+
+## 库联动
+
+- **mold**：用简单要求检测 DWARF 头字段，并把 ELF 架构是否提供重定位静态成员封装成可复用概念。
+- **Abseil**：解构器测试覆盖 requires 表达式进入函数签名修饰名后的符号，保证调试输出能还原 lambda 签名。
+- **与 requires 子句的分工**：requires 表达式求值为 `bool`，可以放在 `static_assert`、`if constexpr` 或概念定义中；requires 子句用于约束模板或函数，两者可以组合，但语法位置不同。
 
 ## 横向对比
 

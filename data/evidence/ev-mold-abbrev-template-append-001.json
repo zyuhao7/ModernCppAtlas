@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-abbrev-template-append-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "412-415",
+  "feature": "cpp20.abbreviated-templates",
+  "pattern": "在部分模板参数已写出的函数中，用 const auto& 接收未具名类型的容器",
+  "why_typical": "只需要元素类型 T 时，拼接参数的具体容器类型无关紧要；auto 参数让一个函数接受任意可遍历容器。",
+  "excerpt": "template <typename T>\ninline void append(std::vector<T> &x, const auto &y) {\n  x.insert(x.end(), y.begin(), y.end());\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；显式模板参数与缩写参数混用，展示只约束必要类型时的写法。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-abbrev-template-sort-compare-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "434-436",
+  "feature": "cpp20.abbreviated-templates",
+  "pattern": "用两个 auto 参数定义带比较器的排序辅助函数",
+  "why_typical": "容器与比较器类型都由调用方决定；两个 auto 参数各自推导，无需显式模板参数列表。",
+  "excerpt": "inline void sort(auto &vec, auto less) {\n  std::stable_sort(vec.begin(), vec.end(), less);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；与单参数重载并存，靠参数数量区分。"
+}

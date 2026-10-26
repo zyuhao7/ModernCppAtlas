@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-abbrev-template-sort-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "430-432",
+  "feature": "cpp20.abbreviated-templates",
+  "pattern": "用单个 auto& 参数定义适用于任意容器的排序辅助函数",
+  "why_typical": "排序逻辑只依赖 begin/end 与元素比较；缩写模板避免为每种容器重复写模板头。",
+  "excerpt": "inline void sort(auto &vec) {\n  std::stable_sort(vec.begin(), vec.end());\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；auto 参数在函数模板中等价于新增一个未约束的模板参数。"
+}

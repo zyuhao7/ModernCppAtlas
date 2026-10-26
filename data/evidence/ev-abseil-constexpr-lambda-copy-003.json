@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-constexpr-lambda-copy-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/algorithm/container_test.cc",
+  "lines": "1923-1930",
+  "feature": "cpp17.constexpr-lambda",
+  "pattern": "用 constexpr lambda 捕获静态常量数组并在编译期复制",
+  "why_typical": "lambda 可以按值捕获 constexpr 变量，在常量求值中调用算法生成另一份数据，并用 static_assert 校验。",
+  "excerpt": "TEST(ConstexprTest, Copy) {\n  static constexpr std::array kArray = {1, 2, 3};\n  static constexpr auto kArrayCopy = [] {\n    std::array<int, 3> array;\n    absl::c_copy(kArray, array.begin());\n    return array;\n  }();\n  static_assert(kArrayCopy == kArray);",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": true,
+  "notes": "测试路径；无捕获 lambda 仍可读取静态存储期的 constexpr 数组。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-constexpr-lambda-escape-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/strings/escaping.cc",
+  "lines": "392-399",
+  "feature": "cpp17.constexpr-lambda",
+  "pattern": "用立即调用的 constexpr lambda 在编译期生成转义序列表",
+  "why_typical": "查表数据由循环生成，比手写 256 项常量更易维护；constexpr 变量要求初始化在编译期完成。",
+  "excerpt": "constexpr std::array<std::array<char, 4>, 256> kCEscapedSequence = []() {\n  std::array<std::array<char, 4>, 256> a{};\n  for (size_t c = 0; c < 256; ++c) {\n    size_t char_len = kCEscapedLen[c];\n    if (char_len == 1) {\n      a[c][0] = static_cast<char>(c);\n    } else if (char_len == 2) {\n      a[c][0] = '\\\\';",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；C++17 起 lambda 在满足条件时隐式 constexpr，因此无需显式标注。"
+}

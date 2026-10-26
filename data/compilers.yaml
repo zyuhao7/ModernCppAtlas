@@ -24,6 +24,12 @@ features:
     msvc: "19.14"
     source: https://en.cppreference.com/w/cpp/compiler_support/17
     checked_at: "2026-10-26"
+  cpp17.constexpr-lambda:
+    gcc: "7"
+    clang: "5"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
   cpp17.filesystem:
     gcc: "8"
     clang: "7"
@@ -95,6 +101,12 @@ features:
     clang: "4"
     msvc: "19.10"
     source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp20.abbreviated-templates:
+    gcc: "10"
+    clang: "10"
+    msvc: "19.29"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-10-26"
   cpp20.bit-cast:
     gcc: "11"

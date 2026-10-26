@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-constexpr-lambda-for-each-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/algorithm/container_test.cc",
+  "lines": "1744-1750",
+  "feature": "cpp17.constexpr-lambda",
+  "pattern": "用立即调用的 constexpr lambda 在编译期填充并返回数组",
+  "why_typical": "测试需要在编译期构造预期值；lambda 内可以写循环和调用 constexpr 算法，结果直接参与 static_assert。",
+  "excerpt": "TEST(ConstexprTest, ForEach) {\n  static constexpr std::array<int, 3> kArray = [] {\n    std::array<int, 3> array = {1, 2, 3};\n    absl::c_for_each(array, [](int& x) { x += 1; });\n    return array;\n  }();\n  static_assert(kArray == std::array{2, 3, 4});",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": true,
+  "notes": "测试路径；示例验证 constexpr 算法与 lambda 在常量求值中的组合。"
+}

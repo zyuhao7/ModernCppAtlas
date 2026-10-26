@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-requires-expression-mangling-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/debugging/internal/demangle_test.cc",
+  "lines": "295-300",
+  "feature": "cpp20.requires-expressions",
+  "pattern": "解构器测试覆盖 lambda 签名中 requires 表达式的修饰名",
+  "why_typical": "requires 表达式会进入函数签名的修饰规则；解构器必须能处理嵌套 requires 与概念检查的符号。",
+  "excerpt": "TEST(Demangle, LambdaRequiresRequiresExpressionContainingTrue) {\n  char tmp[100];\n\n  // auto $_0::operator()<int>(int) const requires requires { true; }\n  ASSERT_TRUE(Demangle(\"_ZNK3$_0clIiEEDaT_QrqXLb1EE\", tmp, sizeof(tmp)));\n  EXPECT_STREQ(tmp, \"$_0::operator()<>()\");",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": true,
+  "notes": "测试路径；符号来自编译器实际生成的修饰名，验证解构器对 requires 表达式的支持。"
+}
