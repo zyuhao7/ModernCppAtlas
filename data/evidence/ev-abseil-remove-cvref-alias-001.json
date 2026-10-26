@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-remove-cvref-alias-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/meta/type_traits.h",
+  "lines": "235-240",
+  "feature": "cpp20.remove-cvref-type-identity",
+  "pattern": "特性可用时把 remove_cvref 别名到标准实现",
+  "why_typical": "兼容层保留旧名称，但让 C++20 编译器使用标准库的类型变换，减少重复实现与行为差异。",
+  "excerpt": "#if defined(__cpp_lib_remove_cvref) && __cpp_lib_remove_cvref >= 201711L\ntemplate <typename T>\nusing remove_cvref = std::remove_cvref<T>;\n\ntemplate <typename T>\nusing remove_cvref_t = std::remove_cvref_t<T>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；由 __cpp_lib_remove_cvref 特性宏保护。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-bit-cast-alias-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/casts.h",
+  "lines": "168-175",
+  "feature": "cpp20.bit-cast",
+  "pattern": "特性可用时把 absl::bit_cast 直接别名到 std::bit_cast",
+  "why_typical": "库保留旧接口名，但让 C++20 用户落到标准实现；注释明确写出回退实现的额外约束。",
+  "excerpt": "// The requirements of `absl::bit_cast` are more strict than that of\n// `std::bit_cast` unless compiler support is available. Specifically, without\n// compiler support, this implementation also requires `Dest` to be\n// default-constructible. In C++20, `absl::bit_cast` is replaced by\n// `std::bit_cast`.\n#if defined(__cpp_lib_bit_cast) && __cpp_lib_bit_cast >= 201806L\n\nusing std::bit_cast;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；别名依赖 __cpp_lib_bit_cast 特性测试宏。"
+}

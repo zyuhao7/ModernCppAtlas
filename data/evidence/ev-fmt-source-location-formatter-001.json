@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-source-location-formatter-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/std.h",
+  "lines": "480-494",
+  "feature": "cpp20.source-location",
+  "pattern": "为 std::source_location 提供格式化器",
+  "why_typical": "日志与诊断库需要在格式串里直接输出文件名、行号、列号和函数名；特化 formatter 后无需手工拆字段。",
+  "excerpt": "template <> struct formatter<std::source_location> {\n  FMT_CONSTEXPR auto parse(parse_context<>& ctx) { return ctx.begin(); }\n\n  template <typename FormatContext>\n  auto format(const std::source_location& loc, FormatContext& ctx) const\n      -> decltype(ctx.out()) {\n    auto out = ctx.out();\n    out = detail::write(out, loc.file_name());\n    out = detail::write(out, ':');\n    out = detail::write<char>(out, loc.line());\n    out = detail::write(out, ':');\n    out = detail::write<char>(out, loc.column());\n    out = detail::write(out, \": \");\n    out = detail::write(out, loc.function_name());\n    return out;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；由 __cpp_lib_source_location 特性检测保护。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-source-location-alias-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/types/source_location.h",
+  "lines": "57-65",
+  "feature": "cpp20.source-location",
+  "pattern": "特性可用时把兼容类型别名到 std::source_location",
+  "why_typical": "库要同时支持 C++17 与 C++20；在标准类型可用时直接复用，避免两套类型在接口上互不兼容。",
+  "excerpt": "// For OSS release, whether to alias to std::source_location is configurable via\n// config.h/options.h, similar to std::string_view/variant/etc.\n#if defined(ABSL_USES_STD_SOURCE_LOCATION) && \\\n    defined(ABSL_HAVE_STD_SOURCE_LOCATION)\nnamespace absl {\nABSL_NAMESPACE_BEGIN\nusing SourceLocation = std::source_location;\nABSL_NAMESPACE_END\n}  // namespace absl",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；别名由配置宏与标准特性宏共同控制。"
+}

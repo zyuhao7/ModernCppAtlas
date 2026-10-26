@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-bit-cast-fallback-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/format.h",
+  "lines": "266-276",
+  "feature": "cpp20.bit-cast",
+  "pattern": "在常量求值时调用 std::bit_cast，运行期回退到 memcpy",
+  "why_typical": "兼容层既要支持 C++17，又要在 C++20 的常量求值中保持合法；特性宏把标准实现嵌入回退路径。",
+  "excerpt": "// Implementation of std::bit_cast for pre-C++20.\ntemplate <typename To, typename From, FMT_ENABLE_IF(sizeof(To) == sizeof(From))>\nFMT_CONSTEXPR20 auto bit_cast(const From& from) -> To {\n#ifdef __cpp_lib_bit_cast\n  if (is_constant_evaluated()) return std::bit_cast<To>(from);\n#endif\n  auto to = To();\n  // The cast suppresses a bogus -Wclass-memaccess on GCC.\n  memcpy(static_cast<void*>(&to), &from, sizeof(to));\n  return to;\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；__cpp_lib_bit_cast 可用时在常量求值分支使用标准实现。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-spdlog-std-format-custom-type-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "example/example.cpp",
+  "lines": "283-289",
+  "feature": "cpp20.format",
+  "pattern": "为自定义类型特化 std::formatter 并复用 format_to",
+  "why_typical": "项目类型要同时适配 fmt 与 std::format；两个分支提供同名格式化行为，切换后端不改变调用方代码。",
+  "excerpt": "#else  // when using std::format\ntemplate <>\nstruct std::formatter<my_type> : std::formatter<std::string> {\n    auto format(my_type my, format_context &ctx) const -> decltype(ctx.out()) {\n        return std::format_to(ctx.out(), \"[my_type i={}]\", my.i);\n    }\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "随项目分发的示例代码，不是测试；展示 std::format 后端下的自定义格式化器写法。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-drogon-format-sql-double-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/SqlBinder.cc",
+  "lines": "286-292",
+  "feature": "cpp20.format",
+  "pattern": "特性可用时用 std::format 生成 SQL 浮点参数",
+  "why_typical": "同一段代码要在没有 <format> 的工具链上退回 stringstream；特性测试宏把两条路径隔开，保持行为一致。",
+  "excerpt": "#if defined(__cpp_lib_format)\n    return operator<<(std::format(\"{:.17g}\", f));\n#else\n    std::stringstream ss;\n    ss << std::setprecision(17) << f;\n    return operator<<(ss.str());\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；格式串固定精度，回退分支保持相同输出。"
+}
