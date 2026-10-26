@@ -255,7 +255,7 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB（2026-10-25 已完成，4,489
 | `std::any`             |        1 |        4 | 不足 3 条，B 或扩语料               |
 | 折叠表达式             |        1 |        0 | 不足 3 条，B 或扩语料               |
 
-结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
+结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；在 M0 阶段，`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
 **当前状态（2026-10-26 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 29 个完整条目，其中 28 个 A、1 个 B（`cpp20.requires-expressions`）。
 
