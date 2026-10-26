@@ -6,6 +6,12 @@ features:
     msvc: "19.11"
     source: https://en.cppreference.com/w/cpp/compiler_support/17
     checked_at: "2026-10-26"
+  cpp17.attributes:
+    gcc: "7"
+    clang: "3.9"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
   cpp17.byte:
     gcc: "7"
     clang: "5"
@@ -28,6 +34,18 @@ features:
     gcc: "7"
     clang: "3.9"
     msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.inline-variables:
+    gcc: "7"
+    clang: "3.9"
+    msvc: "19.12"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.invoke-apply:
+    gcc: "7.1"
+    clang: "16"
+    msvc: "19.13"
     source: https://en.cppreference.com/w/cpp/compiler_support/17
     checked_at: "2026-10-26"
   cpp17.optional:
@@ -70,6 +88,12 @@ features:
     gcc: "10"
     clang: "10"
     msvc: "19.30"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.consteval-constinit:
+    gcc: "11"
+    clang: "17"
+    msvc: "19.29"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-10-26"
   cpp20.coroutines:

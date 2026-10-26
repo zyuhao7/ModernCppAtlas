@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-consteval-max-distance-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/thunks.cc",
+  "lines": "36-43",
+  "feature": "cpp20.consteval-constinit",
+  "pattern": "用 consteval 计算目标平台的分支距离上限",
+  "why_typical": "目标架构在编译期已确定，距离上限不应在运行时重复计算；consteval 强制所有调用都产生常量。",
+  "excerpt": "static consteval i64 max_distance() {\n  // ARM64's branch has 26 bits immediate. The immediate is padded with\n  // implicit two-bit zeros because all instructions are 4 bytes aligned\n  // and therefore the least two bits are always zero. So the branch\n  // operand is effectively 28 bits long. That means the branch range is\n  // [-2^27, 2^27) or PC ± 128 MiB.\n  if (is_arm64<E>)\n    return 1 << 27;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；链接器的 thunk 距离计算，结果参与代码生成。"
+}

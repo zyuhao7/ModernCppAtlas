@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-inline-vars-inplace-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/utility/utility.h",
+  "lines": "69-75",
+  "feature": "cpp17.inline-variables",
+  "pattern": "用 inline constexpr 引用在头文件中提供兼容别名",
+  "why_typical": "Abseil 把已废弃的 in_place 别名定义为 inline constexpr 引用，头文件可被多个翻译单元包含而不会重复定义。",
+  "excerpt": "inline constexpr const std::in_place_t& in_place ABSL_DEPRECATE_AND_INLINE() =\n    std::in_place;\n\ntemplate <size_t I>\ninline constexpr const std::in_place_index_t<I>& in_place_index\n    [[deprecated(\"Use std::in_place_index<I> instead.\")]] =\n        std::in_place_index<I>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；兼容层把旧名字绑定到标准库对象，并在同一声明上标注弃用。"
+}

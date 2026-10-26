@@ -1,0 +1,19 @@
+{
+  "id": "ev-drogon-nodiscard-awaiter-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/DbClient.h",
+  "lines": "59-64",
+  "feature": "cpp17.attributes",
+  "pattern": "在协程 awaiter 类型上标注 [[nodiscard]]",
+  "why_typical": "awaiter 对象必须被 co_await 消费；把 [[nodiscard]] 放在类型声明上，丢弃临时对象时编译器会告警。",
+  "excerpt": "struct [[nodiscard]] SqlAwaiter : public CallbackAwaiter<Result>\n{\n    explicit SqlAwaiter(internal::SqlBinder &&binder)\n        : binder_(std::move(binder))\n    {\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；协程 awaiter 忘记 co_await 时不应静默丢弃。"
+}

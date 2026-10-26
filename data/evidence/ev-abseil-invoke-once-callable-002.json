@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-invoke-once-callable-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/call_once.h",
+  "lines": "180-190",
+  "feature": "cpp17.invoke-apply",
+  "pattern": "用 std::invoke 在 call_once 路径上调用任意可调用对象",
+  "why_typical": "call_once 的 Callable 可能是函数指针、仿函数或成员指针；std::invoke 统一处理并把参数按原值类别转发。",
+  "excerpt": "  uint32_t old_control = kOnceInit;\n  if (control->compare_exchange_strong(old_control, kOnceRunning,\n                                       std::memory_order_relaxed) ||\n      base_internal::SpinLockWait(control, std::size(trans), trans,\n                                  scheduling_mode) == kOnceInit) {\n    std::invoke(std::forward<Callable>(fn), std::forward<Args>(args)...);\n    old_control =\n        control->exchange(base_internal::kOnceDone, std::memory_order_release);\n    if (old_control == base_internal::kOnceWaiter) {\n      base_internal::SpinLockWake(control, true);\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；在同步原语内部调用用户提供的可调用对象。"
+}

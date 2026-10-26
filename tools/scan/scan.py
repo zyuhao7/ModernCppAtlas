@@ -144,6 +144,11 @@ NODE_MATCHERS = {
 
 
 REGEX_QUERIES = {
+    "cpp17.attributes": (
+        r"\[\[(?:nodiscard|maybe_unused|fallthrough|deprecated|likely|unlikely)\b"
+    ),
+    "cpp17.inline-variables": r"\binline\s+(?:constexpr|const)\b",
+    "cpp17.invoke-apply": r"\bstd::(?:invoke|apply)\b",
     "cpp17.optional": r"\bstd::optional\b",
     "cpp17.variant": r"\bstd::variant\b",
     "cpp17.string-view": r"\bstd::string_view\b",
@@ -160,6 +165,7 @@ REGEX_QUERIES = {
     "cpp20.jthread-stop-token": r"\bstd::(?:jthread|stop_token|stop_source)\b",
     "cpp20.source-location": r"\bstd::source_location\b",
     "cpp20.bit-cast": r"\bstd::bit_cast\b",
+    "cpp20.consteval-constinit": r"\b(?:consteval|constinit)\b",
     "cpp20.atomic-ref": r"\bstd::atomic_ref\b",
     "cpp20.latch-barrier-semaphore": (
         r"\bstd::(?:latch|barrier|counting_semaphore|binary_semaphore)\b"

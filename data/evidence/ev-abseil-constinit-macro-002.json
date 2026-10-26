@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-constinit-macro-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/attributes.h",
+  "lines": "842-847",
+  "feature": "cpp20.consteval-constinit",
+  "pattern": "用特性测试宏把兼容宏映射到标准 constinit",
+  "why_typical": "库需要同时支持 C++17 与 C++20；可用时直接使用 constinit，保证静态存储期变量没有动态初始化。",
+  "excerpt": "// For code or headers that are assured to only build with C++20 and up, prefer\n// just using the standard `constinit` keyword directly over this macro.\n//\n// Note that this attribute is redundant if the variable is declared constexpr.\n#if defined(__cpp_constinit) && __cpp_constinit >= 201907L\n#define ABSL_CONST_INIT constinit",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；注释同时说明 constexpr 变量不需要重复标注 constinit。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-drogon-deprecated-create-db-client-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpAppFramework.h",
+  "lines": "1511-1516",
+  "feature": "cpp17.attributes",
+  "pattern": "在虚接口上标注 [[deprecated]] 并给出替代函数名",
+  "why_typical": "旧接口仍保留以兼容现有调用方，同时在编译期提示迁移目标，是废弃 API 的标准做法。",
+  "excerpt": "    [[deprecated(\"Use addDbClient() instead\")]] virtual HttpAppFramework &\n    createDbClient(const std::string &dbType,\n                   const std::string &host,\n                   unsigned short port,\n                   const std::string &databaseName,\n                   const std::string &userName,",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；消息直接指出替代 API，保留源码兼容性。"
+}

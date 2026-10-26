@@ -1,0 +1,19 @@
+{
+  "id": "ev-drogon-inline-vars-pgstate-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/postgresql_impl/PgConnection.h",
+  "lines": "40-50",
+  "feature": "cpp17.inline-variables",
+  "pattern": "在头文件中定义一组 inline constexpr string_view 常量",
+  "why_typical": "PostgreSQL 错误码常量需要被多个翻译单元共享，inline constexpr 让定义直接留在头文件且只产生一个实体。",
+  "excerpt": "inline constexpr std::string_view pgNotNullViolationState{\"23502\"};\ninline constexpr std::string_view pgForeignKeyViolationState{\"23503\"};\ninline constexpr std::string_view pgUniqueViolationState{\"23505\"};\ninline constexpr std::string_view pgCheckViolationState{\"23514\"};\ninline constexpr std::string_view pgDataExceptionClass{\"22\"};\ninline constexpr std::string_view pgIntegrityConstraintViolationClass{\"23\"};\ninline constexpr std::string_view pgInsufficientPrivilegeState{\"42501\"};\ninline constexpr std::string_view pgOutOfMemoryState{\"53200\"};\ninline constexpr std::string_view pgDiskFullState{\"53100\"};\ninline constexpr std::string_view pgDefaultErrorMessage{\n    \"PostgreSQL query failed\"};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；头文件中的命名空间级常量，供 ORM 错误分类共享。"
+}

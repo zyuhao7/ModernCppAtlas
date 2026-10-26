@@ -1,0 +1,19 @@
+{
+  "id": "ev-drogon-apply-sql-binder-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/Criteria.h",
+  "lines": "119-128",
+  "feature": "cpp17.invoke-apply",
+  "pattern": "用 std::apply 把捕获的 tuple 展开成 SQL 参数绑定调用",
+  "why_typical": "参数个数和类型在构造时确定，std::apply 把 tuple 解包后逐个转发给 binder，避免手写下标展开。",
+  "excerpt": "        outputArgumentsFunc_ =\n            [args = std::make_tuple(std::forward<Arguments>(args)...)](\n                internal::SqlBinder &binder) mutable {\n                return std::apply(\n                    [&binder](auto &&...args) {\n                        (void)std::initializer_list<int>{\n                            (binder << std::forward<Arguments>(args), 0)...};\n                    },\n                    std::move(args));\n            };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；tuple 作为类型擦除后的参数包存储，再在绑定阶段展开。"
+}
