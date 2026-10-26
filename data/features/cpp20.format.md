@@ -6,7 +6,7 @@ kind: library
 category: [格式化, 文本]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "13", clang: "17", msvc: "19.29"}
 tags: [format, 格式化, 类型安全, 编译期检查]
 alternatives: [printf, iostream, fmt, std::to_chars]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "为自定义类型特化 std::formatter 并复用 std::format_to"
     evidence: [ev-spdlog-std-format-custom-type-002]
+  - id: c3
+    statement: "切换 std::format 后端时统一格式化字符串类型"
+    evidence: [ev-spdlog-std-format-binding-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -48,14 +51,40 @@ int main() {
 
 `{:.2f}` 固定两位小数，`{}` 按类型选择默认格式。格式串是字面量时，编译器会检查占位符数量与实参类型；要复用运行期格式串，必须改用 `std::vformat`，并接受失去编译期检查的代价。
 
+## 进阶用法
+
+自定义类型需要特化 `std::formatter`：`parse` 处理格式说明符，`format` 把值写入输出迭代器。实现内部可以继续调用 `std::format_to`，复用已有的格式化逻辑。
+
+```cpp
+struct Point {
+  int x;
+  int y;
+};
+
+namespace std {
+template <> struct formatter<Point> {
+  constexpr auto parse(format_parse_context &ctx) { return ctx.begin(); }
+
+  auto format(const Point &p, format_context &ctx) const {
+    return std::format_to(ctx.out(), "({}, {})", p.x, p.y);
+  }
+};
+} // namespace std
+```
+
+这个 `formatter` 只接受默认格式说明符；`format` 返回输出迭代器，可以继续链式写入。宽度、精度等说明仍按内置类型的语法书写，例如 `{:>8.2f}`；用 `std::format_to` 写入 `back_inserter` 时不会产生中间字符串。
+
+完整示例见 [`examples/cpp20/format.cpp`](../../examples/cpp20/format.cpp)。
+
 ## 真实项目证据
 
 | 项目   | 位置                                                                                                                                                               | 用法                                                 | 为什么典型                                                        |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | ----------------------------------------------------------------- |
 | Drogon | [`orm_lib/src/SqlBinder.cc#L286-L292`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/orm_lib/src/SqlBinder.cc#L286-L292) | 用 `std::format` 生成固定精度的 SQL 浮点参数         | 生产路径需要稳定的浮点文本；特性宏让旧工具链回退到 `stringstream` |
 | spdlog | [`example/example.cpp#L283-L289`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/example/example.cpp#L283-L289)                    | 为自定义类型特化 `std::formatter` 并调用 `format_to` | 项目同时支持 fmt 与 `std::format`，切换后端不改变调用方写法       |
+| spdlog | [`include/spdlog/common.h#L145-L156`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/common.h#L145-L156)            | 切换 `std::format` 后端时统一格式化字符串类型        | 公共接口同时兼容 fmt 与标准库，别名让后端差异止于头文件           |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前者是库的生产路径，后者是随项目分发的示例代码。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前两条分别覆盖生产路径与分发示例，第三条展示后端切换时如何统一格式化字符串类型。
 
 ## 陷阱与边界
 
@@ -72,6 +101,12 @@ int main() {
 **编译器支持差异要用特性宏判断。** 使用 `__cpp_lib_format` 检测 `<format>`；GCC 13、Clang 17 与 MSVC 19.29 才提供完整实现，旧标准库可能缺少部分格式化器。
 
 **浮点输出依赖实现细节。** 标准规定了格式语法，但最短表示、舍入和特殊值文本在库实现之间可能有细微差异；跨平台测试要比较解析后的值，而不是逐字符比较。
+
+## 库联动
+
+- **Drogon**：SQL 绑定器在特性宏下用 `std::format` 生成固定精度的浮点参数，旧工具链回退到 `stringstream`。
+- **spdlog**：公共头文件把格式化库抽象成 `fmt_lib` 别名，`std::format` 后端可用时将格式化字符串类型统一到 `std::format_string`，调用方不必区分后端。
+- **与 `std::print` 的分工**：C++23 的 `std::print` 直接写标准输出；需要先构造字符串或写入其他目标时，仍用 `std::format` 与 `std::format_to`。
 
 ## 横向对比
 

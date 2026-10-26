@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-remove-cvref-coroutine-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "858-860",
+  "feature": "cpp20.remove-cvref-type-identity",
+  "pattern": "用 std::remove_cvref_t 把成员表达式还原成裸 tuple 类型",
+  "why_typical": "decltype(results_) 是带引用的成员访问表达式；先剥掉引用与 cv，才能用 tuple_element_t 取第 Idx 个任务结果类型。",
+  "excerpt": "                using TaskType = std::tuple_element_t<\n                    Idx,\n                    std::remove_cvref_t<decltype(results_)>>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；协程 WhenAll 等待器中的类型计算。"
+}

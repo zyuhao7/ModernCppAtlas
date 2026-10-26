@@ -6,7 +6,7 @@ kind: language
 category: [初始化, 聚合类型]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "8", clang: "10", msvc: "19.21"}
 tags: [指定初始化, 聚合, C 兼容, 结构体初始化]
 alternatives: [按位置初始化, 构造函数, 工厂函数, std::make_unique 配合构造]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "在构造函数初始化列表中用指定初始化构造基类聚合，只填必要的回调字段"
     evidence: [ev-duckdb-designated-init-engine-002]
+  - id: c3
+    statement: "返回聚合时用指定初始化只填两个回调字段"
+    evidence: [ev-duckdb-designated-init-iterator-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -65,14 +68,35 @@ int main() {
 
 `Point p{.x = 1, .y = 2}` 按声明顺序设置两个成员；`Segment s{...}` 只写三个字段，嵌套的 `Point` 作为整体传入。未写出的成员会被值初始化，而不是保持不确定值。
 
+## 进阶用法
+
+指定初始化可以和默认成员初始化器、嵌套聚合以及 `new` 表达式组合。省略的字段按默认成员初始化器或值初始化规则处理。
+
+```cpp
+struct Point {
+  int x = 1;
+  int y = 2;
+};
+
+Segment s{.from = {.x = 3}, .to = p};
+auto q = new Point{.x = 4};
+```
+
+`Segment s` 里 `.from = {.x = 3}` 用一个新的指定初始化列表初始化嵌套聚合，这是允许的；但 `.from.x = 3` 这种嵌套指示符在 C++ 中不允许，必须用花括号把内层包起来。`new Point{.x = 4}` 说明指定初始化也适用于动态分配。
+
+省略 `Point::y` 时，它使用默认成员初始化器 `2`；如果没有默认成员初始化器，则按值初始化得到 `0`。这一点和“保留旧值”不同，修改字段集合时要重新检查所有依赖默认值的路径。
+
+完整示例见 [`examples/cpp20/designated_initializers.cpp`](../../examples/cpp20/designated_initializers.cpp)。
+
 ## 真实项目证据
 
 | 项目   | 位置                                                                                                                                                                            | 用法                                                  | 为什么典型                                                       |
 | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
 | mold   | [`src/mold.h#L403-L405`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/mold.h#L403-L405)                                                     | 只设置 ELF 节头的 `sh_addralign` 字段                 | 节头字段多且大多有默认值，指定初始化让“只关心对齐”的意图直接可见 |
 | duckdb | [`extension/delta/src/delta_utils.cpp#L174-L176`](https://github.com/duckdb/duckdb/blob/069cc9f9b5be802405797faecc284961b07c70ef/extension/delta/src/delta_utils.cpp#L174-L176) | 在构造函数初始化列表中指定 C 回调结构体的两个函数指针 | C 接口结构体字段多，按位置写容易错位；指定字段能避免顺序猜测     |
+| duckdb | [`extension/delta/src/delta_utils.cpp#L190-L195`](https://github.com/duckdb/duckdb/blob/069cc9f9b5be802405797faecc284961b07c70ef/extension/delta/src/delta_utils.cpp#L190-L195) | 返回迭代器聚合时只填 `data` 与 `get_next`             | 返回位置同样需要表达“其余字段用默认值”，指定初始化保持意图清晰   |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前者是聚合成员声明，后者是基类聚合的初始化列表，覆盖了两种常见位置。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。mold 覆盖聚合成员声明，DuckDB 的两处分别覆盖构造函数初始化列表与返回语句。
 
 ## 陷阱与边界
 
@@ -89,6 +113,12 @@ int main() {
 **省略的字段会被值初始化。** 省略字段不是“保持原值”；对内置类型会变成 0，对类类型会调用默认构造函数。依赖未写出字段保留旧值时，会得到意料之外的结果。
 
 **C 兼容性有边界。** 同样的结构体在 C 和 C++ 中可能都支持指定初始化，但 C 允许的顺序和嵌套规则更宽；跨语言头文件不要假设两边语法完全一致。
+
+## 库联动
+
+- **mold**：ELF 节头只设置对齐字段，其余字段依赖值初始化；字段多的聚合类型用指定初始化可以直接看出关心的部分。
+- **DuckDB**：Delta 扩展的 C 回调结构与迭代器都在构造或返回时指定字段，避免按位置猜测字段含义。
+- **与构造函数的分工**：指定初始化只适用于聚合；需要校验、默认逻辑或多步初始化时，应写构造函数，不能为了少写字段而破坏类型的不变式。
 
 ## 横向对比
 

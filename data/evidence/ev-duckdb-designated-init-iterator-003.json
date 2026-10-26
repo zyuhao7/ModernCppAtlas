@@ -1,0 +1,21 @@
+{
+  "id": "ev-duckdb-designated-init-iterator-003",
+  "repo": "duckdb/duckdb",
+  "commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+  "path": "extension/delta/src/delta_utils.cpp",
+  "lines": "190-195",
+  "feature": "cpp20.designated-initializers",
+  "pattern": "返回聚合时用指定初始化只填两个回调字段",
+  "why_typical": "C 风格迭代器结构体字段多，指定初始化明确表达“只关心 data 与 get_next”，其余字段值初始化。",
+  "excerpt": "// Wraps a callable object (e.g. C++11 lambda) as an EngineIterator.\ntemplate <typename Callable>\nffi::EngineIterator EngineIteratorFromCallable(Callable &callable) {\n\tauto *get_next = &GetNextFromCallable<Callable>;\n\treturn {.data = &callable, .get_next = (const void *(*)(void *))get_next};\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产扩展代码；与同文件的 EnginePredicate 构造初始化列表构成两种位置。"
+}

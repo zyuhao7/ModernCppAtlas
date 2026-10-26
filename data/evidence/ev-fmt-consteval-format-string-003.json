@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-consteval-format-string-003",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/base.h",
+  "lines": "2698-2709",
+  "feature": "cpp20.consteval-constinit",
+  "pattern": "用 consteval 构造函数在编译期校验格式串",
+  "why_typical": "格式串检查必须在编译期完成；立即函数保证构造函数只在常量求值中可用，运行期字符串无法绕过检查。",
+  "excerpt": "  // Reports a compile-time error if S is not a valid format string for T.\n  template <size_t N>\n  FMT_CONSTEVAL FMT_ALWAYS_INLINE fstring(const char (&s)[N]) : str(s, N - 1) {\n    using namespace detail;\n    static_assert(count<(is_view<remove_cvref_t<T>>::value &&\n                         std::is_reference<T>::value)...>() == 0,\n                  \"passing views as lvalues is disallowed\");\n    if (FMT_USE_CONSTEVAL)\n      parse_format_string<char>(str, checker(str, arg_pack()));\n    constexpr bool unused = detail::enforce_compile_checks<sizeof(s) != 0>();\n    (void)unused;\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；FMT_CONSTEVAL 在 C++20 下展开为 consteval。"
+}

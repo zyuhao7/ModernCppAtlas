@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-bit-cast-endian-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/internal/endian.h",
+  "lines": "139-147",
+  "feature": "cpp20.bit-cast",
+  "pattern": "用 bit_cast 在有符号与无符号整数之间按位重解释",
+  "why_typical": "端序转换需要保持位模式不变；static_cast 会做数值转换，bit_cast 才能把有符号值按无符号位模式搬运。",
+  "excerpt": "inline int16_t FromHost(int16_t x) {\n  return bit_cast<int16_t>(FromHost16(bit_cast<uint16_t>(x)));\n}\ninline int32_t FromHost(int32_t x) {\n  return bit_cast<int32_t>(FromHost32(bit_cast<uint32_t>(x)));\n}\ninline int64_t FromHost(int64_t x) {\n  return bit_cast<int64_t>(FromHost64(bit_cast<uint64_t>(x)));\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；双重 bit_cast 保证中间值按无符号解释。"
+}

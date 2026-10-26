@@ -6,7 +6,7 @@ kind: both
 category: [编译期, 初始化]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "11", clang: "17", msvc: "19.29"}
 tags: [consteval, constinit, 立即函数, 静态初始化, 常量求值]
 alternatives: [constexpr, static 局部变量, 显式初始化函数]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "用特性测试宏把兼容宏映射到标准 constinit，保证静态存储期变量常量初始化"
     evidence: [ev-abseil-constinit-macro-002]
+  - id: c3
+    statement: "用 consteval 构造函数在编译期校验格式串"
+    evidence: [ev-fmt-consteval-format-string-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -52,14 +55,35 @@ int main() {
 
 `square` 只能以常量表达式调用；把运行期变量传进去会直接编译失败。`global_counter` 由 `square(4)` 常量初始化，因此在进入 `main` 前已经确定，不存在动态初始化顺序问题；它仍然可以在运行时递增。
 
+## 进阶用法
+
+`consteval` 也可以标记构造函数，把“参数必须能在编译期校验”写进类型。格式库的编译期格式串类型就是这一模式：构造函数是立即函数，运行期字符串无法构造出该类型。
+
+```cpp
+struct Token {
+  int value;
+  consteval explicit Token(int input) : value(square(input)) {}
+};
+
+Token token{4};        // 可以：实参是常量表达式
+static_assert(square(5) == 25);
+```
+
+`Token token{4}` 在编译期完成校验和计算；传入运行期变量会直接编译失败。这样类型本身就表达了“已校验”的不变式，调用方不需要额外运行时检查。
+
+`constinit` 与 `constexpr` 的差别在可变性：`constinit int counter = square(3);` 保证常量初始化，但 `counter` 之后仍可修改。它适用于静态存储期和线程存储期变量，包括块作用域的 `static`；自动变量不能标 `constinit`。
+
+完整示例见 [`examples/cpp20/consteval_constinit.cpp`](../../examples/cpp20/consteval_constinit.cpp)。
+
 ## 真实项目证据
 
 | 项目        | 位置                                                                                                                                                      | 用法                                              | 为什么典型                                                   |
 | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ |
 | rui314/mold | [`src/thunks.cc#L36-L43`](https://github.com/rui314/mold/blob/27162691b71a3bc84ac4c9b4b9d7c214fad317d3/src/thunks.cc#L36-L43)                             | 用 `consteval` 计算目标平台的分支距离上限         | 目标架构在编译期已知，结果参与代码生成，不应在运行时重复计算 |
 | abseil-cpp  | [`absl/base/attributes.h#L842-L847`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/base/attributes.h#L842-L847) | 用 `__cpp_constinit` 检测并映射到标准 `constinit` | 兼容层在可用时直接使用标准关键字，明确静态初始化保证         |
+| fmt         | [`include/fmt/base.h#L2698-L2709`](https://github.com/fmtlib/fmt/blob/1be298e1bd68957e4cd352e1f676f00e07dcfb57/include/fmt/base.h#L2698-L2709)         | 用 `consteval` 构造函数在编译期校验格式串         | 立即函数保证格式串检查只发生在常量求值中，运行期字符串无法绕过 |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。前者是 `consteval` 的生产用例，后者展示 `constinit` 的跨标准落地方式。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。它们覆盖 `consteval` 的两种生产用法与 `constinit` 的跨标准落地方式。
 
 ## 陷阱与边界
 
@@ -78,6 +102,12 @@ int main() {
 **静态初始化顺序问题没有完全消失。** `constinit` 只保证该变量自身没有动态初始化；其他仍走动态初始化的全局对象依旧有顺序问题，跨翻译单元的依赖要显式设计。
 
 **编译器支持要用特性测试宏判断。** 使用 `__cpp_consteval` 与 `__cpp_constinit` 做条件编译；不同编译器对 `consteval` 的完整支持版本差异较大，不能只按语言标准开关判断。
+
+## 库联动
+
+- **mold**：用 `consteval` 计算目标架构的分支距离上限，结果参与代码生成，避免运行期重复计算。
+- **fmt**：`FMT_CONSTEVAL` 在 C++20 下展开为 `consteval`，格式串构造函数借此完成编译期语法与类型检查；旧编译器则退化为普通构造函数加运行期检查。
+- **Abseil**：`ABSL_CONST_INIT` 在支持时映射到标准 `constinit`，让静态存储期变量的初始化方式在兼容层中保持一致。
 
 ## 横向对比
 

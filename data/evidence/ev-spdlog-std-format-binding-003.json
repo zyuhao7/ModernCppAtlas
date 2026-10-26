@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-std-format-binding-003",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "145-156",
+  "feature": "cpp20.format",
+  "pattern": "在特性宏下把内部格式化命名空间指向 std，并别名 std::format_string",
+  "why_typical": "同一个库要同时支持 fmt 与 std::format；把 fmt_lib 切到 std 后，格式串类型仍由标准库做编译期检查。",
+  "excerpt": "#ifdef SPDLOG_USE_STD_FORMAT\nnamespace fmt_lib = std;\n\nusing string_view_t = std::string_view;\nusing memory_buf_t = std::string;\n\ntemplate <typename... Args>\n#if __cpp_lib_format >= 202207L\nusing format_string_t = std::format_string<Args...>;\n#else\nusing format_string_t = std::string_view;\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产头文件；SPDLOG_USE_STD_FORMAT 打开时的类型绑定。"
+}
