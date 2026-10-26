@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-init-statement-comparison-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/time/time.h",
+  "lines": "1767-1771",
+  "feature": "cpp17.init-statement",
+  "pattern": "在 if 初始化语句中保存三路比较结果，供条件与分支共同使用",
+  "why_typical": "比较结果只在这个分支里有意义；初始化语句让 c 同时用于条件判断和提前返回，不再需要额外的外层变量。",
+  "excerpt": "  const int64_t lhs_hi = time_internal::GetRepHi(lhs);\n  const int64_t rhs_hi = time_internal::GetRepHi(rhs);\n  if (auto c = lhs_hi <=> rhs_hi; c != std::strong_ordering::equal) {\n    return c;\n  }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；C++20 三路比较结果在 if 作用域内复用。"
+}

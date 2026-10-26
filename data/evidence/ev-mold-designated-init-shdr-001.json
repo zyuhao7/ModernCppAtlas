@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-designated-init-shdr-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "403-405",
+  "feature": "cpp20.designated-initializers",
+  "pattern": "用指定初始化只设置结构体的一个字段，其余字段保持值初始化",
+  "why_typical": "ELF 节头有很多字段，构造时只关心对齐；指定初始化让意图清晰，其余成员按默认值初始化，不必逐字段写零。",
+  "excerpt": "  std::string_view name;\n  ElfShdr<E> shdr = { .sh_addralign = 1 };\n  i64 shndx = 0;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；聚合成员声明中的指定初始化。"
+}

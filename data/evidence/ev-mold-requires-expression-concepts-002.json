@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-requires-expression-concepts-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/elf.h",
+  "lines": "1796-1798",
+  "feature": "cpp20.requires-expressions",
+  "pattern": "用 requires 表达式定义检测静态成员是否存在的 concept",
+  "why_typical": "不同目标架构提供的重定位或节属性不同；把成员存在性封装成 concept，后续模板约束可以直接复用。",
+  "excerpt": "template <typename E> concept supports_ifunc = requires { E::R_IRELATIVE; };\ntemplate <typename E> concept supports_tlsdesc = requires { E::R_TLSDESC; };\ntemplate <typename E> concept needs_thunk = requires { E::thunk_size; };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；概念定义中的简单 requirements，用于按架构选择实现。"
+}

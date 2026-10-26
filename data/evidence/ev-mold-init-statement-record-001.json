@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-init-statement-record-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/input-sections.cc",
+  "lines": "303-313",
+  "feature": "cpp17.init-statement",
+  "pattern": "在 if 条件中声明局部 string_view，并在同一条件里检查它",
+  "why_typical": "诊断文本需要先取得源码位置再判断是否为空；初始化语句把变量限制在 if/else 作用域内，避免污染外围的 lambda。",
+  "excerpt": "  auto record = [&] {\n    std::stringstream ss;\n    if (std::string_view source = file.get_source_name(); !source.empty())\n      ss << \">>> referenced by \" << source << \"\\n\";\n    else\n      ss << \">>> referenced by \" << *this << \"\\n\";\n\n    ss << \">>>               \" << file;\n    if (std::string_view func = get_func_name(ctx, rel.r_offset); !func.empty())\n      ss << \":(\" << func << \")\";\n    ss << '\\n';",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；链接器诊断路径中的两次初始化语句。"
+}

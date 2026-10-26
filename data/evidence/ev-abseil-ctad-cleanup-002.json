@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-ctad-cleanup-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/cleanup/cleanup.h",
+  "lines": "120-124",
+  "feature": "cpp17.ctad",
+  "pattern": "为作用域清理类型提供 C++17 推导指引",
+  "why_typical": "清理回调的类型只在构造时确定；推导指引让 absl::Cleanup c = callback 这种写法成立，同时保留 C++11 的 MakeCleanup 工厂作为回退。",
+  "excerpt": "// `absl::Cleanup c = /* callback */;`\n//\n// C++17 type deduction API for creating an instance of `absl::Cleanup`\ntemplate <typename Callback>\nCleanup(Callback callback) -> Cleanup<cleanup_internal::Tag, Callback>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；推导指引与旧工厂函数并存，方便不同标准下的调用方。"
+}

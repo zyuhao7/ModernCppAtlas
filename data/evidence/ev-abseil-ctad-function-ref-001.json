@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-ctad-function-ref-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/functional/function_ref.h",
+  "lines": "226-227",
+  "feature": "cpp17.ctad",
+  "pattern": "为函数引用包装类型提供推导指引，让调用方从函数指针直接推导模板实参",
+  "why_typical": "包装函数指针的类模板必须知道完整签名；推导指引把指针类型 F* 映射到 FunctionRef<F>，调用方不必重复写出函数类型。",
+  "excerpt": "template <class F>\nFunctionRef(F*) -> FunctionRef<F>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；公共头文件中的用户定义推导指引。"
+}

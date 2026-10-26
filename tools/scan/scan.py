@@ -148,6 +148,8 @@ REGEX_QUERIES = {
         r"\[\[(?:nodiscard|maybe_unused|fallthrough|deprecated|likely|unlikely)\b"
     ),
     "cpp17.inline-variables": r"\binline\s+(?:constexpr|const)\b",
+    "cpp17.ctad": r"\b\w+\([^)]*\)\s*->\s*\w+\s*<",
+    "cpp17.init-statement": r"\b(?:if|switch)\s*\([^;]+;",
     "cpp17.invoke-apply": r"\bstd::(?:invoke|apply)\b",
     "cpp17.optional": r"\bstd::optional\b",
     "cpp17.variant": r"\bstd::variant\b",
@@ -160,6 +162,8 @@ REGEX_QUERIES = {
     "cpp17.byte": r"\bstd::byte\b",
     "cpp17.pmr": r"\bstd::pmr\b",
     "cpp20.ranges": r"\bstd::(?:ranges|views)::",
+    "cpp20.designated-initializers": r"\{\s*\.\w+\s*=",
+    "cpp20.requires-expressions": r"\brequires\s*(?:\{|\([^)]*\)\s*\{)",
     "cpp20.span": r"\bstd::span\b",
     "cpp20.format": r"\bstd::format\b",
     "cpp20.jthread-stop-token": r"\bstd::(?:jthread|stop_token|stop_source)\b",

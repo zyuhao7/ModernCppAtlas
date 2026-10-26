@@ -1,0 +1,19 @@
+{
+  "id": "ev-mold-requires-expression-unit-type-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/gdb-index.cc",
+  "lines": "188-192",
+  "feature": "cpp20.requires-expressions",
+  "pattern": "用 requires 表达式检测成员是否存在，再决定是否编译分支",
+  "why_typical": "DWARF 头部版本之间字段不同；requires 表达式把“有没有 unit_type 成员”变成布尔条件，旧版本头文件仍能编译。",
+  "excerpt": "  if (hdr.address_size != sizeof(Word<E>))\n    Fatal(ctx) << \"--gdb-index: unsupported address size \" << hdr.address_size;\n\n  if constexpr (requires { hdr.unit_type; }) {\n    switch (hdr.unit_type) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；if constexpr 条件中的简单 requirements。"
+}

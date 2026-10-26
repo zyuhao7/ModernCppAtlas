@@ -1,0 +1,19 @@
+{
+  "id": "ev-duckdb-designated-init-engine-002",
+  "repo": "duckdb/duckdb",
+  "commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+  "path": "extension/delta/src/delta_utils.cpp",
+  "lines": "174-176",
+  "feature": "cpp20.designated-initializers",
+  "pattern": "在构造函数初始化列表中用指定初始化构造基类聚合",
+  "why_typical": "C 接口的回调结构体字段很多；指定初始化只填需要的两个函数指针，避免按位置猜测字段顺序。",
+  "excerpt": "PredicateVisitor::PredicateVisitor(const vector<string> &column_names, optional_ptr<TableFilterSet> filters)\n    : EnginePredicate {.predicate = this,\n                       .visitor = (uintptr_t(*)(void *, ffi::KernelExpressionVisitorState *)) & VisitPredicate} {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；Delta 扩展中构造 C 回调聚合。"
+}
