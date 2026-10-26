@@ -142,6 +142,19 @@ review:
 - `status: deprecated`：被标记废弃，给出替代方案与迁移方式。
 - `status: removed`：被后续提案替代或移除，保留条目并指向替代方案。
 
+## 构建与演示示例
+
+示例编译到 `build/examples/<标准>/`，不写入源码目录；二进制不提交：
+
+```bash
+make examples   # 编译全部示例
+make run        # 编译并逐个运行
+make verify     # 编译运行并比对 examples/expected 快照
+make clean      # 删除 build/
+```
+
+用 `CXX=clang++ make examples` 切换编译器。
+
 ## 本地验证
 
 ```bash

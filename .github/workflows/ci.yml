@@ -83,6 +83,9 @@ jobs:
       - name: Compile and run examples (${{ matrix.compiler }})
         run: uv run tools/verify_examples.py --compiler ${{ matrix.compiler }} --run
 
+      - name: Build examples with make (${{ matrix.compiler }})
+        run: make examples CXX=${{ matrix.compiler }}
+
   site:
     needs: [format, validate, tests, examples]
     runs-on: ubuntu-latest
