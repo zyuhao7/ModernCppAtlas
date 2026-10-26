@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-source-location-stream-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/log/internal/log_message.h",
+  "lines": "182-187",
+  "feature": "cpp20.source-location",
+  "pattern": "日志消息重载接收 SourceLocation 并输出文件与行号",
+  "why_typical": "日志接口需要把调用位置作为一等参数；位置类型可用时由类型系统传递，调用方不必展开 __FILE__/__LINE__ 宏。",
+  "excerpt": "  // Overload for absl::SourceLocation or the std::source_location alias.\n  LogMessage& operator<<(const absl::SourceLocation& loc) {\n    OstreamView view(*data_);\n    view.stream() << loc.file_name() << ':' << loc.line();\n    return *this;\n  }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产日志路径；源码注释说明该重载同时服务 absl::SourceLocation 与 std::source_location 别名。"
+}
