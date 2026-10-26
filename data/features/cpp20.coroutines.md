@@ -38,18 +38,64 @@ review:
 
 ## 基础用法
 
-下面是一个同步拉取的生成器：
+下面是一个同步拉取的生成器，连同最小的 `Generator` 实现：
+
+<!-- compile -->
 
 ```cpp
+#include <coroutine>
+#include <exception>
+#include <iostream>
+#include <utility>
+
+template <typename T>
+class Generator {
+public:
+  struct promise_type {
+    T current{};
+    Generator get_return_object() {
+      return Generator{std::coroutine_handle<promise_type>::from_promise(*this)};
+    }
+    std::suspend_always initial_suspend() noexcept { return {}; }
+    std::suspend_always final_suspend() noexcept { return {}; }
+    std::suspend_always yield_value(T value) {
+      current = std::move(value);
+      return {};
+    }
+    void return_void() noexcept {}
+    void unhandled_exception() { std::terminate(); }
+  };
+
+  explicit Generator(std::coroutine_handle<promise_type> handle)
+      : handle_(handle) {}
+  Generator(Generator&& other) noexcept
+      : handle_(std::exchange(other.handle_, {})) {}
+  Generator(const Generator&) = delete;
+  ~Generator() {
+    if (handle_) handle_.destroy();
+  }
+
+  bool next() {
+    handle_.resume();
+    return !handle_.done();
+  }
+  const T& value() const { return handle_.promise().current; }
+
+private:
+  std::coroutine_handle<promise_type> handle_;
+};
+
 Generator<int> range(int first, int last) {
   for (int value = first; value < last; ++value) {
     co_yield value;
   }
 }
 
-auto numbers = range(1, 5);
-while (numbers.next()) {
-  std::cout << numbers.value() << ' ';
+int main() {
+  auto numbers = range(1, 5);
+  while (numbers.next()) {
+    std::cout << numbers.value() << ' ';
+  }
 }
 ```
 

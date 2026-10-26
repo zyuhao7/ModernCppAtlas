@@ -33,16 +33,19 @@ review:
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
+#include <mutex>
 #include <optional>
 #include <shared_mutex>
 #include <string>
-#include <string_view>
 #include <unordered_map>
+#include <utility>
 
 class ConfigCache {
 public:
-  std::optional<std::string> get(std::string_view key) const {
+  std::optional<std::string> get(const std::string& key) const {
     std::shared_lock lock(mu_);
     if (auto it = values_.find(key); it != values_.end())
       return it->second;

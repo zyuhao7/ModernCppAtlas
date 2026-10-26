@@ -36,6 +36,8 @@ concepts 把“类型需要满足什么”写成具名约束，放在模板参�
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
 #include <concepts>
 #include <iostream>

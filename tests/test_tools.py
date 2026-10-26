@@ -535,6 +535,53 @@ class LinkCheckTests(unittest.TestCase):
         self.assertTrue(any("missing target" in item for item in failures))
 
 
+class CompilerTableTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.feature = {
+            "standard": "C++17",
+            "compilers": {"gcc": "7", "clang": "4", "msvc": "19.11"},
+        }
+        self.entry = {
+            "gcc": "7",
+            "clang": "4",
+            "msvc": "19.11",
+            "source": "https://en.cppreference.com/w/cpp/compiler_support/17",
+            "checked_at": "2026-10-26",
+        }
+
+    def check(self, features, entries) -> list[str]:
+        report = self.validate.Report()
+        self.validate.check_compilers(report, features, {"features": entries})
+        return report.errors
+
+    def test_matching_table_passes(self) -> None:
+        errors = self.check({"cpp17.any": self.feature}, {"cpp17.any": self.entry})
+        self.assertEqual(errors, [])
+
+    def test_missing_and_unknown_entries_are_reported(self) -> None:
+        errors = self.check({"cpp17.any": self.feature}, {"cpp17.other": self.entry})
+        self.assertTrue(any("missing compiler entry" in error for error in errors))
+        self.assertTrue(any("unknown feature" in error for error in errors))
+
+    def test_version_mismatch_is_reported(self) -> None:
+        entry = dict(self.entry, gcc="8")
+        errors = self.check({"cpp17.any": self.feature}, {"cpp17.any": entry})
+        self.assertTrue(any("gcc '7' differs" in error for error in errors))
+
+    def test_source_must_match_standard(self) -> None:
+        entry = dict(
+            self.entry, source="https://en.cppreference.com/w/cpp/compiler_support/20"
+        )
+        errors = self.check({"cpp17.any": self.feature}, {"cpp17.any": entry})
+        self.assertTrue(any("C++17 table" in error for error in errors))
+
+    def test_invalid_checked_at_is_reported(self) -> None:
+        entry = dict(self.entry, checked_at="2026-02-31")
+        errors = self.check({"cpp17.any": self.feature}, {"cpp17.any": entry})
+        self.assertTrue(any("not a valid date" in error for error in errors))
+
+
 class IdentityCheckTests(unittest.TestCase):
     def setUp(self) -> None:
         self.validate = load_tool("validate")

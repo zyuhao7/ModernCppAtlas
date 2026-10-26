@@ -36,7 +36,11 @@ C++17 之前，模板里按类型走不同实现只有三条路：写多个重�
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
+#include <type_traits>
+
 template <typename T>
 auto deref_or_value(const T& value) {
   if constexpr (std::is_pointer_v<T>) {

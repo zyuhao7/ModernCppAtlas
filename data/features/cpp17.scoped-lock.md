@@ -36,7 +36,11 @@ review:
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
+#include <mutex>
+
 struct Account {
   int balance;
   std::mutex mu;

@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moderncppatlas.dev/schema/compilers.schema.json",
+  "title": "Compiler minimum table",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["features"],
+  "properties": {
+    "features": {
+      "type": "object",
+      "minProperties": 1,
+      "patternProperties": {
+        "^cpp(11|14|17|20|23|26)\\.[a-z0-9]+(-[a-z0-9]+)*$": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["gcc", "clang", "msvc", "source", "checked_at"],
+          "properties": {
+            "gcc": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+            "clang": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+            "msvc": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+            "source": {
+              "type": "string",
+              "pattern": "^https://en\\.cppreference\\.com/w/cpp/compiler_support/(11|14|17|20|23|26)$"
+            },
+            "checked_at": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

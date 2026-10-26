@@ -25,6 +25,7 @@ FEATURE_DIR = ROOT / "data" / "features"
 EVIDENCE_DIR = ROOT / "data" / "evidence"
 LIBRARY_DIR = ROOT / "data" / "libraries"
 CORPUS_FILE = ROOT / "data" / "corpus.yaml"
+COMPILERS_FILE = ROOT / "data" / "compilers.yaml"
 CORPUS_CACHE = ROOT / ".cache" / "corpus"
 
 EXCERPT_LICENSES = {
@@ -224,6 +225,46 @@ def check_date(report: Report, path: Path, field: str, value: object) -> None:
         report.error(path, f"{field} is not a valid date: {value}")
 
 
+def check_compilers(report: Report, features: dict[str, dict], table: object) -> None:
+    if not isinstance(table, dict) or not isinstance(table.get("features"), dict):
+        report.error(COMPILERS_FILE, "compiler table must contain a features mapping")
+        return
+    entries = table["features"]
+    for feature_id, feature in features.items():
+        entry = entries.get(feature_id)
+        if not isinstance(entry, dict):
+            report.error(COMPILERS_FILE, f"missing compiler entry for {feature_id}")
+            continue
+        compilers = feature.get("compilers")
+        if isinstance(compilers, dict):
+            for name in ("gcc", "clang", "msvc"):
+                if compilers.get(name) != entry.get(name):
+                    report.error(
+                        COMPILERS_FILE,
+                        f"{feature_id}: {name} {compilers.get(name)!r} differs from "
+                        f"table {entry.get(name)!r}",
+                    )
+        standard = feature.get("standard")
+        if isinstance(standard, str):
+            expected = standard.removeprefix("C++")
+            if not str(entry.get("source", "")).endswith("/" + expected):
+                report.error(
+                    COMPILERS_FILE,
+                    f"{feature_id}: source does not point to the C++{expected} table",
+                )
+        check_date(
+            report,
+            COMPILERS_FILE,
+            f"{feature_id}.checked_at",
+            entry.get("checked_at"),
+        )
+    for feature_id in entries:
+        if feature_id not in features:
+            report.error(
+                COMPILERS_FILE, f"compiler entry for unknown feature {feature_id}"
+            )
+
+
 def check_tier(
     report: Report,
     path: Path,
@@ -397,6 +438,7 @@ def main() -> int:
     evidence_schema = load_schema("evidence.schema.json")
     library_schema = load_schema("library.schema.json")
     corpus_schema = load_schema("corpus.schema.json")
+    compilers_schema = load_schema("compilers.schema.json")
 
     features: dict[str, dict] = {}
     feature_bodies: dict[str, str] = {}
@@ -422,6 +464,17 @@ def main() -> int:
         features[feature_id] = data
         feature_bodies[feature_id] = body
         feature_paths[feature_id] = path
+
+    if not COMPILERS_FILE.exists():
+        report.error(COMPILERS_FILE, "missing compiler minimum table")
+    else:
+        try:
+            compilers = yaml.safe_load(COMPILERS_FILE.read_text(encoding="utf-8"))
+        except yaml.YAMLError as exc:
+            report.error(COMPILERS_FILE, f"invalid YAML: {exc}")
+            compilers = {}
+        validate_schema(report, COMPILERS_FILE, compilers, compilers_schema)
+        check_compilers(report, features, compilers)
 
     evidence: dict[str, dict] = {}
     evidence_by_feature: dict[str, list[dict]] = defaultdict(list)

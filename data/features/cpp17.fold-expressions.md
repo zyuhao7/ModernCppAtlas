@@ -48,7 +48,11 @@ bool all_true(T value, Rest... rest) {
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
+#include <iostream>
+
 template <typename... Args>
 auto sum(const Args&... args) {
   return (args + ... + 0);

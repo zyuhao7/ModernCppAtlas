@@ -36,6 +36,8 @@ C++20 补了一组小而常用的设施：`starts_with` / `ends_with`、`std::er
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
 #include <iostream>
 #include <string>

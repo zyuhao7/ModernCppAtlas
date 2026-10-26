@@ -1,0 +1,104 @@
+# Minimum compiler versions mirrored from cppreference compiler support tables.
+features:
+  cpp17.any:
+    gcc: "7"
+    clang: "4"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.byte:
+    gcc: "7"
+    clang: "5"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.filesystem:
+    gcc: "8"
+    clang: "7"
+    msvc: "19.14"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.fold-expressions:
+    gcc: "6"
+    clang: "3.9"
+    msvc: "19.12"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.if-constexpr:
+    gcc: "7"
+    clang: "3.9"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.optional:
+    gcc: "7"
+    clang: "5"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.scoped-lock:
+    gcc: "7"
+    clang: "5"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.shared-mutex:
+    gcc: "6"
+    clang: "3.7"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.string-view:
+    gcc: "7"
+    clang: "4"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.structured-bindings:
+    gcc: "7"
+    clang: "4"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp17.variant:
+    gcc: "7.1"
+    clang: "4"
+    msvc: "19.10"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-10-26"
+  cpp20.concepts:
+    gcc: "10"
+    clang: "10"
+    msvc: "19.30"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.coroutines:
+    gcc: "10"
+    clang: "17"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.ranges:
+    gcc: "10"
+    clang: "15"
+    msvc: "19.29"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.spaceship:
+    gcc: "10"
+    clang: "10"
+    msvc: "19.20"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.span:
+    gcc: "10"
+    clang: "7"
+    msvc: "19.26"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"
+  cpp20.string-range-utilities:
+    gcc: "10"
+    clang: "11"
+    msvc: "19.27"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-10-26"

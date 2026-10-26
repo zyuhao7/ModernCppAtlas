@@ -36,6 +36,8 @@ C++17 之前，跨平台文件操作要分叉：POSIX 用 `stat`、`opendir`、`
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
 #include <filesystem>
 #include <iostream>

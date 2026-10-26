@@ -36,6 +36,8 @@ ranges 把“范围”提升为一等概念：算法直接接收范围，支持�
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
 #include <algorithm>
 #include <iostream>

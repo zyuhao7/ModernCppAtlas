@@ -36,6 +36,8 @@ C++20 之前，一个可比较类型要写六个运算符：`==`、`!=`、`<`、
 
 ## 基础用法
 
+<!-- compile -->
+
 ```cpp
 #include <compare>
 #include <iostream>

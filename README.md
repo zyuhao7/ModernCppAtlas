@@ -123,6 +123,8 @@ review:
    - 已发布证据中至少一条不是测试代码；
    - `review` 与证据审核人数满足单审/双审规则；
    - 生成代码已标记，且例外有独立审核人与书面理由；
+   - 编译器下限与 `data/compilers.yaml` 一致，并指向对应标准的 cppreference 表；
+   - A/B 级“基础用法”代码块带 `<!-- compile -->` 标记，并在页面标准下编译通过；
    - 示例代码在对应标准下编译通过。
 3. **人工复核**：
    - 领域审核：用法是否正确、是否典型、是否反模式；
@@ -162,6 +164,7 @@ uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
 uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
 uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段，并比对摘录原文
 uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
+uv run tools/check_snippets.py --compiler g++  # 编译正文中标记的代码块
 uv run python -m unittest discover -s tests -v  # 工具与输出目录安全边界回归测试
 uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 生成并构建站点
 uv run tools/check_links.py                   # 站内链接与锚点检查（需先构建站点）
