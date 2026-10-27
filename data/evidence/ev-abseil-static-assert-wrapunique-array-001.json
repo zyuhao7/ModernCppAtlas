@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-static-assert-wrapunique-array-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/memory/memory.h",
+  "lines": "71-76",
+  "feature": "cpp11.static-assert",
+  "pattern": "在模板函数内用带消息的 static_assert 拒绝数组与非对象类型",
+  "why_typical": "WrapUnique 不能包装数组或 void 指针，静态断言把非法类型挡在实例化阶段并说明原因。",
+  "excerpt": "template <typename T>\nstd::unique_ptr<T> WrapUnique(T* ptr) {\n  static_assert(!std::is_array_v<T>, \"array types are unsupported\");\n  static_assert(std::is_object_v<T>, \"non-object types are unsupported\");\n  return std::unique_ptr<T>(ptr);\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；absl::WrapUnique 的唯一合法输入是 delete 表达式可用的指针。"
+}

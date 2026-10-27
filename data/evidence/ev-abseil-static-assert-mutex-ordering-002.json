@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-static-assert-mutex-ordering-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/synchronization/mutex.cc",
+  "lines": "1747-1750",
+  "feature": "cpp11.static-assert",
+  "pattern": "用带消息的 static_assert 校验互斥量内部状态枚举的偏序关系",
+  "why_typical": "无符号比较依赖枚举取值顺序，静态断言在编译期锁定了这一不变量。",
+  "excerpt": "  static_assert(kMuEvent > kMuWait, \"Needed for should_try_cas_fast\");\n  static_assert(kMuEvent > kMuDesig, \"Needed for should_try_cas_fast\");\n  static_assert(kMuWriter > kMuWait, \"Needed for should_try_cas_fast\");\n  static_assert(kMuWriter > kMuDesig, \"Needed for should_try_cas_fast\");",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；快速路径用无符号比较判断等待状态，顺序错则逻辑失效。"
+}

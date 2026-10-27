@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-constexpr-duration-factory-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/time/time.h",
+  "lines": "537-540",
+  "feature": "cpp11.constexpr",
+  "pattern": "用 constexpr 工厂函数在编译期构造 Duration 常量",
+  "why_typical": "时间单位换算无副作用，constexpr 让 Seconds(60) 之类的调用能用于常量初始化。",
+  "excerpt": "template <typename T, time_internal::EnableIfIntegral<T> = 0>\nABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Nanoseconds(T n) {\n  return time_internal::FromInt64(n, std::nano{});\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；时间库的单位工厂函数，配合类型约束只接受整数类型。"
+}

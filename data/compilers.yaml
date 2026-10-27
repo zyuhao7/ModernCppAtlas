@@ -24,6 +24,24 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/14
     checked_at: "2026-10-27"
+  cpp11.static-assert:
+    gcc: "4.3"
+    clang: "2.9"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp11.variadic-templates:
+    gcc: "4.3"
+    clang: "2.9"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp11.constexpr:
+    gcc: "4.6"
+    clang: "3.1"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
   cpp14.make-unique:
     gcc: "4.9"
     clang: "3.4"

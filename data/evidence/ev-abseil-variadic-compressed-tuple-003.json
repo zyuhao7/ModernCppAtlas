@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-variadic-compressed-tuple-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/container/internal/compressed_tuple.h",
+  "lines": "112-121",
+  "feature": "cpp11.variadic-templates",
+  "pattern": "用两个参数包按索引展开多重继承，把每个类型和值配对",
+  "why_typical": "类型包与索引包同时展开成基类列表，是参数包配合 index_sequence 的经典用法。",
+  "excerpt": "template <typename... Ts, size_t... I, bool ShouldAnyUseBase>\nstruct ABSL_INTERNAL_COMPRESSED_TUPLE_DECLSPEC\n    CompressedTupleImpl<CompressedTuple<Ts...>, std::index_sequence<I...>,\n                        ShouldAnyUseBase>\n    // We use the dummy identity function through std::integral_constant to\n    // convince MSVC of accepting and expanding I in that context. Without it\n    // you would get:\n    //   error C3548: 'I': parameter pack cannot be used in this context\n    : Storage<Ts, std::integral_constant<size_t, I>::value,\n              StorageTag<Ts...>>... {",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；CompressedTuple 用参数包把多个值压进空基类优化后的元组。"
+}

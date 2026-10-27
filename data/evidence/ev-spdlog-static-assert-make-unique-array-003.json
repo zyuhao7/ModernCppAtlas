@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-static-assert-make-unique-array-003",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "383-387",
+  "feature": "cpp11.static-assert",
+  "pattern": "在自实现的 make_unique 中用 static_assert 拒绝数组类型",
+  "why_typical": "回退实现只能处理单对象，静态断言把数组这种不支持的类型直接报错，而非埋下 delete 不匹配。",
+  "excerpt": "template <typename T, typename... Args>\nstd::unique_ptr<T> make_unique(Args &&...args) {\n    static_assert(!std::is_array<T>::value, \"arrays not supported\");\n    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；C++14 不可用时的兼容实现，断言守住与标准 make_unique 的差异。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-constexpr-entry-size-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "593-594",
+  "feature": "cpp11.constexpr",
+  "pattern": "用 constexpr 在编译期根据类型参数计算表头与表项大小",
+  "why_typical": "大小依赖 is_ppc64v2 等编译期布尔量，constexpr 让结果直接参与数组维度与静态断言。",
+  "excerpt": "  static constexpr i64 HDR_SIZE = (is_ppc64v2<E> ? 2 : 3) * sizeof(Word<E>);\n  static constexpr i64 ENTRY_SIZE = (is_ppc64v1<E> ? 3 : 1) * sizeof(Word<E>);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；ELF 重定位表头大小按目标架构在编译期确定。"
+}

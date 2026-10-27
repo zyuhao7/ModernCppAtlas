@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-variadic-log-forward-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/logger.h",
+  "lines": "78-81",
+  "feature": "cpp11.variadic-templates",
+  "pattern": "用模板参数包接收任意实参并完美转发给日志实现",
+  "why_typical": "日志接口要接受任意数量任意类型的格式化参数，参数包把转发写成一份定义。",
+  "excerpt": "    template <typename... Args>\n    void log(source_loc loc, level::level_enum lvl, format_string_t<Args...> fmt, Args &&...args) {\n        log_(loc, lvl, details::to_string_view(fmt), std::forward<Args>(args)...);\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；所有级别日志最终汇聚到 log_，参数包在此原样转发。"
+}

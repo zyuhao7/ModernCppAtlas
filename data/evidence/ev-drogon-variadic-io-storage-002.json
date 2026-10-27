@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-variadic-io-storage-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/IOThreadStorage.h",
+  "lines": "66-70",
+  "feature": "cpp11.variadic-templates",
+  "pattern": "用参数包构造函数把实参转发给每个线程的存储副本并静态断言可构造",
+  "why_typical": "每个线程各建一份对象，构造参数在编译期整体转发，static_assert 提前校验签名。",
+  "excerpt": "    template <typename... Args>\n    IOThreadStorage(Args &&...args)\n    {\n        static_assert(std::is_constructible<C, Args &&...>::value,\n                      \"Unable to construct storage with given signature\");",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；IO 线程本地存储按线程数复制构造，参数包只出现一次。"
+}

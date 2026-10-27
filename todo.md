@@ -377,8 +377,8 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M2 · C++11/14 覆盖（200–300 人时）
 
-- 累计 100 条目：40 A + 60 B。（进行中：45 个完整条目，42 A + 3 B，135 条证据）
-- 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`，均带可编译示例。
+- 累计 100 条目：40 A + 60 B。（进行中：48 个完整条目，45 A + 3 B，144 条证据）
+- 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`、`cpp11.variadic-templates`、`cpp11.constexpr`、`cpp11.static-assert`，均带可编译示例。
 - 建立“已废弃/被替代”标注（`std::auto_ptr`、`std::bind` 的现代替代等）。
 - 退出标准：C++11/14 高频特性无空缺；所有 B 级条目至少 2 条证据；站点导航按标准版本可用。
 
