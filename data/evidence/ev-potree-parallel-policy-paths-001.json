@@ -1,0 +1,21 @@
+{
+  "id": "ev-potree-parallel-policy-paths-001",
+  "repo": "potree/PotreeConverter",
+  "commit": "c2cb61843bf2b901e8e257874b1a6dcf67792fb2",
+  "path": "Converter/src/main.cpp",
+  "lines": "206-208",
+  "feature": "cpp17.parallel-algorithms",
+  "pattern": "以 std::execution::par 并行读取多个文件，并用互斥量保护共享容器",
+  "why_typical": "输入文件之间互相独立，适合并行处理；共享结果仍用 mutex 串行化，体现并行算法的典型边界。",
+  "excerpt": "\tmutex mtx;\n\tauto parallel = std::execution::par;\n\tfor_each(parallel, paths.begin(), paths.end(), [&mtx, &sources](string path) {",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；转换器主流程一次处理多个 LAS 文件，未引入第三方并行运行时。"
+}

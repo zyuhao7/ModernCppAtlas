@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-constexpr-string-escape-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/json/escape_unicode.hpp",
+  "lines": "125-129",
+  "feature": "cpp20.constexpr-allocation",
+  "pattern": "在 constexpr 函数里构造 std::string 并 reserve 输出长度",
+  "why_typical": "C++20 允许 constexpr 函数中做瞬态分配，只要在同一个常量求值内释放；序列化库借此在编译期准备转义后的字符串。",
+  "excerpt": "   // Main function to escape the JSON string.\n   inline constexpr std::string escape_json_string(const std::string_view input, const size_t output_length)\n   {\n      std::string output;\n      output.reserve(output_length);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；输出长度由单独的 constexpr 计算函数提供，避免运行期重复扩容。"
+}

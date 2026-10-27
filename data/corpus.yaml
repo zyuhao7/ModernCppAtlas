@@ -63,3 +63,53 @@
     - src
     - tools
   notes: M1 扩展；分析型数据库，现代 C++ 用法密集，重点补充 variant、optional 与字符串处理。
+- repo: NVIDIA/stdexec
+  url: https://github.com/NVIDIA/stdexec.git
+  commit: 6d7ad689f4d4831c5136e4abe1c601f9a3b64e43
+  tag: nvhpc-26.05
+  license: Apache-2.0
+  paths:
+    - include
+  notes: M1 扩展；发送者/接收者库，补充模板 lambda、atomic_ref 与 pmr 的生产路径证据。
+- repo: Friendly0Fire/GW2Radial
+  url: https://github.com/Friendly0Fire/GW2Radial.git
+  commit: 3178575f74dc68718b1608faeda5f93947f6a563
+  tag: v2.4.0
+  license: MIT
+  paths:
+    - include
+    - src
+  notes: M1 扩展；Windows 插件项目，补充 jthread 与 stop_token 的生产用法。
+- repo: potree/PotreeConverter
+  url: https://github.com/potree/PotreeConverter.git
+  commit: c2cb61843bf2b901e8e257874b1a6dcf67792fb2
+  tag: 2.1.5
+  license: BSD-2-Clause
+  paths:
+    - Converter/src
+    - Converter/include
+  notes: M1 扩展；点云转换工具，补充并行算法的生产路径证据。
+- repo: VROOM-Project/vroom
+  url: https://github.com/VROOM-Project/vroom.git
+  commit: 43dd7d0b8b560431eb555bf335cf4797eb7343c4
+  tag: v1.15.0
+  license: BSD-2-Clause
+  paths:
+    - src
+  notes: M1 扩展；车辆路径求解器，补充计数信号量的生产路径证据。
+- repo: nanocurrency/nano-node
+  url: https://github.com/nanocurrency/nano-node.git
+  commit: 6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98
+  tag: V29.0DB101
+  license: BSD-3-Clause
+  paths:
+    - nano/lib
+  notes: M1 扩展；加密货币节点，补充 latch 的生产路径证据。
+- repo: stephenberry/glaze
+  url: https://github.com/stephenberry/glaze.git
+  commit: d78832c82289c61a9315bfbc35332cec9f4e93ca
+  tag: v9.0.0
+  license: MIT
+  paths:
+    - include/glaze
+  notes: M1 扩展；JSON 序列化库，补充 constexpr 动态分配的生产路径证据。

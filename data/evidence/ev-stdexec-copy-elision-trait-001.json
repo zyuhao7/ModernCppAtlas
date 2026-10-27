@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-copy-elision-trait-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__basic_sender.hpp",
+  "lines": "80-88",
+  "feature": "cpp17.guaranteed-copy-elision",
+  "pattern": "在 requires 表达式中直接用函数返回的 prvalue 初始化不可移动类型",
+  "why_typical": "约束的满足依赖 C++17 强制复制消除：目标类型删除了移动构造，只有 prvalue 直接初始化才能成立。",
+  "excerpt": "    // A decay_copyable trait that uses C++17 guaranteed copy elision, so\n    // that __decay_copyable_if<immovable_type> is satisfied.\n    template <class _Ty, class _Uy = __decay_t<_Ty>>\n    concept __decay_copyable_if = requires(__declfn_t<_Ty> __val) { _Uy(__val()); };\n\n    template <class _Ty, class _Uy = __decay_t<_Ty>>\n    concept __nothrow_decay_copyable_if = requires(__declfn_t<_Ty> __val) {\n      { _Uy(__val()) } noexcept;\n    };",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；用于判定 decay-copyable 是否成立，注释明确说明依赖强制复制消除。"
+}

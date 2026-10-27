@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-modules-export-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "src/fmt.cc",
+  "lines": "101-105",
+  "feature": "cpp20.modules",
+  "pattern": "用模块接口单元导出整个格式化库，并按配置选择 import std",
+  "why_typical": "生产库把全部公开声明放进命名模块，客户端用 import fmt 代替包含大量头文件；import std 由构建选项控制，避免强制依赖标准库模块。",
+  "excerpt": "export module fmt;\n\n#ifdef FMT_IMPORT_STD\nimport std;\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；模块名 fmt 与库名一致，接口单元聚合各公开头文件中的声明。"
+}

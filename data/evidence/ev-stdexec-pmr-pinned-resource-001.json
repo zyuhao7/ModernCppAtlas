@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-pmr-pinned-resource-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/nvexec/detail/memory.cuh",
+  "lines": "146-160",
+  "feature": "cpp17.pmr",
+  "pattern": "实现 std::pmr::memory_resource 子类，用 cudaMallocHost 提供固定页内存",
+  "why_typical": "自定义资源只需覆盖 do_allocate/do_deallocate/do_is_equal，容器即可通过 pmr 分配器透明使用它。",
+  "excerpt": "  struct pinned_resource : public std::pmr::memory_resource\n  {\n    pinned_resource() noexcept = default;\n\n    auto do_allocate(std::size_t const bytes, std::size_t const /* alignment */) -> void* override\n    {\n      void* ret;\n\n      if (cudaError_t status = STDEXEC_LOG_CUDA_API(cudaMallocHost(&ret, bytes));\n          status != cudaSuccess)\n      {\n        throw std::bad_alloc();\n      }\n\n      return ret;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；pinned_resource 适配 CUDA 的页锁定主机内存。"
+}

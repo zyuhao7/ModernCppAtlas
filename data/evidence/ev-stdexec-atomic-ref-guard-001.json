@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-atomic-ref-guard-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__atomic.hpp",
+  "lines": "68-69",
+  "feature": "cpp20.atomic-ref",
+  "pattern": "按特性测试宏决定是否直接使用 std::atomic_ref",
+  "why_typical": "库把 std::atomic_ref 放在特性测试宏之后，编译器或标准库不支持时回退到自有实现。",
+  "excerpt": "#  if __cpp_lib_atomic_ref >= 201806L\n  using std::atomic_ref;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；特性检测是跨工具链使用 atomic_ref 的常见前置条件。"
+}

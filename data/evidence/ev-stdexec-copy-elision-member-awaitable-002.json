@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-copy-elision-member-awaitable-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__connect_awaitable.hpp",
+  "lines": "169-176",
+  "feature": "cpp17.guaranteed-copy-elision",
+  "pattern": "注释说明成员以函数返回值直接初始化本应触发强制复制消除，GCC 未实现时退回手动生命周期管理",
+  "why_typical": "把规则用在成员初始化上；同时展示编译器缺陷迫使库作者准备回退路径。",
+  "excerpt": "          // GCC doesn't like initializing __awaitable_ or __awaiter_ in the member initializer\n          // clause when the result of __get_awaitable or __get_awaiter is immovable; it *seems*\n          // like direct initialization of a member with the result of a function ought to trigger\n          // C++17's mandatory copy elision, and both Clang and MSVC accept that code, but using\n          // __manual_lifetime works around the issue.\n          __awaitable_.__construct_from(__get_awaitable,\n                                        static_cast<_Awaitable&&>(__source),\n                                        __coro.promise());",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；协程 awaitable 包装的构造逻辑，用 __manual_lifetime 绕过 GCC 的复制消除缺陷。"
+}

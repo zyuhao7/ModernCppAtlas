@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-latch-thread-names-001",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/thread_pool.hpp",
+  "lines": "127-137",
+  "feature": "cpp20.latch-barrier-semaphore",
+  "pattern": "用 std::latch 等待线程池中的每个线程完成一次线程命名",
+  "why_typical": "一次性汇合、不需要复用，latch 比条件变量加计数器更直接；任务用 arrive_and_wait，发起方只调用 wait。",
+  "excerpt": "\tvoid set_thread_names ()\n\t{\n\t\tfor (auto i = 0u; i < num_threads; ++i)\n\t\t{\n\t\t\tboost::asio::post (*thread_pool_impl, [this] () {\n\t\t\t\tnano::thread_role::set (thread_name);\n\t\t\t\tthread_names_latch.arrive_and_wait ();\n\t\t\t});\n\t\t}\n\t\tthread_names_latch.wait ();\n\t}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；线程池构造阶段的名字设置，计数在线程池构造函数中初始化为线程数。"
+}

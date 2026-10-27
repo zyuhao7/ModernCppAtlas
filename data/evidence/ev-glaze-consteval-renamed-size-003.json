@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-consteval-renamed-size-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/reflection/get_name.hpp",
+  "lines": "321-333",
+  "feature": "cpp20.constexpr-allocation",
+  "pattern": "用 consteval 求出的长度填充固定大小数组，避免常量求值结束后留下悬空分配",
+  "why_typical": "瞬态 std::string 只用于求长度，结果存入 std::array，避免常量求值结束后留下悬空分配。",
+  "excerpt": "   template <class T, size_t I, size_t N = renamed_key_size<T, I>()>\n   struct renamed_key_storage\n   {\n      static constexpr auto value = [] {\n         std::array<char, N + 1> arr{};\n         auto str = meta<std::remove_cvref_t<T>>::rename_key(member_nameof<I, T>);\n         for (size_t i = 0; i < N; ++i) {\n            arr[i] = str[i];\n         }\n         arr[N] = '\\0';\n         return arr;\n      }();\n   };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；renamed_key_storage 把编译期字符串降级为固定大小数组，供运行期直接使用。"
+}

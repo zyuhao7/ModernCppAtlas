@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-template-lambda-transform-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__let.hpp",
+  "lines": "546-560",
+  "feature": "cpp20.template-lambda",
+  "pattern": "用带类型参数包的模板 lambda 在编译期选择 let 发送者的完成签名",
+  "why_typical": "模板 lambda 把通常需要独立函数模板或类模板的编译期分支放进局部表达式，直接操作类型包并返回不同的完成签名。",
+  "excerpt": "      template <class _Fun, class _Child, class... _Env>\n      static constexpr auto __transform_cmplsig =                        //\n        []<class... _As>(__set_t (*)(_As...), __completion_info __info)  //\n        -> decltype(auto)\n      {\n        if constexpr (!__decay_copyable<_As...>)\n        {\n          using __what_t = __not_decay_copyable_error_t<_LetTag, _As...>;\n          return STDEXEC::__throw_compile_time_error(__what_t());\n        }\n        else if constexpr (!__invocable<_Fun, __decay_t<_As>&...>)\n        {\n          using __what_t = __callable_error_t<_LetTag, _Fun, __decay_t<_As>&...>;\n          return STDEXEC::__throw_compile_time_error(__what_t());\n        }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；__transform_cmplsig 是按签名分派的编译期转换器，模板参数包与 if constexpr 配合使用。"
+}

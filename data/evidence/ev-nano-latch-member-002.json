@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-latch-member-002",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/thread_pool.hpp",
+  "lines": "25-28",
+  "feature": "cpp20.latch-barrier-semaphore",
+  "pattern": "把 std::latch 初始化为线程数，作为线程池成员",
+  "why_typical": "latch 计数在构造时确定，正好对应“所有工作线程各报到一次”的语义。",
+  "excerpt": "\tthread_pool (unsigned num_threads, nano::thread_role::name thread_name, bool auto_start = false) :\n\t\tnum_threads{ num_threads },\n\t\tthread_name{ thread_name },\n\t\tthread_names_latch{ num_threads }",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；与同一文件的 wait 调用配对，说明计数来源。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-modules-import-test-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "test/module-test.cc",
+  "lines": "34-44",
+  "feature": "cpp20.modules",
+  "pattern": "客户端只写 import fmt 就能使用库，并验证命名空间可见",
+  "why_typical": "模块消费者不再包含 fmt 头文件；测试直接检查导入后公开命名空间与字面量命名空间可用。",
+  "excerpt": "import fmt;\n\n#define FMT_OS_H_  // don't pull in os.h, neither directly nor indirectly\n#include \"gtest-extra.h\"\n\n// an implicitly exported namespace must be visible [module.interface]/2.2\nTEST(module_test, namespace) {\n  using namespace fmt;\n  using namespace fmt::literals;\n  ASSERT_TRUE(true);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": true,
+  "notes": "测试路径；覆盖模块导入后的名字查找与命名空间可见性。"
+}

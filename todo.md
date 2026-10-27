@@ -257,33 +257,39 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB（2026-10-25 已完成，4,489
 
 结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；在 M0 阶段，`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
-**当前状态（2026-10-26 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 31 个完整条目，全部为 A 级。
+**当前状态（2026-10-27 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 40 个完整条目，其中 37 个 A 级、3 个 B 级（modules、jthread/stop_token 缺少可纳入单文件流程的并发示例；保证的复制消除只有同一仓库的 3 条证据，其中 2 条是编译器缺陷回退）。M1 规划的 40 个特性已全部完成条目。并行算法、latch/barrier/semaphore、constexpr 动态分配在扩充 PotreeConverter、VROOM、nano-node、glaze 语料后补齐，复制消除直接复用 stdexec 的现有证据。
 
-M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生产路径各选 1 条），协程有 125 条候选（Drogon 3 条生产路径）；两者已完成 A 级条目。
+M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生产路径各选 1 条），协程有 125 条候选（Drogon 3 条生产路径）；两者已完成 A 级条目。上一轮新增 NVIDIA/stdexec（Apache-2.0，tag `nvhpc-26.05`）与 Friendly0Fire/GW2Radial（MIT，tag `v2.4.0`），补齐模板 lambda、atomic_ref、pmr 与 jthread/stop_token 的生产证据。本轮新增 potree/PotreeConverter（BSD-2-Clause，tag `2.1.5`）、VROOM-Project/vroom（BSD-2-Clause，tag `v1.15.0`）、nanocurrency/nano-node（BSD-3-Clause，tag `V29.0DB101`）与 stephenberry/glaze（MIT，tag `v9.0.0`），补齐并行算法、latch/barrier/semaphore 与 constexpr 动态分配的生产证据；保证的复制消除沿用 stdexec 的 3 条证据，其中 2 条是 GCC 缺陷回退，故标为 B 级。
 
 后续候选与许可证（以仓库固定 commit 的 LICENSE 为准）：
 
-| 仓库                     | 许可证                         | 备注                           |
-| ------------------------ | ------------------------------ | ------------------------------ |
-| fmtlib/fmt               | MIT                            | 首批                           |
-| nlohmann/json            | MIT                            | 首批                           |
-| gabime/spdlog            | MIT                            | 首批                           |
-| rui314/mold              | MIT                            | 首批；补齐 span 与字符串小工具 |
-| abseil/abseil-cpp        | Apache-2.0                     | M1                             |
-| drogonframework/drogon   | MIT                            | M1                             |
-| duckdb/duckdb            | MIT                            | M1                             |
-| llvm/llvm-project        | Apache-2.0 WITH LLVM-exception | 只扫选定子目录                 |
-| ClickHouse/ClickHouse    | Apache-2.0                     | 只扫选定子目录                 |
-| protocolbuffers/protobuf | BSD-3-Clause                   | 后续                           |
-| grpc/grpc                | Apache-2.0                     | 后续                           |
-| oneapi-src/oneTBB        | Apache-2.0                     | 后续                           |
-| chriskohlhoff/asio       | BSL-1.0                        | 后续                           |
-| taskflow/taskflow        | MIT                            | 后续                           |
-| yhirose/cpp-httplib      | MIT                            | 后续                           |
-| ericniebler/range-v3     | BSL-1.0                        | 后续                           |
-| google/googletest        | BSD-3-Clause                   | 后续                           |
-| TartanLlama/expected     | CC0-1.0                        | 后续                           |
-| eigenweb/eigen           | MPL-2.0                        | 只记录位置，不摘录             |
+| 仓库                     | 许可证                         | 备注                             |
+| ------------------------ | ------------------------------ | -------------------------------- |
+| fmtlib/fmt               | MIT                            | 首批                             |
+| nlohmann/json            | MIT                            | 首批                             |
+| gabime/spdlog            | MIT                            | 首批                             |
+| rui314/mold              | MIT                            | 首批；补齐 span 与字符串小工具   |
+| abseil/abseil-cpp        | Apache-2.0                     | M1                               |
+| drogonframework/drogon   | MIT                            | M1                               |
+| duckdb/duckdb            | MIT                            | M1                               |
+| NVIDIA/stdexec           | Apache-2.0                     | M1；模板 lambda、atomic_ref、pmr |
+| Friendly0Fire/GW2Radial  | MIT                            | M1；jthread/stop_token           |
+| potree/PotreeConverter   | BSD-2-Clause                   | M1；并行算法                     |
+| VROOM-Project/vroom      | BSD-2-Clause                   | M1；计数信号量                   |
+| nanocurrency/nano-node   | BSD-3-Clause                   | M1；latch                        |
+| stephenberry/glaze       | MIT                            | M1；constexpr 动态分配           |
+| llvm/llvm-project        | Apache-2.0 WITH LLVM-exception | 只扫选定子目录                   |
+| ClickHouse/ClickHouse    | Apache-2.0                     | 只扫选定子目录                   |
+| protocolbuffers/protobuf | BSD-3-Clause                   | 后续                             |
+| grpc/grpc                | Apache-2.0                     | 后续                             |
+| oneapi-src/oneTBB        | Apache-2.0                     | 后续                             |
+| chriskohlhoff/asio       | BSL-1.0                        | 后续                             |
+| taskflow/taskflow        | MIT                            | 后续                             |
+| yhirose/cpp-httplib      | MIT                            | 后续                             |
+| ericniebler/range-v3     | BSL-1.0                        | 后续                             |
+| google/googletest        | BSD-3-Clause                   | 后续                             |
+| TartanLlama/expected     | CC0-1.0                        | 后续                             |
+| eigenweb/eigen           | MPL-2.0                        | 只记录位置，不摘录               |
 
 ### 7.4 排序与去重
 

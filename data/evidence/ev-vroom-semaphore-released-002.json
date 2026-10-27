@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-semaphore-released-002",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/structures/vroom/input/input.cpp",
+  "lines": "1264-1274",
+  "feature": "cpp20.latch-barrier-semaphore",
+  "pattern": "为路由请求创建信号量，获取许可后再调用外部路由服务",
+  "why_typical": "外部 HTTP 路由服务有并发上限，信号量把配额限制从线程数量解耦出来。",
+  "excerpt": "  if (_geometry) {\n    std::vector<std::jthread> threads;\n    threads.reserve(sol.routes.size());\n    std::exception_ptr ep = nullptr;\n    std::mutex ep_m;\n    std::counting_semaphore<MAX_ROUTING_THREADS> semaphore(\n      std::min(MAX_ROUTING_THREADS, nb_thread));\n\n    auto run_routing = [this, &semaphore, &sol, &ep, &ep_m](std::size_t i) {\n      semaphore.acquire();\n      try {",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；每个 route 线程先 acquire，调用完成或抛异常后 release。"
+}

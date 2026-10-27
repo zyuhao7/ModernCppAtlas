@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-atomic-ref-load-store-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/linux/io_uring_context.hpp",
+  "lines": "239-240",
+  "feature": "cpp20.atomic-ref",
+  "pattern": "对共享队列指针执行 relaxed 与 acquire 加载",
+  "why_typical": "提交前读取 tail 与 head 时使用不同内存序，atomic_ref 让普通映射内存获得与 std::atomic 相同的序控制。",
+  "excerpt": "        __u32 __tail          = __tail_.load(STDEXEC::__std::memory_order_relaxed);\n        __u32 __head          = __head_.load(STDEXEC::__std::memory_order_acquire);",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；同一文件 276 行用 release 存储发布 tail。"
+}

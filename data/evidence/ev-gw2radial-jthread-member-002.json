@@ -1,0 +1,21 @@
+{
+  "id": "ev-gw2radial-jthread-member-002",
+  "repo": "Friendly0Fire/GW2Radial",
+  "commit": "3178575f74dc68718b1608faeda5f93947f6a563",
+  "path": "include/Core.h",
+  "lines": "93-93",
+  "feature": "cpp20.jthread-stop-token",
+  "pattern": "把 std::jthread 作为类成员保存，交给析构函数管理生命周期",
+  "why_typical": "成员是 unique_ptr<std::jthread>，与相邻的互斥量和条件变量共同构成后台任务设施。",
+  "excerpt": "    std::unique_ptr<std::jthread>              comThread_;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；与 Core.cpp 的创建点配对，说明所有权与停止语义。"
+}

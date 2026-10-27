@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-semaphore-search-001",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/problems/vrp.h",
+  "lines": "205-207",
+  "feature": "cpp20.latch-barrier-semaphore",
+  "pattern": "用静态容量的 counting_semaphore 限制同时进行的搜索数",
+  "why_typical": "信号量上限在编译期固定为 32，运行期计数取实际线程数，acquire/release 包住一次完整搜索。",
+  "excerpt": "    const auto actual_nb_threads = std::min(nb_searches, nb_threads);\n    assert(actual_nb_threads <= 32);\n    std::counting_semaphore<32> semaphore(actual_nb_threads);",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；求解器按可用线程数限制并发搜索，避免线程数量超过硬件能力。"
+}

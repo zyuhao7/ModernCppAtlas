@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-template-lambda-completion-info-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__let.hpp",
+  "lines": "603-613",
+  "feature": "cpp20.template-lambda",
+  "pattern": "用模板 lambda 展开下标序列，聚合发送者的完成信息",
+  "why_typical": "lambda 模板参数 std::size_t... _Is 让下标包直接成为可推导参数，无需额外的辅助函数模板。",
+  "excerpt": "      template <auto _Info, auto _Transform>\n      static constexpr auto __get_cmpl_info_i = []<std::size_t... _Is>(__indices<_Is...>)\n      {\n        return []\n        {\n          __static_vector<__completion_info, 0> __result;\n          // NB: this fold uses an overloaded addition operator that propagates\n          // __mexception objects when constexpr exceptions are not available.\n          return (__maybe_transform_cmplsig<_Info[_Is]>(_Transform) + ... + __result);\n        };\n      };",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；__get_cmpl_info_i 在编译期用折叠表达式聚合完成信息。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-copy-elision-box-init-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__any.hpp",
+  "lines": "481-489",
+  "feature": "cpp17.guaranteed-copy-elision",
+  "pattern": "以函数返回值初始化不可移动的 union 成员，GCC 拒绝强制复制消除时改用 placement new",
+  "why_typical": "同一规则的另一种回退：用 placement new 在未初始化存储上直接构造，效果等价于复制消除。",
+  "excerpt": "      // for unknown reasons, GCC (sometimes) doesn't like initializing __val_ with the\n      // result of this function call in the member initialization clause when _Value\n      // is immovable even though the conditions should be right to trigger C++17's\n      // mandatory copy elision, but this in-place new into an uninitialized anonymous\n      // union member works just fine\n      static_assert(__same_as<__call_result_t<_Fn, _Args...>, _Value>);\n      new ((void *) std::addressof(__val_))\n        _Value(static_cast<_Fn &&>(__fn)(static_cast<_Args &&>(__args)...));\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；类型擦除的存储包装，注释说明 GCC 有时不实现该处的强制复制消除。"
+}

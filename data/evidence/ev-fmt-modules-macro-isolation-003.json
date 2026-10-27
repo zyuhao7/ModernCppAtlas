@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-modules-macro-isolation-003",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "test/module-test.cc",
+  "lines": "46-51",
+  "feature": "cpp20.modules",
+  "pattern": "测试确认模块导入不会泄漏实现头文件的宏",
+  "why_typical": "宏不属于模块接口，import 不会把它们带进客户端；这条测试把宏隔离从标准条款变成可执行检查。",
+  "excerpt": "// Macros must not be imported from a named module [cpp.import]/5.1.\nTEST(module_test, macros) {\n#if defined(FMT_BASE_H_) || defined(FMT_FORMAT_H_)\n  FAIL() << \"Macros are leaking from a named module\";\n#endif\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-26",
+  "is_test": true,
+  "notes": "测试路径；验证命名模块不会把传统头文件宏导出给导入方。"
+}

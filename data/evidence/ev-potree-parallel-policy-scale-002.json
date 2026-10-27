@@ -1,0 +1,21 @@
+{
+  "id": "ev-potree-parallel-policy-scale-002",
+  "repo": "potree/PotreeConverter",
+  "commit": "c2cb61843bf2b901e8e257874b1a6dcf67792fb2",
+  "path": "Converter/include/PotreeConverter.h",
+  "lines": "213-216",
+  "feature": "cpp17.parallel-algorithms",
+  "pattern": "用局部执行策略变量调用 for_each，并行汇总所有数据源的属性",
+  "why_typical": "把策略先存成变量再传给算法，便于在同一处切换 seq 与 par；聚合结果仍需加锁。",
+  "excerpt": "\t{\n\t\tmutex mtx;\n\t\tauto parallel = std::execution::par;\n\t\tfor_each(parallel, sources.begin(), sources.end(), [&mtx, &sources, &scaleMin, &min, &max, requestedAttributes, &fullAttributeList, &acceptedAttributeNames](Source source) {",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；为输出属性表计算包围盒与缩放，属于数据准备阶段的重活。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-constexpr-string-rename-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/util/key_transformers.hpp",
+  "lines": "249-255",
+  "feature": "cpp20.constexpr-allocation",
+  "pattern": "用返回 std::string 的 constexpr 函数在编译期改写键名",
+  "why_typical": "键名重写在编译期完成，运行期只读取结果；库还用宏屏蔽不支持 constexpr string 的旧 ABI。",
+  "excerpt": "   // Struct wrappers for inheritance-based usage\n   // These require constexpr std::string support (not available with _GLIBCXX_USE_CXX11_ABI=0)\n#if GLZ_HAS_CONSTEXPR_STRING\n   struct camel_case\n   {\n      static constexpr std::string rename_key(const auto key) { return to_camel_case(key); }\n   };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；结构体包装把 snake_case 到 camelCase 的转换暴露为静态成员函数。"
+}

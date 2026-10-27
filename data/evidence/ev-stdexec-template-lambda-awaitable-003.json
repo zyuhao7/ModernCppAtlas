@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-template-lambda-awaitable-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__awaitable.hpp",
+  "lines": "45-51",
+  "feature": "cpp20.template-lambda",
+  "pattern": "在重载集合里用带 concept 约束的模板 lambda 做候选选择",
+  "why_typical": "两个模板 lambda 共享一个重载集合：第一个只在 promise 支持 await_transform 时可行，第二个作为回退。",
+  "excerpt": "  inline constexpr auto __get_awaitable = __first_callable{\n    []<class _Promise, __has_await_transform<_Promise> _Awaitable>(_Awaitable &&__awaitable,\n                                                                   _Promise    &__promise)\n      -> decltype(auto)\n    { return __promise.await_transform(static_cast<_Awaitable &&>(__awaitable)); },\n    []<class _Awaitable>(_Awaitable &&__awaitable, __ignore = {}) noexcept -> decltype(auto)\n    { return static_cast<_Awaitable &&>(__awaitable); }};",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；约束写在 lambda 的模板参数列表中，用于 __first_callable 的重载决议。"
+}

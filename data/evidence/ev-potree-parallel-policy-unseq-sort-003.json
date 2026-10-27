@@ -1,0 +1,21 @@
+{
+  "id": "ev-potree-parallel-policy-unseq-sort-003",
+  "repo": "potree/PotreeConverter",
+  "commit": "c2cb61843bf2b901e8e257874b1a6dcf67792fb2",
+  "path": "Converter/include/sampler_poisson.h",
+  "lines": "183-184",
+  "feature": "cpp17.parallel-algorithms",
+  "pattern": "用 std::execution::par_unseq 并行排序点云",
+  "why_typical": "比较器只读点坐标、不访问共享状态，满足 unsequenced 策略对可重入性的要求。",
+  "excerpt": "\t\t\tauto parallel = std::execution::par_unseq;\n\t\t\tstd::sort(parallel, points.begin(), points.end(), [center](Point a, Point b) -> bool {",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；泊松采样前的按距中心排序，数据量大、排序耗时显著。"
+}

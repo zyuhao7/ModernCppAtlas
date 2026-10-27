@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-atomic-ref-submission-ring-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/linux/io_uring_context.hpp",
+  "lines": "217-226",
+  "feature": "cpp20.atomic-ref",
+  "pattern": "把 mmap 得到的 io_uring 共享内存地址绑定到 atomic_ref",
+  "why_typical": "内核与用户态共享的环形缓冲区不能用 std::atomic，atomic_ref 在原地对普通 __u32 提供原子操作。",
+  "excerpt": "      explicit __submission_queue(memory_mapped_region const & __region,\n                                  memory_mapped_region const & __sqes_region,\n                                  ::io_uring_params const &    __params)\n        : __head_{*__at_offset_as<__u32*>(__region.data(), __params.sq_off.head)}\n        , __tail_{*__at_offset_as<__u32*>(__region.data(), __params.sq_off.tail)}\n        , __array_{__at_offset_as<__u32*>(__region.data(), __params.sq_off.array)}\n        , __entries_{static_cast<::io_uring_sqe*>(__sqes_region.data())}\n        , __mask_{*__at_offset_as<__u32*>(__region.data(), __params.sq_off.ring_mask)}\n        , __n_total_slots_{__params.sq_entries}\n      {}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；atomic_ref 构造自 io_uring 提交队列的 head/tail 偏移。"
+}

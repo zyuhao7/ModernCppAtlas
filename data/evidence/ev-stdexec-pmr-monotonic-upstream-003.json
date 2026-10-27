@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-pmr-monotonic-upstream-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/nvexec/detail/memory.cuh",
+  "lines": "252-260",
+  "feature": "cpp17.pmr",
+  "pattern": "让单调缓冲资源按块向上游 memory_resource 申请内存",
+  "why_typical": "上游资源可替换，单调资源只负责块管理与对齐，体现 pmr 的组合方式。",
+  "excerpt": "    monotonic_buffer_resource(std::size_t bytes, std::pmr::memory_resource* upstream)\n      : upstream(upstream)\n      , space(STDEXEC::__umax({bytes, std::size_t{2}}))\n    {\n      block_descriptor first_block{.ptr   = upstream->allocate(space, block_alignment),\n                                   .total = space};\n      current_ptr = first_block.ptr;\n      allocated_blocks.push_back(first_block);\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；构造函数通过 upstream->allocate 获取首块。"
+}

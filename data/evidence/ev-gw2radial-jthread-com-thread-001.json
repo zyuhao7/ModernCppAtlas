@@ -1,0 +1,21 @@
+{
+  "id": "ev-gw2radial-jthread-com-thread-001",
+  "repo": "Friendly0Fire/GW2Radial",
+  "commit": "3178575f74dc68718b1608faeda5f93947f6a563",
+  "path": "src/Core.cpp",
+  "lines": "121-133",
+  "feature": "cpp20.jthread-stop-token",
+  "pattern": "用 std::jthread 启动后台 COM 线程并在 lambda 中接收 stop_token",
+  "why_typical": "线程函数直接以 std::stop_token 为参数，循环用 stop_requested() 决定退出，无需额外的停止标志与手动 join。",
+  "excerpt": "    comThread_ = std::make_unique<std::jthread>(\n        [this](std::stop_token stopToken)\n        {\n            ULONG_PTR contextToken;\n            if (CoGetContextToken(&contextToken) == CO_E_NOTINITIALIZED)\n            {\n                HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);\n                if (hr != S_FALSE && hr != RPC_E_CHANGED_MODE && FAILED(hr))\n                    CriticalMessageBox(L\"Could not initialize COM library: error code 0x%X.\", hr);\n            }\n\n            while (!stopToken.stop_requested())\n            {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；jthread 保存在 unique_ptr 中，析构时自动请求停止并 join。"
+}

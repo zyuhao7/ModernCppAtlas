@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-pmr-gpu-resource-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/nvexec/detail/memory.cuh",
+  "lines": "177-191",
+  "feature": "cpp17.pmr",
+  "pattern": "用 std::pmr::memory_resource 封装 cudaMalloc 的 GPU 内存",
+  "why_typical": "同一抽象可同时覆盖主机、固定页与设备内存，调用方只持有 memory_resource 指针。",
+  "excerpt": "  struct gpu_resource : public std::pmr::memory_resource\n  {\n    gpu_resource() noexcept = default;\n\n    auto do_allocate(std::size_t const bytes, std::size_t const /* alignment */) -> void* override\n    {\n      void* ret;\n\n      if (cudaError_t status = STDEXEC_LOG_CUDA_API(cudaMalloc(&ret, bytes)); status != cudaSuccess)\n      {\n        throw std::bad_alloc();\n      }\n\n      return ret;\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-26",
+  "is_test": false,
+  "notes": "生产路径；gpu_resource 与 pinned_resource 共享同一分配接口。"
+}
