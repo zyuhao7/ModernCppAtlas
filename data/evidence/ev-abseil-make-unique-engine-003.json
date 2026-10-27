@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-make-unique-engine-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/crc/internal/crc_memcpy_fallback.cc",
+  "lines": "68-71",
+  "feature": "cpp14.make-unique",
+  "pattern": "用 std::make_unique 在工厂函数中返回多态引擎",
+  "why_typical": "返回 unique_ptr 表达唯一所有权，调用方无需关心具体派生类型。",
+  "excerpt": "std::unique_ptr<CrcMemcpyEngine> CrcMemcpy::GetTestEngine(int /*vector*/,\n                                                          int /*integer*/) {\n  return std::make_unique<FallbackCrcMemcpyEngine>();\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；无硬件加速时的 CRC 内存拷贝测试引擎工厂。"
+}

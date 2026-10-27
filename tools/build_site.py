@@ -19,6 +19,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 FEATURE_DIR = ROOT / "data" / "features"
 EVIDENCE_DIR = ROOT / "data" / "evidence"
+LIBRARY_DIR = ROOT / "data" / "libraries"
 DEFAULT_OUT_DIR = ROOT / ".site-docs"
 OUT_DIR = DEFAULT_OUT_DIR
 GENERATED_MARKER = ".moderncppatlas-generated"
@@ -59,6 +60,13 @@ def load_evidence(directory: Path = EVIDENCE_DIR) -> dict[str, list[dict]]:
             continue
         grouped[record["feature"]].append(record)
     return grouped
+
+
+def load_libraries(directory: Path = LIBRARY_DIR) -> list[dict]:
+    cards = []
+    for path in sorted(directory.glob("*.yaml")):
+        cards.append(yaml.safe_load(path.read_text(encoding="utf-8")))
+    return cards
 
 
 def display_path(path: Path) -> str:
@@ -275,7 +283,62 @@ def table_for(
     return "\n".join(lines)
 
 
-def build_indexes(features: dict[str, dict], evidence: dict[str, list[dict]]) -> None:
+def build_libraries_page(
+    features: dict[str, dict],
+    libraries: list[dict],
+    repo_url: str,
+    branch: str,
+) -> None:
+    if not libraries:
+        return
+    rows = [
+        "| 库 | 特性 | 模式 | 收益 | 代价 | 证据 |",
+        "|---|---|---|---|---|---|",
+    ]
+    sections = []
+    for card in libraries:
+        meta = features.get(card["feature"], {})
+        title = meta.get("title", card["feature"])
+        links = " · ".join(
+            f"[{evidence_id}](../evidence/{evidence_id}.md)"
+            for evidence_id in card["evidence"]
+        )
+        rows.append(
+            f"| {card['library']} | [{cell(title)}](../features/{card['feature']}.md) | "
+            f"{cell(card['pattern'])} | {cell(card['benefit'])} | "
+            f"{cell(card['cost'])} | {links} |"
+        )
+        example = card["example"]
+        example_line = (
+            f"[{example}]({repo_url}/blob/{branch}/{example})"
+            if example
+            else "无独立示例"
+        )
+        sections.append(
+            f"## {card['library']} × {title}\n\n"
+            f"- 模式：{card['pattern']}\n"
+            f"- 收益：{card['benefit']}\n"
+            f"- 代价：{card['cost']}\n"
+            f"- 特性页：[{title}](../features/{card['feature']}.md)\n"
+            f"- 证据：{links}\n"
+            f"- 示例：{example_line}\n"
+        )
+    write(
+        OUT_DIR / "libraries" / "index.md",
+        "# 库联动\n\n"
+        "记录库如何把语言特性落到生产需求上，收益与代价并列；"
+        "每张卡片都指向固定 commit 的证据页。\n\n"
+        + "\n".join(rows)
+        + "\n\n"
+        + "\n".join(sections),
+    )
+
+
+def build_indexes(
+    features: dict[str, dict],
+    evidence: dict[str, list[dict]],
+    library_count: int = 0,
+) -> None:
     feature_ids = sorted(
         features, key=lambda item: (features[item]["standard"], features[item]["id"])
     )
@@ -296,18 +359,28 @@ def build_indexes(features: dict[str, dict], evidence: dict[str, list[dict]]) ->
             f"- [{standard}](features/standard/{slug}.md)：{count} 个条目"
         )
 
+    library_line = (
+        f"当前收录 **{len(features)} 个特性**、**{total_evidence} 条证据**、"
+        f"**{library_count} 张库联动卡片**，"
+        if library_count
+        else f"当前收录 **{len(features)} 个特性**、**{total_evidence} 条证据**，"
+    )
+    library_entry = "- [按库联动](libraries/index.md)\n" if library_count else ""
+
     write(
         OUT_DIR / "index.md",
         "# ModernCppAtlas\n\n"
         "从 C++11 到 C++26 的现代 C++ 特性图谱。每个条目围绕四个问题展开："
         "解决什么问题、真实项目怎么用、进阶怎么用、能和哪些库组合。\n\n"
-        f"当前收录 **{len(features)} 个特性**、**{total_evidence} 条证据**，"
+        f"{library_line}"
         "全部证据指向固定 commit。\n\n"
-        "## 三个入口\n\n"
+        "## 主要入口\n\n"
         "- [按标准版本](features/index.md)\n"
         "- [按使用场景](features/scenarios.md)\n"
-        "- [按难度](features/difficulties.md)\n\n"
-        "## 标准覆盖\n\n" + "\n".join(standard_lines) + "\n\n## 证据先行\n\n"
+        "- [按难度](features/difficulties.md)\n"
+        f"{library_entry}\n## 标准覆盖\n\n"
+        + "\n".join(standard_lines)
+        + "\n\n## 证据先行\n\n"
         "每条证据都记录项目、固定 commit、路径、行段、许可证与审核状态；"
         "证据页可以独立阅读。\n\n"
         "- [证据索引](evidence/index.md)\n"
@@ -399,17 +472,19 @@ def main() -> int:
 
     features, bodies = load_features()
     evidence = load_evidence()
+    libraries = load_libraries()
 
     build_feature_pages(
         features, bodies, evidence, args.repo_url.rstrip("/"), args.branch
     )
     build_evidence_pages(features, evidence)
-    build_indexes(features, evidence)
+    build_libraries_page(features, libraries, args.repo_url.rstrip("/"), args.branch)
+    build_indexes(features, evidence, len(libraries))
 
     total = sum(len(records) for records in evidence.values())
     print(
-        f"generated {len(features)} feature pages, {total} evidence pages "
-        f"in {display_path(OUT_DIR)}"
+        f"generated {len(features)} feature pages, {total} evidence pages, "
+        f"{len(libraries)} library cards in {display_path(OUT_DIR)}"
     )
     return 0
 

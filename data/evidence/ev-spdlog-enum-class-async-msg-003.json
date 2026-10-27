@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-enum-class-async-msg-003",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/thread_pool-inl.h",
+  "lines": "102-114",
+  "feature": "cpp11.enum-class",
+  "pattern": "用 enum class 表示异步消息种类并驱动后台线程分支",
+  "why_typical": "消息类型需要限定作用域，switch 把每种类型映射到具体处理动作。",
+  "excerpt": "    switch (incoming_async_msg.msg_type) {\n        case async_msg_type::log: {\n            incoming_async_msg.worker_ptr->backend_sink_it_(incoming_async_msg);\n            return true;\n        }\n        case async_msg_type::flush: {\n            incoming_async_msg.worker_ptr->backend_flush_();\n            return true;\n        }\n\n        case async_msg_type::terminate: {\n            return false;\n        }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；线程池从队列取出消息后按类型分派日志、刷新或终止。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-enum-class-filetype-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/filetype.cc",
+  "lines": "174-182",
+  "feature": "cpp11.enum-class",
+  "pattern": "用 enum class 枚举值做 switch 分支并比较文件类型",
+  "why_typical": "文件类型名字被限定在 FileType 作用域内，switch 覆盖所有分支且不会与整数混淆。",
+  "excerpt": "  case FileType::ELF_OBJ:\n  case FileType::ELF_DSO:\n  case FileType::GCC_LTO_OBJ:\n    return get_elf_type(mf->data);\n  case FileType::AR:\n    for (MappedFile *child : read_fat_archive_members(ctx, mf))\n      if (FileType ty = get_file_type(ctx, child);\n          ty == FileType::ELF_OBJ || ty == FileType::GCC_LTO_OBJ)\n        return get_elf_type(child->data);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；链接器根据机器类型选择 ELF 或归档解析逻辑。"
+}

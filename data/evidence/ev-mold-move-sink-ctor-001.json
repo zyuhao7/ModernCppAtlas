@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-move-sink-ctor-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "1123-1124",
+  "feature": "cpp11.move-semantics",
+  "pattern": "构造函数按值接收 vector，再用 std::move 移入成员",
+  "why_typical": "按值接收加移动是标准的 sink 参数写法：调用方传左值时拷贝一次，传右值时直接接管。",
+  "excerpt": "  ComdatGroupSection(Symbol<E> &sym, std::vector<Chunk<E> *> members)\n    : sym(sym), members(std::move(members)) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；链接器为 COMDAT 组保存成员列表，构造后不再使用入参。"
+}

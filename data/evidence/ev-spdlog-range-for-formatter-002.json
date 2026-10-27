@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-range-for-formatter-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/registry-inl.h",
+  "lines": "125-129",
+  "feature": "cpp11.range-for",
+  "pattern": "用 range-for 遍历注册表中的 logger 并逐个设置格式化器",
+  "why_typical": "对容器中每个元素执行同一动作，range-for 比 begin/end 循环更直接。",
+  "excerpt": "    std::lock_guard<std::mutex> lock(logger_map_mutex_);\n    formatter_ = std::move(formatter);\n    for (auto &l : loggers_) {\n        l.second->set_formatter(formatter_->clone());\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；set_formatter 把新格式化器的克隆分发给所有已注册 logger。"
+}

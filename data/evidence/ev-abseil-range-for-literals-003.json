@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-range-for-literals-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/time/format.cc",
+  "lines": "111-117",
+  "feature": "cpp11.range-for",
+  "pattern": "用 const auto& 的 range-for 遍历静态数组并匹配前缀",
+  "why_typical": "只读遍历固定字面量表，const auto& 避免复制且表明不修改元素。",
+  "excerpt": "  for (const auto& lit : kLiterals) {\n    if (absl::StartsWith(input, lit.name)) {\n      absl::string_view tail = input.substr(lit.name.size());\n      // The trailing portion must be empty or whitespace.\n      if (StripLeadingAsciiWhitespace(tail).empty()) {\n        *time = lit.value;\n        return true;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；时间解析先检查无穷远、无穷过去等特殊字面量。"
+}

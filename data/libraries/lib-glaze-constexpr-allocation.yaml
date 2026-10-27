@@ -1,0 +1,11 @@
+id: lib-glaze-constexpr-allocation
+library: stephenberry/glaze
+feature: cpp20.constexpr-allocation
+pattern: 用 constexpr std::string 在编译期转换键名并转义 JSON 字符串
+benefit: 运行期直接读取定型结果，省去重复的字符串处理
+cost: 需要 GCC 12、Clang 15、MSVC 19.29 以上；旧 ABI 要准备回退路径
+evidence:
+  - ev-glaze-constexpr-string-escape-001
+  - ev-glaze-constexpr-string-rename-002
+  - ev-glaze-consteval-renamed-size-003
+example: examples/cpp20/constexpr_allocation.cpp

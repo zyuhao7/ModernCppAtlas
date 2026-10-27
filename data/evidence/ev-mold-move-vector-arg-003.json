@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-move-vector-arg-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/cmdline.cc",
+  "lines": "461-464",
+  "feature": "cpp11.move-semantics",
+  "pattern": "在局部容器的生命周期末尾用 std::move 写入命令行参数",
+  "why_typical": "局部 vector 不再使用，移动避免整份复制，也表达“转交结果”的意图。",
+  "excerpt": "      vec.push_back(get_symbol(ctx, name));\n  }\n\n  ctx.arg.retain_symbols_file = std::move(vec);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；解析保留符号列表后把结果交给 ctx.arg。"
+}

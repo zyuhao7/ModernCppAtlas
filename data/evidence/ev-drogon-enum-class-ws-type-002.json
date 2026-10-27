@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-enum-class-ws-type-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/WebSocketConnectionImpl.cc",
+  "lines": "45-53",
+  "feature": "cpp11.enum-class",
+  "pattern": "用 enum class 区分 WebSocket 帧类型并映射到操作码",
+  "why_typical": "帧类型只在 WebSocketMessageType 作用域内可见，避免与其它枚举的 Text、Binary 冲突。",
+  "excerpt": "    if (type == WebSocketMessageType::Text)\n        opcode = 1;\n    else if (type == WebSocketMessageType::Binary)\n        opcode = 2;\n    else if (type == WebSocketMessageType::Close)\n    {\n        assert(len <= 125);\n        opcode = 8;\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；发送帧之前把消息类型翻译成 RFC 6455 操作码。"
+}

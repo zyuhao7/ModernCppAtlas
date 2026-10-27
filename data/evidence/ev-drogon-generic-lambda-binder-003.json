@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-generic-lambda-binder-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/Criteria.h",
+  "lines": "122-127",
+  "feature": "cpp14.generic-lambda",
+  "pattern": "用带参数包的泛型 lambda 遍历 tuple 并逐个绑定 SQL 参数",
+  "why_typical": "参数类型在调用点才确定，泛型 lambda 把任意参数包展开成绑定动作。",
+  "excerpt": "                return std::apply(\n                    [&binder](auto &&...args) {\n                        (void)std::initializer_list<int>{\n                            (binder << std::forward<Arguments>(args), 0)...};\n                    },\n                    std::move(args));",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；ORM 条件构造器把参数元组延迟绑定到 SqlBinder。"
+}

@@ -1,0 +1,10 @@
+id: lib-vroom-semaphore
+library: VROOM-Project/vroom
+feature: cpp20.latch-barrier-semaphore
+pattern: 用计数信号量限制同时进行的求解搜索与外部路由请求数量
+benefit: 并发配额与线程数解耦，避免压垮下游路由服务
+cost: 许可必须成对归还，异常路径容易泄漏；等待不可取消
+evidence:
+  - ev-vroom-semaphore-search-001
+  - ev-vroom-semaphore-released-002
+example: examples/cpp20/latch_barrier_semaphore.cpp

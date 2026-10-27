@@ -257,7 +257,7 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB（2026-10-25 已完成，4,489
 
 结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；在 M0 阶段，`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
-**当前状态（2026-10-27 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 40 个完整条目，其中 37 个 A 级、3 个 B 级（modules、jthread/stop_token 缺少可纳入单文件流程的并发示例；保证的复制消除只有同一仓库的 3 条证据，其中 2 条是编译器缺陷回退）。M1 规划的 40 个特性已全部完成条目。并行算法、latch/barrier/semaphore、constexpr 动态分配在扩充 PotreeConverter、VROOM、nano-node、glaze 语料后补齐，复制消除直接复用 stdexec 的现有证据。
+**当前状态（2026-10-27 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 45 个完整条目，其中 42 个 A 级、3 个 B 级（modules、jthread/stop_token 缺少可纳入单文件流程的并发示例；保证的复制消除只有同一仓库的 3 条证据，其中 2 条是编译器缺陷回退），证据 135 条、库卡片 3 张。M1 规划的 40 个特性已全部完成条目。并行算法、latch/barrier/semaphore、constexpr 动态分配在扩充 PotreeConverter、VROOM、nano-node、glaze 语料后补齐，复制消除直接复用 stdexec 的现有证据。M2 首批加入移动语义（mold 3 条）与泛型 lambda（mold 2 条、Drogon 1 条）；第二批加入范围 for（mold/spdlog/abseil）、`std::make_unique`（mold/drogon/abseil）与强类型枚举（mold/drogon/spdlog），均为 A 级。
 
 M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生产路径各选 1 条），协程有 125 条候选（Drogon 3 条生产路径）；两者已完成 A 级条目。上一轮新增 NVIDIA/stdexec（Apache-2.0，tag `nvhpc-26.05`）与 Friendly0Fire/GW2Radial（MIT，tag `v2.4.0`），补齐模板 lambda、atomic_ref、pmr 与 jthread/stop_token 的生产证据。本轮新增 potree/PotreeConverter（BSD-2-Clause，tag `2.1.5`）、VROOM-Project/vroom（BSD-2-Clause，tag `v1.15.0`）、nanocurrency/nano-node（BSD-3-Clause，tag `V29.0DB101`）与 stephenberry/glaze（MIT，tag `v9.0.0`），补齐并行算法、latch/barrier/semaphore 与 constexpr 动态分配的生产证据；保证的复制消除沿用 stdexec 的 3 条证据，其中 2 条是 GCC 缺陷回退，故标为 B 级。
 
@@ -369,15 +369,16 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M1 · 公开 Alpha（新增 250–350 人时）
 
-- 40 个完整条目，其中至少 32 个达到 A 级（≥3 条证据），其余为 B 级。
-- 6 个语料仓库（已扩到 7：Abseil、Drogon、DuckDB 已加入）。
-- 3 张库联动卡片。
+- 40 个完整条目，其中至少 32 个达到 A 级（≥3 条证据），其余为 B 级。（已完成：37 A + 3 B）
+- 13 个语料仓库（首批 7 个之外，M1 末轮加入 stdexec、GW2Radial、PotreeConverter、VROOM、nano-node、glaze）。
+- 3 张库联动卡片。（已完成：stdexec × 模板 lambda、VROOM × 计数信号量、glaze × constexpr 动态分配；站点“按库联动”页渲染）
 - 证据等级制度上线：初期内容标注 `manual`，引入第二名审核者后才标 `verified`。
 - 退出标准：40/40 条目至少 2 条证据，其中 32/40 达到 3 条；permalink 校验 100% 通过；外部 3 人试用并给出书面反馈。
 
 ### M2 · C++11/14 覆盖（200–300 人时）
 
-- 累计 100 条目：40 A + 60 B。
+- 累计 100 条目：40 A + 60 B。（进行中：45 个完整条目，42 A + 3 B，135 条证据）
+- 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`，均带可编译示例。
 - 建立“已废弃/被替代”标注（`std::auto_ptr`、`std::bind` 的现代替代等）。
 - 退出标准：C++11/14 高频特性无空缺；所有 B 级条目至少 2 条证据；站点导航按标准版本可用。
 

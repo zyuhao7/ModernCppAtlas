@@ -421,6 +421,50 @@ class ClaimTableTests(unittest.TestCase):
         self.assertEqual(build_site.claim_table({}), "")
 
 
+class LibraryCardTests(unittest.TestCase):
+    def test_loads_cards_from_directory(self) -> None:
+        build_site = load_tool("build_site")
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            (directory / "lib-one.yaml").write_text("id: lib-one\n", encoding="utf-8")
+            self.assertEqual(build_site.load_libraries(directory), [{"id": "lib-one"}])
+
+    def test_renders_feature_evidence_and_example_links(self) -> None:
+        build_site = load_tool("build_site")
+        with tempfile.TemporaryDirectory() as tmp:
+            build_site.OUT_DIR = Path(tmp)
+            build_site.build_libraries_page(
+                {"cpp20.span": {"title": "std::span"}},
+                [
+                    {
+                        "id": "lib-x",
+                        "library": "owner/repo",
+                        "feature": "cpp20.span",
+                        "pattern": "p",
+                        "benefit": "b",
+                        "cost": "c",
+                        "evidence": ["ev-x"],
+                        "example": "examples/cpp20/span.cpp",
+                    }
+                ],
+                "https://example.test/repo",
+                "main",
+            )
+            text = (Path(tmp) / "libraries" / "index.md").read_text(encoding="utf-8")
+        self.assertIn("../features/cpp20.span.md", text)
+        self.assertIn("../evidence/ev-x.md", text)
+        self.assertIn(
+            "https://example.test/repo/blob/main/examples/cpp20/span.cpp", text
+        )
+
+    def test_skips_page_without_cards(self) -> None:
+        build_site = load_tool("build_site")
+        with tempfile.TemporaryDirectory() as tmp:
+            build_site.OUT_DIR = Path(tmp)
+            build_site.build_libraries_page({}, [], "https://example.test", "main")
+            self.assertFalse((Path(tmp) / "libraries" / "index.md").exists())
+
+
 class GeneratedEvidenceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.validate = load_tool("validate")

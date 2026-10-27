@@ -1,5 +1,35 @@
 # Minimum compiler versions mirrored from cppreference compiler support tables.
 features:
+  cpp11.enum-class:
+    gcc: "4.4"
+    clang: "2.9"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp11.move-semantics:
+    gcc: "4.5"
+    clang: "2.9"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp11.range-for:
+    gcc: "4.6"
+    clang: "3.0"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp14.generic-lambda:
+    gcc: "4.9"
+    clang: "3.4"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-10-27"
+  cpp14.make-unique:
+    gcc: "4.9"
+    clang: "3.4"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-10-27"
   cpp17.any:
     gcc: "7"
     clang: "4"

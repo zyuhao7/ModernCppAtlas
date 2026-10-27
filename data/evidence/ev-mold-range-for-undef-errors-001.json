@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-range-for-undef-errors-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/passes.cc",
+  "lines": "1571-1573",
+  "feature": "cpp11.range-for",
+  "pattern": "用 range-for 遍历错误映射并解构键值对",
+  "why_typical": "链接器报告未定义符号时逐个读取映射项，循环体只关心元素本身，不关心迭代器。",
+  "excerpt": "  for (auto &pair : ctx.undef_errors) {\n    Symbol<E> *sym = pair.first;\n    std::span<std::string> errors = pair.second;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；错误报告阶段遍历 undef_errors，range-for 省去迭代器样板代码。"
+}

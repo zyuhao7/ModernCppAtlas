@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-generic-lambda-push-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/passes.cc",
+  "lines": "93-97",
+  "feature": "cpp14.generic-lambda",
+  "pattern": "用 auto 参数的 lambda 充当处理多种区块类型的局部辅助函数",
+  "why_typical": "同一个 lambda 接受不同派生类型的指针，省去为每种类型写重载。",
+  "excerpt": "  auto push = [&](auto *x) {\n    ctx.chunks.push_back(x);\n    ctx.chunk_pool.emplace_back(x);\n    return x;\n  };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；合成段的创建流程对多种 Chunk 子类复用同一段登记逻辑。"
+}

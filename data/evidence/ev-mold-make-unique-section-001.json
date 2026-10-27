@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-make-unique-section-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/input-files.cc",
+  "lines": "371-374",
+  "feature": "cpp14.make-unique",
+  "pattern": "用 std::make_unique 在数组中创建派生段对象",
+  "why_typical": "工厂函数直接返回 unique_ptr，构造参数在同一表达式内传递，不暴露裸 new。",
+  "excerpt": "      if (ctx.arg.oformat_binary && !(shdr.sh_flags & SHF_ALLOC))\n        continue;\n\n      this->sections[i] = std::make_unique<InputSection<E>>(ctx, *this, i);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；解析输入段时按索引创建 InputSection，所有权立即交给数组。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-generic-lambda-hash-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/icf.cc",
+  "lines": "236-238",
+  "feature": "cpp14.generic-lambda",
+  "pattern": "用泛型 lambda 对不同整数宽度统一做哈希",
+  "why_typical": "哈希器只关心对象的字节表示，泛型参数让调用点不必显式写类型。",
+  "excerpt": "  auto hash = [&](auto val) {\n    hasher.update((u8 *)&val, sizeof(val));\n  };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；ICF 段内容摘要计算，调用方直接传整数或大小。"
+}

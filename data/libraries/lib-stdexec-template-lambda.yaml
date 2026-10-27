@@ -1,0 +1,11 @@
+id: lib-stdexec-template-lambda
+library: NVIDIA/stdexec
+feature: cpp20.template-lambda
+pattern: 用带显式模板参数的 lambda 在编译期展开参数包，选择发送者的完成签名
+benefit: 把类型推导留在调用点，省去为每种签名手写独立仿函数
+cost: 错误信息会叠两层模板，约束失败时定位成本高
+evidence:
+  - ev-stdexec-template-lambda-transform-001
+  - ev-stdexec-template-lambda-completion-info-002
+  - ev-stdexec-template-lambda-awaitable-003
+example: examples/cpp20/template_lambda.cpp

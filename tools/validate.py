@@ -568,6 +568,9 @@ def main() -> int:
         for evidence_id in data["evidence"]:
             if evidence_id not in evidence:
                 report.error(path, f"evidence {evidence_id} does not exist")
+        example = data.get("example")
+        if example and not (ROOT / example).is_file():
+            report.error(path, f"example does not exist: {example}")
 
     if not CORPUS_FILE.exists():
         report.error(CORPUS_FILE, "missing corpus manifest")

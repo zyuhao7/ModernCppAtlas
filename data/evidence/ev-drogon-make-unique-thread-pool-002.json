@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-make-unique-thread-pool-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/HttpAppFrameworkImpl.cc",
+  "lines": "612-614",
+  "feature": "cpp14.make-unique",
+  "pattern": "用 std::make_unique 创建只由应用框架持有的线程池成员",
+  "why_typical": "成员的生命周期跟随所有者，make_unique 让分配与赋值成为单个表达式。",
+  "excerpt": "    ioLoopThreadPool_ =\n        std::make_unique<trantor::EventLoopThreadPool>(threadNum_,\n                                                       \"DrogonIoLoop\");",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；启动时创建 IO 事件循环线程池，之后通过 unique_ptr 成员访问。"
+}
