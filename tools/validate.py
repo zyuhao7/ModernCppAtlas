@@ -186,6 +186,12 @@ def check_corpus_link(
         )
         return
     if not evidence["excerpt"].strip():
+        if evidence["license"] in EXCERPT_LICENSES:
+            report.error(
+                path,
+                f"excerpt is empty but {evidence['license']} allows quoting; "
+                "copy the cited lines so they can be verified",
+            )
         return
     expected = source_lines[start - 1 : end]
     actual = evidence["excerpt"].splitlines()
@@ -312,6 +318,19 @@ def check_evidence_mix(
 
 def check_evidence_review(report: Report, path: Path, evidence: dict) -> None:
     level = evidence["level"]
+    if level == "stale":
+        if not str(evidence.get("stale_reason", "")).strip():
+            report.error(path, "stale evidence needs a stale_reason")
+        if evidence.get("stale_since") is None:
+            report.error(path, "stale evidence needs a stale_since date")
+        else:
+            check_date(report, path, "stale_since", evidence.get("stale_since"))
+        return
+    if (
+        evidence.get("stale_reason") is not None
+        or evidence.get("stale_since") is not None
+    ):
+        report.error(path, "stale_reason/stale_since are only valid for stale evidence")
     if level == "manual":
         if len(evidence["verified_by"]) < 1 or evidence["verified_at"] is None:
             report.error(path, "manual evidence needs a reviewer and verified_at")
@@ -451,7 +470,8 @@ def main() -> int:
         if parsed is None:
             continue
         data, body = parsed
-        validate_schema(report, path, data, feature_schema)
+        if not validate_schema(report, path, data, feature_schema):
+            continue
         feature_id = data.get("id")
         if not isinstance(feature_id, str):
             continue

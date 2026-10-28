@@ -126,7 +126,7 @@ class CorpusLinkTests(unittest.TestCase):
         self.validate.CORPUS_CACHE = self.original_cache
         self.tmp.cleanup()
 
-    def check(self, **overrides) -> list[str]:
+    def check(self, corpus_license="MIT", **overrides) -> list[str]:
         evidence = {
             "repo": "owner/repo",
             "commit": self.first,
@@ -139,7 +139,7 @@ class CorpusLinkTests(unittest.TestCase):
         entry = {
             "repo": "owner/repo",
             "commit": self.second,
-            "license": "MIT",
+            "license": corpus_license,
         }
         report = self.validate.Report()
         self.validate.check_corpus_link(
@@ -165,6 +165,17 @@ class CorpusLinkTests(unittest.TestCase):
         errors = self.check(commit="0" * 40)
         self.assertEqual(len(errors), 1)
         self.assertIn("is not available in the cache", errors[0])
+
+    def test_empty_excerpt_is_rejected_for_permissive_license(self) -> None:
+        errors = self.check(excerpt="")
+        self.assertEqual(len(errors), 1)
+        self.assertIn("excerpt is empty but MIT allows quoting", errors[0])
+
+    def test_empty_excerpt_is_allowed_when_license_forbids_quoting(self) -> None:
+        errors = self.check(
+            excerpt="", license="GPL-3.0-only", corpus_license="GPL-3.0-only"
+        )
+        self.assertEqual(errors, [])
 
 
 class TierTests(unittest.TestCase):
@@ -659,6 +670,148 @@ class ReportTests(unittest.TestCase):
         report = validate.Report()
         report.error(Path("/tmp/outside.json"), "problem")
         self.assertIn("problem", report.errors[0])
+
+
+class FreshnessTests(unittest.TestCase):
+    SHA = "a" * 40
+    EVIDENCE = {
+        "id": "ev-owner-example-001",
+        "repo": "owner/repo",
+        "commit": SHA,
+        "path": "dir/file.h",
+        "lines": "1-2",
+        "feature": "cpp17.example",
+        "license": "MIT",
+    }
+
+    def setUp(self) -> None:
+        self.freshness = load_tool("check_evidence_freshness")
+        self.original_fetch = self.freshness.fetch_json
+
+    def tearDown(self) -> None:
+        self.freshness.fetch_json = self.original_fetch
+
+    def check(self, **overrides):
+        responses = {
+            "https://api.github.com/repos/owner/repo": (200, {}),
+            f"https://api.github.com/repos/owner/repo/commits/{self.SHA}": (200, {}),
+            "https://api.github.com/repos/owner/repo/contents/dir/file.h"
+            f"?ref={self.SHA}": (200, {"type": "file"}),
+            "https://api.github.com/repos/owner/repo/license": (
+                200,
+                {"license": {"spdx_id": "MIT"}},
+            ),
+        }
+        responses.update(overrides)
+
+        def fetch(url, _token, _timeout=20.0):
+            result = responses[url]
+            if isinstance(result, Exception):
+                raise result
+            return result
+
+        self.freshness.fetch_json = fetch
+        return self.freshness.Checker("token").check(dict(self.EVIDENCE))
+
+    def test_resolving_evidence_is_ok(self) -> None:
+        self.assertEqual(self.check(), ("ok", ""))
+
+    def test_missing_repository_is_structural(self) -> None:
+        status, _ = self.check(**{"https://api.github.com/repos/owner/repo": (404, {})})
+        self.assertEqual(status, "repo_missing")
+
+    def test_missing_commit_is_structural(self) -> None:
+        url = f"https://api.github.com/repos/owner/repo/commits/{self.SHA}"
+        self.assertEqual(self.check(**{url: (422, {})})[0], "commit_missing")
+
+    def test_missing_path_is_structural(self) -> None:
+        url = (
+            "https://api.github.com/repos/owner/repo/contents/dir/file.h"
+            f"?ref={self.SHA}"
+        )
+        self.assertEqual(self.check(**{url: (404, {})})[0], "path_missing")
+
+    def test_changed_license_is_structural(self) -> None:
+        url = "https://api.github.com/repos/owner/repo/license"
+        status, detail = self.check(
+            **{url: (200, {"license": {"spdx_id": "GPL-3.0-only"}})}
+        )
+        self.assertEqual(status, "license_changed")
+        self.assertIn("GPL-3.0-only", detail)
+
+    def test_network_failure_is_unknown(self) -> None:
+        url = "https://api.github.com/repos/owner/repo"
+        status, _ = self.check(**{url: self.freshness.NetworkError("reset")})
+        self.assertEqual(status, "unknown")
+
+    def test_apply_stale_preserves_unrelated_formatting(self) -> None:
+        data = dict(self.EVIDENCE) | {
+            "verified_by": ["reviewer"],
+            "level": "manual",
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "evidence.json"
+            path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n")
+            feature = self.freshness.apply_stale(
+                path,
+                {"status": "repo_missing", "detail": "repository not found"},
+                "2026-10-28",
+            )
+            text = path.read_text()
+            updated = json.loads(text)
+        self.assertEqual(feature, "cpp17.example")
+        self.assertEqual(updated["level"], "stale")
+        self.assertEqual(updated["stale_since"], "2026-10-28")
+        self.assertIn("repo_missing", updated["stale_reason"])
+        self.assertIn('"verified_by": [\n    "reviewer"\n  ]', text)
+
+    def test_apply_stale_keeps_inline_array_style(self) -> None:
+        data = dict(self.EVIDENCE) | {
+            "verified_by": ["reviewer"],
+            "level": "manual",
+        }
+        original = (
+            json.dumps(data, indent=2, ensure_ascii=False).replace(
+                '"verified_by": [\n    "reviewer"\n  ]', '"verified_by": ["reviewer"]'
+            )
+            + "\n"
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "evidence.json"
+            path.write_text(original)
+            self.freshness.apply_stale(
+                path, {"status": "commit_missing", "detail": "gone"}, "2026-10-28"
+            )
+            text = path.read_text()
+        self.assertIn('"verified_by": ["reviewer"]', text)
+
+
+class StaleValidationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+        self.path = Path("/tmp/evidence.json")
+        self.evidence = {
+            "level": "stale",
+            "stale_reason": "repo_missing: repository not found",
+            "stale_since": "2026-10-28",
+            "verified_by": ["reviewer"],
+            "verified_at": "2026-10-28",
+        }
+
+    def check(self, **overrides) -> list[str]:
+        report = self.validate.Report()
+        evidence = self.evidence | overrides
+        self.validate.check_evidence_review(report, self.path, evidence)
+        return report.errors
+
+    def test_stale_evidence_needs_reason_and_date(self) -> None:
+        self.assertEqual(self.check(), [])
+        self.assertTrue(self.check(stale_reason=" "))
+        self.assertTrue(self.check(stale_since=None))
+
+    def test_stale_fields_only_valid_for_stale_level(self) -> None:
+        errors = self.check(level="manual")
+        self.assertTrue(any("only valid for stale" in error for error in errors))
 
 
 if __name__ == "__main__":

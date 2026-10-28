@@ -105,7 +105,7 @@ review:
 
 **单审与双审。** `manual` 证据至少一位审核者并记录 `verified_at`；`verified` 证据需要两位不同审核者、至少一位不是 `submitted_by` 填写的提交者，并记录日期。没有第二人真实复核时保持 `manual`。
 
-**关于失效：** 固定 commit 的 permalink 中行号不会漂移。月度扫描的目的不是校验旧证据，而是发现同一特性的更新用法；旧证据只在仓库删除、历史被改写、许可证变化等结构性事件发生时才降级。
+**关于失效：** 固定 commit 的 permalink 中行号不会漂移，因此月度任务不重比摘录原文。它做两件事：发现同一特性的更新用法；对已发布证据做结构性存活检查（仓库、commit、路径、许可证）。存活检查失败时自动开 issue，不直接改动数据；维护者确认后运行 `tools/check_evidence_freshness.py --apply-stale` 降级，并同步修正该页的主张账本。网络或 API 限流记为 `unknown`，不会触发降级。
 
 ## 社区投稿与审核流程
 
@@ -131,7 +131,7 @@ review:
    - 证据审核：可追溯性、许可证、上下文是否断章取义；
    - 主张审核：正文中可检验的说法是否逐条落入账本，账本是否真的由证据支持。
 4. **定级与合并**：通过后按审核人数标记 `manual` 或 `verified`；有争议时以标准文本、提案或编译器实际行为为准，要求提供最小可复现示例。
-5. **失效处理**：结构性失效时降级为 `stale` 并发 issue，保留定位记录；月度扫描只生成“更新用法”候选，不自动替换旧证据。
+5. **失效处理**：月度任务发现结构性失效后开 issue；维护者确认后降级为 `stale` 并保留定位记录与原因，同时修正引用该证据的主张。月度扫描只生成“更新用法”候选，不自动替换旧证据。
 
 单人维护阶段，新条目默认 `manual`。引入第二名审核者后再开放 `verified`，避免把“单人确认”包装成“双人复核”。
 
@@ -162,6 +162,7 @@ make clean      # 删除 build/
 ```bash
 uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
 uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
+uv run tools/check_evidence_freshness.py      # 检查已发布证据的上游结构是否仍存在
 uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段，并比对摘录原文
 uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
 uv run tools/check_snippets.py --compiler g++  # 编译正文中标记的代码块

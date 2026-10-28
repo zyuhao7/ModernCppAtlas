@@ -1,0 +1,94 @@
+name: monthly
+
+on:
+  schedule:
+    - cron: "0 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install tools
+        run: uv sync --frozen
+
+      - name: Cache corpus checkouts
+        uses: actions/cache@v4
+        with:
+          path: .cache/corpus
+          key: corpus-${{ hashFiles('data/corpus.yaml') }}
+
+      - name: Fetch pinned corpus
+        run: uv run tools/fetch_corpus.py
+
+      - name: Scan for updated usage
+        run: uv run tools/scan/scan.py
+
+      - name: Upload candidates
+        uses: actions/upload-artifact@v4
+        with:
+          name: candidates
+          path: .cache/candidates.json
+
+  freshness:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Install tools
+        run: uv sync --frozen
+
+      - name: Check published evidence
+        id: check
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: uv run tools/check_evidence_freshness.py --report .cache/freshness.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: freshness
+          path: .cache/freshness.json
+
+      - name: Open or update freshness issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          [ -f .cache/freshness.json ] || exit 0
+          body=$(mktemp)
+          {
+            echo "月度证据新鲜度检查发现结构性失效。人工确认后运行："
+            echo
+            echo '```'
+            echo "uv run tools/check_evidence_freshness.py --apply-stale"
+            echo '```'
+            echo
+            echo "| 证据 | 特性 | 状态 | 详情 |"
+            echo "| --- | --- | --- | --- |"
+            jq -r '.problems[] | select(.status != "unknown") | "| \(.id) | \(.feature) | \(.status) | \(.detail) |"' .cache/freshness.json
+            echo
+            echo "网络或权限问题（未降级）："
+            echo
+            jq -r '.problems[] | select(.status == "unknown") | "- \(.id): \(.detail)"' .cache/freshness.json
+          } > "$body"
+          number=$(gh issue list --state open --search '证据新鲜度扫描 in:title' --json number --jq '.[0].number')
+          if [ -n "$number" ]; then
+            gh issue comment "$number" --body-file "$body"
+          else
+            gh issue create --title "证据新鲜度扫描" --body-file "$body"
+          fi
