@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-lambda-registry-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/registry.h",
+  "lines": "67-72",
+  "feature": "cpp11.lambda",
+  "pattern": "用捕获 this 的 lambda 把刷新动作交给周期任务",
+  "why_typical": "lambda 把成员调用包装成无参可调用对象，避免为一次性回调声明具名函数或仿函数。",
+  "excerpt": "    template <typename Rep, typename Period>\n    void flush_every(std::chrono::duration<Rep, Period> interval) {\n        std::lock_guard<std::mutex> lock(flusher_mutex_);\n        auto clbk = [this]() { this->flush_all(); };\n        periodic_flusher_ = details::make_unique<periodic_worker>(clbk, interval);\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；捕获 this 后转为 std::function 存入 periodic_worker。"
+}

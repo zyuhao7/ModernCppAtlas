@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-override-ratelimiter-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/RateLimiter.h",
+  "lines": "56-69",
+  "feature": "cpp11.override-final",
+  "pattern": "在装饰器派生类上用 override 覆写虚函数与析构函数",
+  "why_typical": "覆写 isAllowed 并默认析构，override 保证基类签名变化时立即暴露。",
+  "excerpt": "class DROGON_EXPORT SafeRateLimiter : public RateLimiter\n{\n  public:\n    SafeRateLimiter(RateLimiterPtr limiter) : limiter_(limiter)\n    {\n    }\n\n    bool isAllowed() override\n    {\n        std::lock_guard<std::mutex> lock(mutex_);\n        return limiter_->isAllowed();\n    }\n\n    ~SafeRateLimiter() noexcept override = default;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；线程安全装饰器包装另一个限流器。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-final-async-logger-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/async_logger.h",
+  "lines": "33-34",
+  "feature": "cpp11.override-final",
+  "pattern": "用 final 标记异步 logger 类禁止进一步派生",
+  "why_typical": "库作者明确该类的继承层级到此为止，派生会在编译期被拒绝。",
+  "excerpt": "class SPDLOG_API async_logger final : public std::enable_shared_from_this<async_logger>,\n                                      public logger {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；final 用于锁定公共 API 的继承结构。"
+}

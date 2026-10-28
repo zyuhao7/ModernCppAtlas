@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-variable-template-awaitable-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "87-88",
+  "feature": "cpp14.variable-templates",
+  "pattern": "用变量模板提供可等待类型的布尔常量",
+  "why_typical": "沿用标准库 _v 后缀惯例，调用处直接写 is_awaitable_v<T> 而不是 ::value。",
+  "excerpt": "template <typename T>\nconstexpr bool is_awaitable_v = is_awaitable<T>::value;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；变量模板把类型特征包装成常量表达式。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-override-final-formatter-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/pattern_formatter-inl.h",
+  "lines": "103-113",
+  "feature": "cpp11.override-final",
+  "pattern": "在格式化器派生类上同时使用 final 与 override",
+  "why_typical": "final 禁止继续派生，override 让签名不匹配变成编译错误，二者一起固定继承契约。",
+  "excerpt": "template <typename ScopedPadder>\nclass name_formatter final : public flag_formatter {\npublic:\n    explicit name_formatter(padding_info padinfo)\n        : flag_formatter(padinfo) {}\n\n    void format(const details::log_msg &msg, const std::tm &, memory_buf_t &dest) override {\n        ScopedPadder p(msg.logger_name.size(), padinfo_, dest);\n        fmt_helper::append_string_view(msg.logger_name, dest);\n    }\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；同文件数十个格式化器采用相同写法。"
+}

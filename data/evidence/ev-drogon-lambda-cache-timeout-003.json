@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-lambda-cache-timeout-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/CacheMap.h",
+  "lines": "528-541",
+  "feature": "cpp11.lambda",
+  "pattern": "用值捕获 key 的 lambda 构造超时回调",
+  "why_typical": "回调生命周期长于当前调用，按值捕获 key 避免悬空引用，再移交 std::function。",
+  "excerpt": "            std::function<void()> cb = [this, key]() {\n                bool erased{false};\n                std::function<void()> timeoutCallback;\n                {\n                    std::lock_guard<std::mutex> lock(mtx_);\n                    auto iter = map_.find(key);\n                    if (iter != map_.end())\n                    {\n                        auto &value = iter->second;\n                        auto entryPtr = value.weakEntryPtr_.lock();\n                        // entryPtr is used to avoid race conditions\n                        if (value.timeout_ > 0 && !entryPtr)\n                        {\n                            erased = true;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；捕获列表显式列出 this 与 key，体现生命周期边界。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-variable-template-string-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/strings/internal/generic_printer_internal.h",
+  "lines": "73-77",
+  "feature": "cpp14.variable-templates",
+  "pattern": "用变量模板主模板加偏特化识别字符串类型",
+  "why_typical": "变量模板可偏特化，布尔特征的主模板与特化都保持变量语法。",
+  "excerpt": "template <class T>\ninline constexpr bool is_any_string = false;\ntemplate <class A>\ninline constexpr bool\n    is_any_string<std::basic_string<char, std::char_traits<char>, A>> = true;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；主模板 false，basic_string 特化为 true。"
+}

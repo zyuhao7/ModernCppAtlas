@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-variable-template-result-match-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/status/status_builder.h",
+  "lines": "75-77",
+  "feature": "cpp14.variable-templates",
+  "pattern": "用变量模板封装类型特征判断的布尔结果",
+  "why_typical": "把多层的 decay_t/invoke_result_t/is_same_v 组合收敛成一个可读的布尔常量。",
+  "excerpt": "template <typename Fn, typename Arg, typename Expected>\ninline constexpr bool kResultMatches =\n    std::is_same_v<std::decay_t<std::invoke_result_t<Fn, Arg>>, Expected>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；该常量随后用于 enable_if 约束。"
+}

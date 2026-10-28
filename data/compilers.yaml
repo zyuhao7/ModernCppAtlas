@@ -42,6 +42,24 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-10-27"
+  cpp11.lambda:
+    gcc: "4.5"
+    clang: "3.1"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp11.override-final:
+    gcc: "4.7"
+    clang: "2.9"
+    msvc: "14.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-27"
+  cpp14.variable-templates:
+    gcc: "5"
+    clang: "3.4"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-10-27"
   cpp14.make-unique:
     gcc: "4.9"
     clang: "3.4"
