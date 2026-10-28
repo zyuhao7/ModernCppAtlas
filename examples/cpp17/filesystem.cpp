@@ -2,10 +2,39 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <random>
+#include <stdexcept>
 #include <string>
+#include <system_error>
 #include <vector>
 
 namespace fs = std::filesystem;
+
+namespace {
+
+fs::path make_unique_temp_dir() {
+  std::random_device rd;
+  for (int attempt = 0; attempt < 32; ++attempt) {
+    fs::path candidate = fs::temp_directory_path() /
+                         ("atlas-filesystem-example-" + std::to_string(rd()) +
+                          "-" + std::to_string(rd()));
+    if (fs::create_directory(candidate)) {
+      return candidate;
+    }
+  }
+  throw std::runtime_error("could not create a unique temporary directory");
+}
+
+struct TempDir {
+  fs::path path;
+
+  ~TempDir() {
+    std::error_code ec;
+    fs::remove_all(path, ec);
+  }
+};
+
+}  // namespace
 
 int main() {
   const fs::path log = "/var/log/app/server.log";
@@ -16,8 +45,8 @@ int main() {
   backup.replace_filename("backup.log");
   std::cout << backup.generic_string() << '\n';
 
-  const fs::path root = fs::temp_directory_path() / "atlas-filesystem-example";
-  fs::remove_all(root);
+  TempDir temp{make_unique_temp_dir()};
+  const fs::path& root = temp.path;
   fs::create_directories(root / "logs" / "archive");
 
   {
@@ -39,6 +68,4 @@ int main() {
   std::cout << "relative: "
             << fs::relative(root / "logs" / "server.log", root).generic_string()
             << '\n';
-
-  fs::remove_all(root);
 }
