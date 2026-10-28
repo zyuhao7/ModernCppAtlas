@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-auto-upper-bound-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "2624-2630",
+  "feature": "cpp11.auto-decltype",
+  "pattern": "用 auto 承接 upper_bound 返回的迭代器类型",
+  "why_typical": "迭代器类型由容器和模板参数共同决定，写出来冗长且易错，auto 让调用点只关心结果。",
+  "excerpt": "template <typename E>\nstd::pair<SectionFragment<E> *, i64>\nMergeableSection<E>::get_fragment(i64 offset) {\n  std::span<u32> vec = frag_offsets;\n  auto it = std::upper_bound(vec.begin(), vec.end(), offset);\n  i64 idx = it - 1 - vec.begin();\n  return {fragments[idx], offset - vec[idx]};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；分片查找依赖迭代器减法，类型无需显式拼写。"
+}

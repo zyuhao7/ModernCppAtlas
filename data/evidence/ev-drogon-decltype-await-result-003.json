@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-decltype-await-result-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "64-69",
+  "feature": "cpp11.auto-decltype",
+  "pattern": "用 decltype 查询 awaiter 的 await_resume 返回类型",
+  "why_typical": "协程结果类型无法直接命名，decltype 在编译期从表达式推导出准确类型。",
+  "excerpt": "template <typename T>\nstruct await_result\n{\n    using awaiter_t = decltype(internal::getAwaiter(std::declval<T>()));\n    using type = decltype(std::declval<awaiter_t>().await_resume());\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；await_result 把两个依赖表达式收敛为可直接使用的类型别名。"
+}

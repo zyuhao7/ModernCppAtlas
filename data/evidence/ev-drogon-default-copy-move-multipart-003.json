@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-default-copy-move-multipart-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/MultiPart.h",
+  "lines": "122-127",
+  "feature": "cpp11.default-delete",
+  "pattern": "用 = default 显式声明可复制且可移动的解析器",
+  "why_typical": "默认实现已满足语义，显式写出让接口意图可见，并保留移动构造。",
+  "excerpt": "class DROGON_EXPORT MultiPartParser\n{\n  public:\n    MultiPartParser(){};\n    MultiPartParser(const MultiPartParser &other) = default;  // Copyable\n    MultiPartParser(MultiPartParser &&other) = default;       // Movable",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；注释直接标明 Copyable 与 Movable。"
+}

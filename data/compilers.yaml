@@ -48,6 +48,24 @@ features:
     msvc: "16.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-10-27"
+  cpp11.auto-decltype:
+    gcc: "4.8.1"
+    clang: "2.9"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-28"
+  cpp11.nullptr:
+    gcc: "4.6"
+    clang: "2.9"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-28"
+  cpp11.default-delete:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-28"
   cpp11.override-final:
     gcc: "4.7"
     clang: "2.9"

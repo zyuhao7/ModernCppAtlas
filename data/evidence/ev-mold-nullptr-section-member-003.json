@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-nullptr-section-member-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "272-277",
+  "feature": "cpp11.nullptr",
+  "pattern": "用 nullptr 初始化可选的输出节指针成员",
+  "why_typical": "成员默认空值表示尚未归属输出节，nullptr 与指针类型直接匹配。",
+  "excerpt": "  std::pair<SectionFragment<E> *, i64>\n  get_fragment(Context<E> &ctx, const ElfRel<E> &rel);\n\n  ObjectFile<E> &file;\n  OutputSection<E> *output_section = nullptr;\n  i64 sh_size = -1;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；输入节到输出节的映射在后续阶段建立。"
+}

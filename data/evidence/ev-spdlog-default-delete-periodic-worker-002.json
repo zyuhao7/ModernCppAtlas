@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-default-delete-periodic-worker-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/periodic_worker.h",
+  "lines": "41-43",
+  "feature": "cpp11.default-delete",
+  "pattern": "用 = delete 禁止拥有线程的周期任务被复制",
+  "why_typical": "对象持有 std::thread，复制会重复管理线程；删除拷贝直接表达所有权唯一。",
+  "excerpt": "    std::thread &get_thread() { return worker_thread_; }\n    periodic_worker(const periodic_worker &) = delete;\n    periodic_worker &operator=(const periodic_worker &) = delete;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；拷贝被禁用，析构负责停止并 join 线程。"
+}

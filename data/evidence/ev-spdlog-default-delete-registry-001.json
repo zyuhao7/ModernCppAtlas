@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-default-delete-registry-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/registry.h",
+  "lines": "27-31",
+  "feature": "cpp11.default-delete",
+  "pattern": "用 = delete 显式禁用单例注册表的复制",
+  "why_typical": "全局注册表不应被复制，删除拷贝构造与赋值把约束交给编译器。",
+  "excerpt": "class SPDLOG_API registry {\npublic:\n    using log_levels = std::unordered_map<std::string, level::level_enum>;\n    registry(const registry &) = delete;\n    registry &operator=(const registry &) = delete;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；删除声明替代了私营拷贝构造的旧写法。"
+}

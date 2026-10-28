@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-decltype-offset-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/gdb-index.cc",
+  "lines": "406-411",
+  "feature": "cpp11.auto-decltype",
+  "pattern": "用 decltype 复用结构体成员的声明类型定义别名",
+  "why_typical": "偏移量的类型由文件头字段决定，decltype 避免重复类型并与字段声明保持同步。",
+  "excerpt": "  struct Record {\n    u64 form = 0;\n    u64 value = 0;\n  };\n\n  using Offset = decltype(hdr.size);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-27",
+  "is_test": false,
+  "notes": "生产路径；调试信息解析中按字段类型定义局部别名。"
+}
