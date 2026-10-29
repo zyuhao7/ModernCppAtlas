@@ -90,6 +90,8 @@ jobs:
         run: uv run tools/verify_examples.py --compiler ${{ matrix.compiler }} --run
 
       - name: Compile article snippets (${{ matrix.compiler }})
+        # Clang 18 with libstdc++ hides std::expected behind __cpp_concepts.
+        if: matrix.compiler == 'g++-14'
         run: uv run tools/check_snippets.py --compiler ${{ matrix.compiler }}
 
       - name: Build examples with make (${{ matrix.compiler }})
