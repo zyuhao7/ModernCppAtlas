@@ -3,7 +3,7 @@ id: cpp20.source-location
 title: std::source_location
 standard: C++20
 kind: library
-category: [诊断, 日志]
+category: [诊断]
 difficulty: 2
 status: final
 tier: A

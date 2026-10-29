@@ -3,7 +3,7 @@ id: cpp20.format
 title: std::format
 standard: C++20
 kind: library
-category: [格式化, 文本]
+category: [格式化, 字符串]
 difficulty: 2
 status: final
 tier: A

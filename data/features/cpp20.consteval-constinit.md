@@ -3,7 +3,7 @@ id: cpp20.consteval-constinit
 title: consteval 与 constinit
 standard: C++20
 kind: both
-category: [编译期, 初始化]
+category: [编译期计算, 初始化]
 difficulty: 3
 status: final
 tier: A

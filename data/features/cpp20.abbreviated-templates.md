@@ -3,7 +3,7 @@ id: cpp20.abbreviated-templates
 title: 缩写函数模板（abbreviated function templates）
 standard: C++20
 kind: language
-category: [模板, 泛型]
+category: [模板, 泛型编程]
 difficulty: 2
 status: final
 tier: A

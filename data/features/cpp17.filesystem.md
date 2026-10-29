@@ -3,7 +3,7 @@ id: cpp17.filesystem
 title: std::filesystem
 standard: C++17
 kind: library
-category: [文件系统, 路径处理]
+category: [文件系统]
 difficulty: 3
 status: final
 tier: A

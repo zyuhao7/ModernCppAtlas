@@ -26,6 +26,7 @@ EVIDENCE_DIR = ROOT / "data" / "evidence"
 LIBRARY_DIR = ROOT / "data" / "libraries"
 CORPUS_FILE = ROOT / "data" / "corpus.yaml"
 COMPILERS_FILE = ROOT / "data" / "compilers.yaml"
+TAXONOMY_FILE = ROOT / "data" / "taxonomy.yaml"
 CORPUS_CACHE = ROOT / ".cache" / "corpus"
 
 EXCERPT_LICENSES = {
@@ -210,6 +211,51 @@ def check_corpus_link(
         f"excerpt has {len(actual)} lines but line range "
         f"{evidence['lines']} has {len(expected)}",
     )
+
+
+def load_taxonomy(report: Report) -> list[str]:
+    if not TAXONOMY_FILE.exists():
+        report.error(TAXONOMY_FILE, "missing category taxonomy")
+        return []
+    try:
+        data = yaml.safe_load(TAXONOMY_FILE.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        report.error(TAXONOMY_FILE, f"invalid YAML: {exc}")
+        return []
+    groups = data.get("groups") if isinstance(data, dict) else None
+    if not isinstance(groups, dict) or not groups:
+        report.error(TAXONOMY_FILE, "taxonomy must contain a non-empty groups mapping")
+        return []
+    categories: list[str] = []
+    for group, items in groups.items():
+        if not isinstance(items, list) or not items:
+            report.error(TAXONOMY_FILE, f"group {group!r} must list categories")
+            continue
+        for item in items:
+            if not isinstance(item, str) or not item.strip():
+                report.error(TAXONOMY_FILE, f"group {group!r} has an invalid category")
+                continue
+            if item in categories:
+                report.error(TAXONOMY_FILE, f"duplicate category {item!r}")
+                continue
+            categories.append(item)
+    return categories
+
+
+def check_taxonomy_schema(
+    report: Report, feature_schema: dict, categories: list[str]
+) -> None:
+    enum = (
+        feature_schema.get("properties", {})
+        .get("category", {})
+        .get("items", {})
+        .get("enum")
+    )
+    if enum != categories:
+        report.error(
+            TAXONOMY_FILE,
+            "schema/feature.schema.json category enum does not match taxonomy",
+        )
 
 
 def check_standard(
@@ -454,6 +500,8 @@ def main() -> int:
 
     report = Report()
     feature_schema = load_schema("feature.schema.json")
+    taxonomy = load_taxonomy(report)
+    check_taxonomy_schema(report, feature_schema, taxonomy)
     evidence_schema = load_schema("evidence.schema.json")
     library_schema = load_schema("library.schema.json")
     corpus_schema = load_schema("corpus.schema.json")

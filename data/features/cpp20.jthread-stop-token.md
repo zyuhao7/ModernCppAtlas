@@ -3,7 +3,7 @@ id: cpp20.jthread-stop-token
 title: std::jthread 与停止令牌
 standard: C++20
 kind: library
-category: [并发, 线程]
+category: [并发]
 difficulty: 3
 status: final
 tier: B

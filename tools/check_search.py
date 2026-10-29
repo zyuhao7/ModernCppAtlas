@@ -1,20 +1,23 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
-# dependencies = ["jieba>=0.42"]
+# dependencies = ["jieba>=0.42", "pyyaml>=6.0"]
 # ///
 """Smoke-test Chinese search coverage in a built MkDocs site."""
 
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import sys
 from pathlib import Path
 
 import jieba
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
+FEATURE_DIR = ROOT / "data" / "features"
 DEFAULT_QUERIES = [
     "结构化绑定",
     "std::optional",
@@ -49,6 +52,21 @@ def query_tokens(query: str) -> list[str]:
     return tokens
 
 
+def feature_titles() -> dict[str, str]:
+    titles: dict[str, str] = {}
+    for path in sorted(FEATURE_DIR.glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        if not text.startswith("---\n"):
+            continue
+        end = text.find("\n---\n", 4)
+        if end == -1:
+            continue
+        meta = yaml.safe_load(text[4:end])
+        if isinstance(meta, dict) and meta.get("id") and meta.get("title"):
+            titles[meta["id"]] = meta["title"]
+    return titles
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--site-dir", type=Path, default=ROOT / "site")
@@ -69,7 +87,7 @@ def main() -> int:
     haystacks = [
         (
             doc.get("location", ""),
-            f"{doc.get('title', '')} {doc.get('text', '')}".lower(),
+            html.unescape(f"{doc.get('title', '')} {doc.get('text', '')}").lower(),
         )
         for doc in docs
     ]
@@ -91,11 +109,26 @@ def main() -> int:
         if not matches:
             failures.append(f"{query}: no document contains {tokens}")
 
+    titles = feature_titles()
+    for feature_id, title in titles.items():
+        tokens = query_tokens(title)
+        location = f"features/{feature_id}/"
+        matches = [
+            doc_location
+            for doc_location, haystack in haystacks
+            if all(token in haystack for token in tokens)
+        ]
+        if location not in matches:
+            print(f"FAIL {feature_id}: title {title!r} does not reach {location}")
+            failures.append(
+                f"{feature_id}: title {title!r} does not reach its own page"
+            )
+
     if failures:
         for failure in failures:
             print(f"FAIL {failure}", file=sys.stderr)
         return 1
-    print(f"{len(queries)} search queries hit")
+    print(f"{len(queries)} search queries and {len(titles)} feature titles hit")
     return 0
 
 

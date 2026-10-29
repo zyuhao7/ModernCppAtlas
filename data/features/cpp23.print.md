@@ -3,7 +3,7 @@ id: cpp23.print
 title: std::print / std::println
 standard: C++23
 kind: library
-category: [格式化输出, I/O]
+category: [格式化, I/O]
 difficulty: 2
 status: final
 tier: B

@@ -104,6 +104,7 @@ Feature frontmatter maps testable statements to evidence IDs. For tier A the led
 - `data/libraries/*.yaml`: library-integration cards referencing one feature, several evidence IDs, and optionally an example path.
 - `data/compilers.yaml`: minimum GCC/Clang/MSVC versions; must exactly mirror each feature's frontmatter `compilers` and point `source` at the matching cppreference standard table.
 - `data/corpus.yaml`: repos, pinned commits and tags used by evidence and scanning.
+- `data/taxonomy.yaml`: canonical `category` values and the presentation order of the scenario index; the schema enum mirrors it and `validate.py` rejects drift.
 - `schema/*.json`: JSON Schema Draft 2020-12, loaded by `validate.py`.
 
 ### Site generation

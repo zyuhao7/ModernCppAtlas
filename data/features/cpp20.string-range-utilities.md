@@ -3,7 +3,7 @@ id: cpp20.string-range-utilities
 title: 字符串与范围小工具
 standard: C++20
 kind: library
-category: [字符串, 容器操作]
+category: [字符串, 容器]
 difficulty: 2
 status: final
 tier: A

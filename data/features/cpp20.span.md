@@ -3,7 +3,7 @@ id: cpp20.span
 title: std::span
 standard: C++20
 kind: library
-category: [视图, 内存]
+category: [视图, 内存管理]
 difficulty: 3
 status: final
 tier: A

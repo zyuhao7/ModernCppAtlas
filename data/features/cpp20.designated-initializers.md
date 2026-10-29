@@ -3,7 +3,7 @@ id: cpp20.designated-initializers
 title: 指定初始化（designated initializers）
 standard: C++20
 kind: language
-category: [初始化, 聚合类型]
+category: [初始化]
 difficulty: 2
 status: final
 tier: A

@@ -178,6 +178,42 @@ class CorpusLinkTests(unittest.TestCase):
         self.assertEqual(errors, [])
 
 
+class TaxonomyTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.validate = load_tool("validate")
+
+    def test_repository_taxonomy_is_unique_and_matches_schema(self) -> None:
+        report = self.validate.Report()
+        categories = self.validate.load_taxonomy(report)
+        self.assertEqual(report.errors, [])
+        self.assertEqual(len(categories), len(set(categories)))
+        self.validate.check_taxonomy_schema(
+            report, self.validate.load_schema("feature.schema.json"), categories
+        )
+        self.assertEqual(report.errors, [])
+
+    def test_schema_drift_is_reported(self) -> None:
+        report = self.validate.Report()
+        schema = {"properties": {"category": {"items": {"enum": ["语法"]}}}}
+        self.validate.check_taxonomy_schema(report, schema, ["语法", "并发"])
+        self.assertTrue(
+            any("does not match taxonomy" in error for error in report.errors)
+        )
+
+    def test_duplicate_category_is_reported(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "taxonomy.yaml"
+            path.write_text("groups:\n  语言:\n    - 语法\n    - 语法\n")
+            original = self.validate.TAXONOMY_FILE
+            self.validate.TAXONOMY_FILE = path
+            try:
+                report = self.validate.Report()
+                self.validate.load_taxonomy(report)
+            finally:
+                self.validate.TAXONOMY_FILE = original
+        self.assertTrue(any("duplicate category" in error for error in report.errors))
+
+
 class TierTests(unittest.TestCase):
     HEADINGS = {
         "A": [

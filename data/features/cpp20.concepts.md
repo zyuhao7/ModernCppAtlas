@@ -3,7 +3,7 @@ id: cpp20.concepts
 title: concepts 与 requires
 standard: C++20
 kind: language
-category: [模板约束, 泛型编程]
+category: [概念, 泛型编程]
 difficulty: 4
 status: final
 tier: A

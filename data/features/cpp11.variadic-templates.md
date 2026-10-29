@@ -3,7 +3,7 @@ id: cpp11.variadic-templates
 title: 可变参数模板
 standard: C++11
 kind: language
-category: [模板, 泛型]
+category: [模板, 泛型编程]
 difficulty: 4
 status: final
 tier: A

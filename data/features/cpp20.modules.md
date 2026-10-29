@@ -3,7 +3,7 @@ id: cpp20.modules
 title: 模块（modules）
 standard: C++20
 kind: language
-category: [模块, 构建]
+category: [模块]
 difficulty: 4
 status: final
 tier: B

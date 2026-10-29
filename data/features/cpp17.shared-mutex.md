@@ -3,7 +3,7 @@ id: cpp17.shared-mutex
 title: std::shared_mutex
 standard: C++17
 kind: library
-category: [并发, 读写锁]
+category: [并发, 线程同步]
 difficulty: 3
 status: final
 tier: A

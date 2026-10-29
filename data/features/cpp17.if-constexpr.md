@@ -3,7 +3,7 @@ id: cpp17.if-constexpr
 title: if constexpr
 standard: C++17
 kind: language
-category: [编译期分支, 泛型编程]
+category: [编译期计算, 泛型编程]
 difficulty: 3
 status: final
 tier: A

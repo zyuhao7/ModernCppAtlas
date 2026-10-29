@@ -3,7 +3,7 @@ id: cpp20.template-lambda
 title: 模板 lambda（template lambda）
 standard: C++20
 kind: language
-category: [Lambda, 模板]
+category: [函数式, 模板]
 difficulty: 3
 status: final
 tier: A
