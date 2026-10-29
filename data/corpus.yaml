@@ -113,3 +113,39 @@
   paths:
     - include/glaze
   notes: M1 扩展；JSON 序列化库，补充 constexpr 动态分配的生产路径证据。
+- repo: nghttp2/nghttp2
+  url: https://github.com/nghttp2/nghttp2.git
+  commit: 85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2
+  tag: v1.70.0
+  license: MIT
+  paths:
+    - src
+    - lib
+  notes: C++23 生产证据；nghttpx 与 h2load 已使用 std::expected 与 std::println，覆盖错误传播和格式化输出。
+- repo: hyprwm/Hyprland
+  url: https://github.com/hyprwm/Hyprland.git
+  commit: 0aa6745f705f2c4b0a5004eb019ef76e5bbdb426
+  tag: v0.57.0
+  license: BSD-3-Clause
+  paths:
+    - src
+    - hyprpm
+    - hyprctl
+  notes: 以 C++26 模式构建；合成器核心与 hyprpm/hyprctl 大量使用 std::expected、std::println 与 std::unreachable。
+- repo: simdutf/simdutf
+  url: https://github.com/simdutf/simdutf.git
+  commit: 59589cd3df6823cbfdbd253cde3377e7c3e1fe9b
+  tag: v9.3.3
+  license: Apache-2.0
+  paths:
+    - include
+    - src
+  notes: C++23 if consteval 的密集用例，把 constexpr 校验路径与运行时 SIMD 实现分开。
+- repo: mpusz/mp-units
+  url: https://github.com/mpusz/mp-units.git
+  commit: 27d2def9082ce00d7eb4f75695dbead4a748f23f
+  tag: v2.5.0
+  license: MIT
+  paths:
+    - src
+  notes: C++23 模块与 import std 的生产用法；契约相关 C++26 代码尚未进入 v2.5.0 发布标签。

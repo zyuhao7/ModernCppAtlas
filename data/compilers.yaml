@@ -78,6 +78,18 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/14
     checked_at: "2026-10-27"
+  cpp23.expected:
+    gcc: "12"
+    clang: "16"
+    msvc: "19.33"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-10-29"
+  cpp23.print:
+    gcc: "14"
+    clang: "18"
+    msvc: "19.37"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-10-29"
   cpp14.make-unique:
     gcc: "4.9"
     clang: "3.4"

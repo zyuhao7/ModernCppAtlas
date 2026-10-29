@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-expected-parse-url-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/net/http_client.hpp",
+  "lines": "423-428",
+  "feature": "cpp23.expected",
+  "pattern": "URL 解析失败时返回 std::unexpected<std::error_code>，把系统错误码保留在返回类型里",
+  "why_typical": "用标准 error_code 作为错误类型，避免自定义错误类，同时让调用方在同一返回通道处理解析失败。",
+  "excerpt": "   inline std::expected<url_parts, std::error_code> parse_url(std::string_view url)\n   {\n      // Check minimum length\n      if (url.size() < 8) { // Minimum for \"http://\" + 1 char host\n         return std::unexpected(std::make_error_code(std::errc::invalid_argument));\n      }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-29",
+  "is_test": false,
+  "notes": "生产路径：Glaze 的 HTTP 客户端 URL 解析。"
+}

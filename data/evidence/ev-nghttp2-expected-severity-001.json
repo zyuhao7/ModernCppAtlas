@@ -1,0 +1,19 @@
+{
+  "id": "ev-nghttp2-expected-severity-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_log.cc",
+  "lines": "83-91",
+  "feature": "cpp23.expected",
+  "pattern": "把用户输入的名称解析成枚举值，失败时返回 std::unexpected",
+  "why_typical": "错误类型是项目内的小枚举，成功路径直接返回值，调用方必须显式处理失败，不需要异常或输出参数。",
+  "excerpt": "std::expected<int, Error>\nLog::get_severity_level_by_name(std::string_view name) {\n  for (size_t i = 0, max = array_size(SEVERITY_STR); i < max; ++i) {\n    if (name == SEVERITY_STR[i]) {\n      return static_cast<int>(i);\n    }\n  }\n  return std::unexpected{Error::INVALID_ARGUMENT};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-29",
+  "is_test": false,
+  "notes": "生产路径：nghttpx 的日志级别解析。"
+}
