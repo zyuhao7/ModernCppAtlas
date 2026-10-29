@@ -1,0 +1,19 @@
+{
+  "id": "ev-hyprland-expected-parse-hex-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/config/shared/parserUtils/ParserUtils.cpp",
+  "lines": "16-21",
+  "feature": "cpp23.expected",
+  "pattern": "把十六进制颜色分量解析成整数，失败时带上下文返回 std::unexpected",
+  "why_typical": "错误信息包含原始输入，调用方可以组合多个解析结果，并在解引用前统一检查，避免异常穿透解析层。",
+  "excerpt": "static std::expected<uint64_t, std::string> parseHex(std::string_view value) {\n    auto res = value.starts_with(\"0x\") ? strToNumber<uint64_t>(value) : strToNumber<uint64_t>(std::string{\"0x\"} + value);\n    if (!res)\n        return std::unexpected(std::format(\"invalid hex \\\"{}\\\"\", value));\n    return *res;\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-29",
+  "is_test": false,
+  "notes": "生产路径：Hyprland 配置解析层。"
+}

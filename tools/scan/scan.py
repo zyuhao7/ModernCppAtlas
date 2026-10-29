@@ -41,6 +41,9 @@ SOURCE_SUFFIXES = {
     ".cc",
     ".cpp",
     ".cxx",
+    ".cppm",
+    ".ixx",
+    ".mpp",
 }
 EXCLUDED_DIRS = {
     ".git",
@@ -177,6 +180,35 @@ REGEX_QUERIES = {
     "cpp20.remove-cvref-type-identity": (r"\bstd::(?:remove_cvref|type_identity)\b"),
     "cpp20.string-range-utilities": (
         r"\bstd::(?:ssize|erase_if)\b|\b(?:starts_with|ends_with)\s*\("
+    ),
+    "cpp23.expected": r"\bstd::expected\b",
+    "cpp23.print": r"\bstd::print(?:ln)?\s*\(",
+    "cpp23.ranges-to": r"\bstd::ranges::to\b",
+    "cpp23.to-underlying": r"\bstd::to_underlying\b",
+    "cpp23.byteswap": r"\bstd::byteswap\b",
+    "cpp23.unreachable": r"\bstd::unreachable\b",
+    "cpp23.move-only-function": r"\bstd::move_only_function\b",
+    "cpp23.flat-containers": r"\bstd::flat_(?:map|set|multimap|multiset)\b",
+    "cpp23.generator": r"\bstd::generator\b",
+    "cpp23.mdspan": r"\bstd::mdspan\b",
+    "cpp23.stacktrace": r"\bstd::stacktrace\b",
+    "cpp23.if-consteval": r"\bif\s+consteval\b",
+    "cpp23.out-ptr": r"\bstd::(?:out_ptr|inout_ptr)\b",
+    "cpp23.forward-like": r"\bstd::forward_like\b",
+    "cpp23.start-lifetime-as": r"\bstd::start_lifetime_as\b",
+    "cpp23.import-std": r"^\s*import\s+std\s*;",
+    "cpp23.deducing-this": r"\(\s*this\s+(?:auto|const\s+auto|[\w:]+)\b",
+    "cpp26.contracts": r"\bcontract_assert\b",
+    "cpp26.inplace-vector": r"\bstd::inplace_vector\b",
+    "cpp26.simd": r"\bstd::simd\b",
+    "cpp26.submdspan": r"\bstd::submdspan\b",
+    "cpp26.copyable-function": r"\bstd::copyable_function\b",
+    "cpp26.hive": r"\bstd::hive\b",
+    "cpp26.type-order": r"\bstd::type_order\b",
+    "cpp26.dims": r"\bstd::dims\b",
+    "cpp26.execution": (
+        r"\bstd::execution::"
+        r"(?:schedule|sender|scheduler|then|when_all|sync_wait|let_value|bulk)\b"
     ),
 }
 
