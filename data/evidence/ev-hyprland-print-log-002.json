@@ -1,0 +1,19 @@
+{
+  "id": "ev-hyprland-print-log-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "hyprctl/src/main.cpp",
+  "lines": "56-61",
+  "feature": "cpp23.print",
+  "pattern": "日志包装函数在安静模式下直接返回，否则用 std::println 输出",
+  "why_typical": "把 println 当作轻量日志出口，保留 {} 格式串，调用方不再手工拼接字符串。",
+  "excerpt": "void log(const std::string_view str) {\n    if (quiet)\n        return;\n\n    std::println(\"{}\", str);\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-29",
+  "is_test": false,
+  "notes": "生产路径：hyprctl 客户端日志。"
+}

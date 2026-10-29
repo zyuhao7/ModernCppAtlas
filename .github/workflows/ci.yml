@@ -71,11 +71,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        compiler: [g++, clang++]
+        # C++23 <print> needs GCC 14 / Clang 18; keep these pinned.
+        compiler: [g++-14, clang++-18]
     steps:
       - uses: actions/checkout@v4
 
       - uses: astral-sh/setup-uv@v6
+
+      - name: Install C++23 compilers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++-14 clang-18
 
       - name: Install tools
         run: uv sync --frozen

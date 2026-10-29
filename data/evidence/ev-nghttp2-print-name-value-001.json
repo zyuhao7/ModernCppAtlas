@@ -1,0 +1,19 @@
+{
+  "id": "ev-nghttp2-print-name-value-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/app_helper.cc",
+  "lines": "149-153",
+  "feature": "cpp23.print",
+  "pattern": "把 HTTP/2 名称值对格式化输出到 FILE*，用 {} 占位符和 ANSI 转义",
+  "why_typical": "std::println 的 FILE* 重载直接把诊断输出写到指定流，避免先构造字符串；格式串在编译期检查。",
+  "excerpt": "void print_nv(nghttp2_nv *nv) {\n  std::println(outfile, \"{}{}{}: {}\", ansi_esc(\"\\033[1;34m\"),\n               as_string_view(nv->name, nv->namelen), ansi_escend(),\n               as_string_view(nv->value, nv->valuelen));\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-10-29",
+  "is_test": false,
+  "notes": "生产路径：nghttp2 命令行工具的头部打印。"
+}
