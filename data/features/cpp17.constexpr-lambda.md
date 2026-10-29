@@ -3,7 +3,7 @@ id: cpp17.constexpr-lambda
 title: constexpr lambda
 standard: C++17
 kind: language
-category: [lambda, 编译期]
+category: [函数式, 编译期计算]
 difficulty: 2
 status: final
 tier: A

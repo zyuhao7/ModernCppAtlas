@@ -3,7 +3,7 @@ id: cpp17.init-statement
 title: if 与 switch 的初始化语句
 standard: C++17
 kind: language
-category: [控制流, 作用域]
+category: [控制流, 语法]
 difficulty: 1
 status: final
 tier: A

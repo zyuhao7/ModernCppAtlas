@@ -3,7 +3,7 @@ id: cpp17.inline-variables
 title: 内联变量
 standard: C++17
 kind: language
-category: [语言机制, 链接]
+category: [语言机制]
 difficulty: 2
 status: final
 tier: A

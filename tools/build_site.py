@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FEATURE_DIR = ROOT / "data" / "features"
 EVIDENCE_DIR = ROOT / "data" / "evidence"
 LIBRARY_DIR = ROOT / "data" / "libraries"
+TAXONOMY_FILE = ROOT / "data" / "taxonomy.yaml"
 DEFAULT_OUT_DIR = ROOT / ".site-docs"
 OUT_DIR = DEFAULT_OUT_DIR
 GENERATED_MARKER = ".moderncppatlas-generated"
@@ -370,7 +371,7 @@ def build_indexes(
     write(
         OUT_DIR / "index.md",
         "# ModernCppAtlas\n\n"
-        "从 C++11 到 C++26 的现代 C++ 特性图谱。每个条目围绕四个问题展开："
+        "C++11–C++20 完整覆盖，C++23 进行中。每个条目围绕四个问题展开："
         "解决什么问题、真实项目怎么用、进阶怎么用、能和哪些库组合。\n\n"
         f"{library_line}"
         "全部证据指向固定 commit。\n\n"
@@ -414,13 +415,29 @@ def build_indexes(
             categories[category].append(feature_id)
 
     scenario_parts = ["# 按使用场景\n"]
-    for category in sorted(categories):
-        scenario_parts.append(f"## {category}\n")
-        for feature_id in sorted(categories[category]):
-            meta = features[feature_id]
+    taxonomy = yaml.safe_load(TAXONOMY_FILE.read_text(encoding="utf-8"))["groups"]
+    known = {category for tags in taxonomy.values() for category in tags}
+    for group, tags in taxonomy.items():
+        used = [category for category in tags if categories.get(category)]
+        if not used:
+            continue
+        scenario_parts.append(f"## {group}\n")
+        for category in used:
+            scenario_parts.append(f"### {category}\n")
+            for feature_id in sorted(categories[category]):
+                meta = features[feature_id]
+                scenario_parts.append(
+                    f"- [{meta['title']}]({feature_id}.md)：{meta['standard']}，"
+                    f"难度 {meta['difficulty']}/5，"
+                    f"{len(evidence.get(feature_id, []))} 条证据"
+                )
+            scenario_parts.append("")
+    uncategorized = sorted(set(categories) - known)
+    if uncategorized:
+        scenario_parts.append("## 未分类\n")
+        for category in uncategorized:
             scenario_parts.append(
-                f"- [{meta['title']}]({feature_id}.md)：{meta['standard']}，"
-                f"难度 {meta['difficulty']}/5，{len(evidence.get(feature_id, []))} 条证据"
+                f"- {category}: " + ", ".join(sorted(categories[category]))
             )
         scenario_parts.append("")
     write(OUT_DIR / "features" / "scenarios.md", "\n".join(scenario_parts))

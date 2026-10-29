@@ -3,7 +3,7 @@ id: cpp20.spaceship
 title: 三路比较运算符 <=>
 standard: C++20
 kind: language
-category: [比较, 运算符]
+category: [比较]
 difficulty: 3
 status: final
 tier: A

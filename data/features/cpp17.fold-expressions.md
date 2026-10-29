@@ -3,7 +3,7 @@ id: cpp17.fold-expressions
 title: 折叠表达式
 standard: C++17
 kind: language
-category: [模板, 可变参数, 编译期]
+category: [模板, 可变参数, 编译期计算]
 difficulty: 3
 status: final
 tier: A

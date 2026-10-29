@@ -3,7 +3,7 @@ id: cpp17.any
 title: std::any
 standard: C++17
 kind: library
-category: [类型擦除, 动态类型, 容器]
+category: [类型擦除, 容器]
 difficulty: 2
 status: final
 tier: A

@@ -1,6 +1,6 @@
 # ModernCppAtlas
 
-> 从 C++11 到 C++26 的现代 C++ 特性图谱：**使用场景、真实项目证据、进阶用法、开源库联动**。
+> **C++11–C++20 完整覆盖，C++23 进行中**的现代 C++ 特性图谱：使用场景、真实项目证据、进阶用法、开源库联动。
 
 [![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 
@@ -15,7 +15,7 @@
 3. 进阶怎么用，有哪些陷阱和边界？
 4. 能和哪些开源库组合，组合的收益与代价是什么？
 
-覆盖范围：C++11、C++14、C++17、C++20、C++23、C++26。
+覆盖范围：C++11、C++14、C++17、C++20 已完整覆盖；C++23 正在补齐，首批为 `std::expected`、`std::mdspan`、`std::print`、deducing this；C++26 尚无条目，收录规则见下节。
 
 ## 不是什么
 
@@ -136,6 +136,8 @@ review:
 单人维护阶段，新条目默认 `manual`。引入第二名审核者后再开放 `verified`，避免把“单人确认”包装成“双人复核”。
 
 ## C++26 收录政策
+
+当前尚无 C++26 条目。新增时按以下规则标记：
 
 已投票通过的提案与仍在讨论的草案都收录，但严格标记：
 

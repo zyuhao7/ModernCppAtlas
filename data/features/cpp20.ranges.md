@@ -3,7 +3,7 @@ id: cpp20.ranges
 title: ranges 与 views
 standard: C++20
 kind: library
-category: [范围, 惰性求值]
+category: [范围]
 difficulty: 4
 status: final
 tier: A

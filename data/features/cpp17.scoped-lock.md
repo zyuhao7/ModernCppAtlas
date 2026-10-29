@@ -3,7 +3,7 @@ id: cpp17.scoped-lock
 title: std::scoped_lock
 standard: C++17
 kind: library
-category: [并发, RAII, 死锁]
+category: [并发, RAII, 线程同步]
 difficulty: 3
 status: final
 tier: A

@@ -3,7 +3,7 @@ id: cpp17.byte
 title: std::byte
 standard: C++17
 kind: library
-category: [类型安全, 内存表示]
+category: [类型安全, 内存管理]
 difficulty: 2
 status: final
 tier: A

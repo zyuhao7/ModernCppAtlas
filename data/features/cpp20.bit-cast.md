@@ -3,7 +3,7 @@ id: cpp20.bit-cast
 title: std::bit_cast
 standard: C++20
 kind: library
-category: [类型转换, 底层]
+category: [类型转换]
 difficulty: 3
 status: final
 tier: A

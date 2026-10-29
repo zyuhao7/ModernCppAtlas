@@ -3,7 +3,7 @@ id: cpp17.invoke-apply
 title: std::invoke 与 std::apply
 standard: C++17
 kind: library
-category: [泛型, 可调用对象]
+category: [泛型编程, 函数式]
 difficulty: 3
 status: final
 tier: A

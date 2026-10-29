@@ -3,7 +3,7 @@ id: cpp17.variant
 title: std::variant
 standard: C++17
 kind: library
-category: [类型安全, 联合体, 值语义]
+category: [类型安全, 类型系统, 值语义]
 difficulty: 3
 status: final
 tier: A

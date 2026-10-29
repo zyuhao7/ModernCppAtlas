@@ -3,7 +3,7 @@ id: cpp17.structured-bindings
 title: 结构化绑定
 standard: C++17
 kind: language
-category: [语法糖, 解构, 泛型编程]
+category: [语法, 泛型编程]
 difficulty: 2
 status: final
 tier: A
