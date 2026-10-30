@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-function-callback-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpBinder.h",
+  "lines": "206-219",
+  "feature": "cpp11.function",
+  "pattern": "用 std::function 接收异步响应回调并向下游转移",
+  "why_typical": "回调来自用户代码，签名固定但可捕获任意状态；std::function 擦除具体类型后仍能按值或按移动传递。",
+  "excerpt": "        std::function<void(const HttpResponsePtr &)> &&callback) override\n    {\n        if (!pathArguments.empty())\n        {\n            std::vector<std::string> args;\n            args.reserve(pathArguments.size());\n            for (auto &arg : pathArguments)\n            {\n                args.emplace_back(arg);\n            }\n            req->setRoutingParameters(std::move(args));\n        }\n        run(pathArguments, req, std::move(callback));\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；右值引用接收避免多余拷贝，最后用 move 交给 run，保持单次转移语义。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-shared-ptr-binder-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpAppFramework.h",
+  "lines": "542-545",
+  "feature": "cpp11.shared-ptr",
+  "pattern": "用 make_shared 创建处理器并让异步队列共享其生命周期",
+  "why_typical": "binder 需要活到事件循环执行，shared_ptr 被 lambda 捕获后引用计数延长对象寿命，无需手工管理。",
+  "excerpt": "        auto binder = std::make_shared<internal::HttpBinder<FUNCTION>>(\n            std::forward<FUNCTION>(function));\n\n        getLoop()->queueInLoop([binder]() { binder->createHandlerInstance(); });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；make_shared 一次分配对象与控制块，lambda 按值捕获 shared_ptr 跨越同步调用边界。"
+}

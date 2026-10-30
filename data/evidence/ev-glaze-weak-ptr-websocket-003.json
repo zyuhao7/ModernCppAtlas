@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-weak-ptr-websocket-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/net/websocket_client.hpp",
+  "lines": "269-282",
+  "feature": "cpp11.shared-ptr",
+  "pattern": "异步回调只保存 weak_ptr，调用前 lock 并检查对象是否仍存活",
+  "why_typical": "异步操作由库执行，回调可能晚于客户端析构到达；weak_ptr 让回调不延长生命周期，lock 失败就直接返回。",
+  "excerpt": "            std::weak_ptr<impl> weak_self = weak_from_this();\n\n            resolver_->async_resolve(\n               url.host, std::to_string(url.port),\n               [weak_self, url](std::error_code ec, asio::ip::tcp::resolver::results_type results) {\n                  auto self = weak_self.lock();\n                  if (!self) return; // Client was destroyed\n\n                  if (ec) {\n                     if (self->on_error && *self->on_error) (*self->on_error)(ec);\n                     return;\n                  }\n                  self->on_resolved(url, results);\n               });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；捕获 weak_ptr 而非 shared_ptr，避免异步回调把客户端锁在堆上，也避免析构后访问悬空对象。"
+}

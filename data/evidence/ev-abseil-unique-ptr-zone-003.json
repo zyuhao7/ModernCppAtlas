@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-unique-ptr-zone-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/time/internal/cctz/src/time_zone_impl.h",
+  "lines": "80-90",
+  "feature": "cpp11.unique-ptr",
+  "pattern": "用 unique_ptr 成员独占时区实现，并在外层类型上禁用复制",
+  "why_typical": "实现对象只被一个 Impl 拥有，析构顺序由成员自动保证；禁用复制后所有权无法被意外分裂。",
+  "excerpt": " private:\n  Impl();\n  explicit Impl(const std::string& name);\n  Impl(const Impl&) = delete;\n  Impl& operator=(const Impl&) = delete;\n\n  static const Impl* UTCImpl();\n\n  const std::string name_;\n  std::unique_ptr<TimeZoneIf> zone_;\n};",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；时区实现由接口指针持有，Impl 复制被显式删除，所有权随 Impl 析构释放。"
+}

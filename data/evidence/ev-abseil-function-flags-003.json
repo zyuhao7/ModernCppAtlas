@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-function-flags-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/flags/reflection.cc",
+  "lines": "183-192",
+  "feature": "cpp11.function",
+  "pattern": "用 std::function 接收遍历回调，对每个注册项统一调用",
+  "why_typical": "遍历接口不关心访问者捕获了什么；擦除成 std::function 后按值传入即可，内部容器不必暴露给调用方。",
+  "excerpt": "void ForEachFlag(std::function<void(CommandLineFlag&)> visitor) {\n  FlagRegistry& registry = FlagRegistry::GlobalRegistry();\n\n  if (registry.finalized_flags_.load(std::memory_order_acquire)) {\n    for (const auto& i : registry.flat_flags_) visitor(*i);\n  }\n\n  FlagRegistryLock frl(registry);\n  for (const auto& i : registry.flags_) visitor(*i.second);\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；访问者签名固定、状态任意，std::function 让注册表以单一类型接收并在两条遍历路径上复用。"
+}
