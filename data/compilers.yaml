@@ -336,3 +336,21 @@ features:
     msvc: "19.22"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-10-26"
+  cpp11.unique-ptr:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-30"
+  cpp11.shared-ptr:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-30"
+  cpp11.function:
+    gcc: "4.4"
+    clang: "3.1"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-10-30"

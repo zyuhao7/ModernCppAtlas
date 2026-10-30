@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-shared-ptr-registry-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/registry-inl.h",
+  "lines": "86-90",
+  "feature": "cpp11.shared-ptr",
+  "pattern": "用 shared_ptr 返回注册表中的 logger，共享同一实例",
+  "why_typical": "多个调用点需要持有同一 logger 并各自复制句柄；shared_ptr 让引用计数自动决定析构时机。",
+  "excerpt": "SPDLOG_INLINE std::shared_ptr<logger> registry::get(const std::string &logger_name) {\n    std::lock_guard<std::mutex> lock(logger_map_mutex_);\n    auto found = loggers_.find(logger_name);\n    return found == loggers_.end() ? nullptr : found->second;\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；返回 shared_ptr 而非引用或裸指针，调用方复制后仍能安全使用。"
+}

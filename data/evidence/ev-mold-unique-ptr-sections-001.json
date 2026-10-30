@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-unique-ptr-sections-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "533-535",
+  "feature": "cpp11.unique-ptr",
+  "pattern": "用 unique_ptr 成员表达输入段与重定位段的独占所有权",
+  "why_typical": "段对象生命周期与父对象绑定，容器持有 unique_ptr 即可自动释放，且禁止复制避免重复释放。",
+  "excerpt": "  std::vector<InputSection<E> *> members;\n  std::vector<std::unique_ptr<Thunk<E>>> thunks;\n  std::unique_ptr<RelocSection<E>> reloc_sec;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；thunks 用 vector<unique_ptr> 持有同质对象，reloc_sec 用单个 unique_ptr 表达可为空的独占成员。"
+}

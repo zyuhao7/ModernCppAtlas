@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-unique-ptr-formatter-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/spdlog-inl.h",
+  "lines": "23-30",
+  "feature": "cpp11.unique-ptr",
+  "pattern": "用 unique_ptr 参数转移格式化器的所有权",
+  "why_typical": "API 接收 unique_ptr 并按值移入注册表，调用方无法继续持有同一对象，所有权边界由类型系统保证。",
+  "excerpt": "SPDLOG_INLINE void set_formatter(std::unique_ptr<spdlog::formatter> formatter) {\n    details::registry::instance().set_formatter(std::move(formatter));\n}\n\nSPDLOG_INLINE void set_pattern(std::string pattern, pattern_time_type time_type) {\n    set_formatter(\n        std::unique_ptr<spdlog::formatter>(new pattern_formatter(std::move(pattern), time_type)));\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-10-30",
+  "is_test": false,
+  "notes": "生产路径；set_formatter 用 move 传递独占所有权，set_pattern 直接构造 unique_ptr 后移交。"
+}
