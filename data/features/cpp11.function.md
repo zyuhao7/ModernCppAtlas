@@ -6,7 +6,7 @@ kind: library
 category: [函数式, 类型擦除]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "4.4", clang: "3.1", msvc: "16.0"}
 tags: [std::function, 类型擦除, 回调, 可调用对象, 分配]
 alternatives: [函数指针, 虚函数接口, 模板参数, lambda 直接调用]
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "用 std::function 保存并调用每条日志的回调"
     evidence: [ev-spdlog-function-callback-sink-002]
+  - id: c3
+    statement: "用 std::function 接收遍历回调并统一应用"
+    evidence: [ev-abseil-function-flags-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -47,11 +50,24 @@ int main() {
   std::function<int(int, int)> op = add;
   int offset = 10;
   op = [offset](int a, int b) { return a + b + offset; };
-  std::cout << op(1, 2) << '\n';
+  std::cout << op(1, 2) << ' ' << (op ? "set" : "empty") << '\n';
+
+  std::function<int(int, int)> empty;
+  std::cout << (empty ? "set" : "empty") << '\n';
 }
 ```
 
-输出 `13`。第一次装入普通函数，随后换成捕获了 `offset` 的 lambda；调用点代码不变，具体类型被擦除。
+输出 `13 set` 与 `empty`。第一次装入普通函数，随后换成捕获了 `offset` 的 lambda；调用点代码不变，具体类型被擦除。完整版本见 [`examples/cpp11/function.cpp`](../../examples/cpp11/function.cpp)。
+
+## 进阶用法
+
+`std::function` 的对象必须可复制。捕获了 `std::unique_ptr` 的 lambda 装不进去；需要传递时用 `std::ref` / `std::cref` 包一层引用包装，或改用 C++23 的 `std::move_only_function`。只读借用则可以用 `absl::FunctionRef` 或自写 `function_ref`，完全不拥有目标。
+
+小对象缓冲决定是否分配：捕获总量装得下内部缓冲时移动构造不碰堆，超出才分配。拷贝 `std::function` 会复制被捕获对象；接口参数写成 `const std::function<...>&` 可以省掉这次复制，按值接收只在需要存储或转移时使用。
+
+`target_type()` 返回目标的 `type_info`，`target<T>()` 取回原对象指针，需要恢复具体类型时才有用，日常回调路径不应依赖它。重载函数不能直接赋值，先用 `static_cast` 选定函数指针；泛型 lambda 也要用具体签名实例化后才能放入。
+
+性能敏感的内层循环更适合模板参数或 `function_ref`：模板能在调用点内联，`std::function` 每次调用都要经过类型擦除后的虚函数式间接跳转。跨模块、跨线程队列、需要存储在容器里的回调则通常值得这次间接调用。
 
 ## 真实项目证据
 
@@ -59,6 +75,9 @@ int main() {
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------ |
 | drogon | [`lib/inc/drogon/HttpBinder.h#L206-L219`](https://github.com/drogonframework/drogon/blob/3aae769cc405cf5abb9d477675c6430924f02c7c/lib/inc/drogon/HttpBinder.h#L206-L219)      | 异步响应回调按右值引用接收后 `std::move` 交给下游       | 用户回调签名固定但状态任意，擦除后才能统一排队和跨层传递                 |
 | spdlog | [`include/spdlog/sinks/callback_sink.h#L15-L29`](https://github.com/gabime/spdlog/blob/79524ddd08a4ec981b7fea76afd08ee05f83755d/include/spdlog/sinks/callback_sink.h#L15-L29) | `typedef` 固化回调签名，sink 按值保存并在每条日志上调用 | 日志库不知道用户回调类型，`std::function` 让 sink 统一存储任意可调用对象 |
+| abseil | [`absl/flags/reflection.cc#L183-L192`](https://github.com/abseil/abseil-cpp/blob/2065f4ded0558c6f89fee67c8e5228feb4eb960e/absl/flags/reflection.cc#L183-L192)                 | `ForEachFlag` 接收访问者并在两条遍历路径上调用          | 遍历接口不暴露注册表内部结构，访问者状态由 `std::function` 承担          |
+
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。三处都在生产路径上，覆盖异步回调、可调用对象存储与遍历访问者三种形态。
 
 ## 陷阱与边界
 
@@ -73,6 +92,16 @@ int main() {
 **类型擦除丢掉的是类型不是生命周期。** `std::function` 按值保存目标，目标引用的外部对象仍需自己保证存活；常见错误是放入了捕获 `this` 的 lambda，对象先于回调析构。
 
 **重载函数要显式转换。** `std::function<int(int)> f = overload_set;` 无法推导；先转成具体函数指针再放入。
+
+**不可复制的目标需要包装。** 捕获 `unique_ptr` 的 lambda 无法直接存入；用 `std::ref` 共享外部对象，或等待 C++23 的 `std::move_only_function`。
+
+## 库联动
+
+- **`<functional>`**：`std::bind`、占位符 `_1`/`_2`、`std::ref` / `std::cref`、`std::mem_fn` 配合 `std::function` 使用；C++17 的 `std::invoke` 提供统一的调用语法。
+- **`<algorithm>`**：谓词参数通常直接收 lambda 或模板，不需要 `std::function`；只有在运行期更换谓词时才值得擦除。
+- **spdlog / drogon**：日志 sink 用 `std::function` 存储用户回调，Web 框架用它承载异步响应处理。
+- **abseil**：`absl::FunctionRef` 提供不拥有的轻量引用，`absl::AnyInvocable` 支持一次性移动语义，是 `std::function` 的两种替代。
+- **C++23 `std::move_only_function`**：承载不可复制的可调用对象，比如捕获了 `unique_ptr` 的 lambda。
 
 ## 横向对比
 

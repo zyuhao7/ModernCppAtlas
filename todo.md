@@ -257,7 +257,7 @@ M1 扩到 7 个：增加 Abseil、Drogon、DuckDB（2026-10-25 已完成，4,489
 
 结论：M0 的 10 个 A 级从 `if constexpr`、`std::filesystem`、字符串/范围小工具、`<=>`、concepts、`std::byte`、`std::optional`、`std::span`、`std::string_view`、ranges 中选取。`structured bindings` 在第二轮复核中找到 3 条生产证据（mold 2 条、spdlog 1 条），作为新增特性的全流程样板；在 M0 阶段，`std::variant`、CTAD 等仍留在候选中，不为凑 A 级而放宽标准。
 
-**当前状态（2026-10-27 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 59 个完整条目，其中 53 个 A 级、6 个 B 级（modules、jthread/stop_token 缺少可纳入单文件流程的并发示例；保证的复制消除只有同一仓库的 3 条证据，其中 2 条是编译器缺陷回退），证据 173 条、库卡片 3 张。M1 规划的 40 个特性已全部完成条目。并行算法、latch/barrier/semaphore、constexpr 动态分配在扩充 PotreeConverter、VROOM、nano-node、glaze 语料后补齐，复制消除直接复用 stdexec 的现有证据。M2 首批加入移动语义（mold 3 条）与泛型 lambda（mold 2 条、Drogon 1 条）；第二批加入范围 for（mold/spdlog/abseil）、`std::make_unique`（mold/drogon/abseil）与强类型枚举（mold/drogon/spdlog）；第三批加入可变参数模板、`constexpr` 与 `static_assert`（spdlog/drogon/abseil）；第四批加入 lambda 表达式（spdlog 2 条、drogon 1 条）、`override`/`final`（spdlog 2 条、drogon 1 条）与变量模板（drogon 1 条、abseil 2 条）；第五批加入 `auto`/`decltype`（mold 2 条、drogon 1 条）、`nullptr`（drogon/spdlog/mold）与 `= default`/`= delete`（spdlog 2 条、drogon 1 条），均为 A 级。第六批加入 `unique_ptr`（mold/spdlog）、`shared_ptr`（drogon/spdlog）与 `std::function`（drogon/spdlog），每个特性 2 条证据，均为 B 级。
+**当前状态（2026-10-27 复核）**：上表保留 M0 扫描时的初始判断；后续人工复核已依据生产证据把 `std::any`、`std::variant`、`std::bit_cast`、`std::format`、`std::source_location` 等升为 A 级。当前站点共 59 个完整条目，其中 56 个 A 级、3 个 B 级（modules、jthread/stop_token 缺少可纳入单文件流程的并发示例；保证的复制消除只有同一仓库的 3 条证据，其中 2 条是编译器缺陷回退），证据 176 条、库卡片 3 张。M1 规划的 40 个特性已全部完成条目。并行算法、latch/barrier/semaphore、constexpr 动态分配在扩充 PotreeConverter、VROOM、nano-node、glaze 语料后补齐，复制消除直接复用 stdexec 的现有证据。M2 首批加入移动语义（mold 3 条）与泛型 lambda（mold 2 条、Drogon 1 条）；第二批加入范围 for（mold/spdlog/abseil）、`std::make_unique`（mold/drogon/abseil）与强类型枚举（mold/drogon/spdlog）；第三批加入可变参数模板、`constexpr` 与 `static_assert`（spdlog/drogon/abseil）；第四批加入 lambda 表达式（spdlog 2 条、drogon 1 条）、`override`/`final`（spdlog 2 条、drogon 1 条）与变量模板（drogon 1 条、abseil 2 条）；第五批加入 `auto`/`decltype`（mold 2 条、drogon 1 条）、`nullptr`（drogon/spdlog/mold）与 `= default`/`= delete`（spdlog 2 条、drogon 1 条），均为 A 级。第六批加入 `unique_ptr`（mold/spdlog/abseil）、`shared_ptr`（drogon/spdlog/glaze）与 `std::function`（drogon/spdlog/abseil），每个特性 3 条证据并带可运行示例，均为 A 级。
 
 M1 扩充语料后，折叠表达式有 7 条候选（Abseil、fmt、Drogon 生产路径各选 1 条），协程有 125 条候选（Drogon 3 条生产路径）；两者已完成 A 级条目。上一轮新增 NVIDIA/stdexec（Apache-2.0，tag `nvhpc-26.05`）与 Friendly0Fire/GW2Radial（MIT，tag `v2.4.0`），补齐模板 lambda、atomic_ref、pmr 与 jthread/stop_token 的生产证据。本轮新增 potree/PotreeConverter（BSD-2-Clause，tag `2.1.5`）、VROOM-Project/vroom（BSD-2-Clause，tag `v1.15.0`）、nanocurrency/nano-node（BSD-3-Clause，tag `V29.0DB101`）与 stephenberry/glaze（MIT，tag `v9.0.0`），补齐并行算法、latch/barrier/semaphore 与 constexpr 动态分配的生产证据；保证的复制消除沿用 stdexec 的 3 条证据，其中 2 条是 GCC 缺陷回退，故标为 B 级。
 
@@ -377,9 +377,9 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M2 · C++11/14 覆盖（200–300 人时）
 
-- 累计 100 条目：40 A + 60 B。（进行中：59 个完整条目，53 A + 6 B，173 条证据）
+- 累计 100 条目：40 A + 60 B。（进行中：59 个完整条目，56 A + 3 B，176 条证据）
 - 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`、`cpp11.variadic-templates`、`cpp11.constexpr`、`cpp11.static-assert`、`cpp11.lambda`、`cpp11.override-final`、`cpp14.variable-templates`、`cpp11.auto-decltype`、`cpp11.nullptr`、`cpp11.default-delete`，均带可编译示例。
-- 第六批加入 `cpp11.unique-ptr`（mold/spdlog 各 1 条）、`cpp11.shared-ptr`（drogon/spdlog 各 1 条）与 `cpp11.function`（drogon/spdlog 各 1 条），均为 B 级，基础用法片段可编译。
+- 第六批加入 `cpp11.unique-ptr`（mold/spdlog/abseil 各 1 条）、`cpp11.shared-ptr`（drogon/spdlog/glaze 各 1 条）与 `cpp11.function`（drogon/spdlog/abseil 各 1 条），均为 A 级，带可运行示例。
 - 建立“已废弃/被替代”标注（`std::auto_ptr`、`std::bind` 的现代替代等）。
 - 退出标准：C++11/14 高频特性无空缺；所有 B 级条目至少 2 条证据；站点导航按标准版本可用。
 
