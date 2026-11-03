@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-traits-conditional-awaitable-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "58-60",
+  "feature": "cpp11.type-traits",
+  "pattern": "用 conditional 与 is_same 把 void 映射成 false_type",
+  "why_typical": "协程结果类型为 void 时不能作为条件判断，模板用 conditional_t 在编译期把 void 替换成 false_type，其余类型原样保留。",
+  "excerpt": "template <typename T>\nusing void_to_false_t =\n    std::conditional_t<std::is_same_v<T, void>, std::false_type, T>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；类型别名把选择逻辑收敛到一个名字，调用方无需重复写 conditional。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-traits-conditional-static-cast-003",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "390-399",
+  "feature": "cpp11.type-traits",
+  "pattern": "用 enable_if 与 is_same 分成两个重载，避免同类型转换时的多余 cast",
+  "why_typical": "conditional_static_cast 在 T 与 U 相同时直接返回，不同时才 static_cast；两个互斥的 enable_if 重载让选择发生在编译期，没有运行期分支。",
+  "excerpt": "// to avoid useless casts (see https://github.com/nlohmann/json/issues/2893#issuecomment-889152324)\ntemplate <typename T, typename U, enable_if_t<!std::is_same<T, U>::value, int> = 0>\nconstexpr T conditional_static_cast(U value) {\n    return static_cast<T>(value);\n}\n\ntemplate <typename T, typename U, enable_if_t<std::is_same<T, U>::value, int> = 0>\nconstexpr T conditional_static_cast(U value) {\n    return value;\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；两个重载的条件互为补集，任一组参数只会匹配其中一个，是类型特征驱动的重载选择。"
+}

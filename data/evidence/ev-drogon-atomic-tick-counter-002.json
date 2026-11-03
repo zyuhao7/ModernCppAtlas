@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-atomic-tick-counter-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/CacheMap.h",
+  "lines": "452-457",
+  "feature": "cpp11.atomic",
+  "pattern": "用 std::atomic<size_t> 维护定时轮的 tick 计数",
+  "why_typical": "缓存项在多个事件循环线程中插入和删除，tick 计数是高频递增的共享标量；atomic 让计数无需持锁，容器仍由互斥量保护。",
+  "excerpt": "    std::vector<CallbackBucketQueue> wheels_;\n\n    std::atomic<size_t> ticksCounter_{0};\n\n    std::mutex mtx_;\n    std::mutex bucketMutex_;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；同一个类里 atomic 计数器与两把互斥量并存，说明原子类型是按字段选择的，不是替代所有锁。"
+}

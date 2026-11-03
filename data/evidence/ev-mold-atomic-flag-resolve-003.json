@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-atomic-flag-resolve-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/passes.cc",
+  "lines": "318-322",
+  "feature": "cpp11.atomic",
+  "pattern": "用 std::atomic_bool 在并行符号解析中记录需要重试的状态",
+  "why_typical": "符号解析在 TBB 并行循环中执行，flag 由多个工作线程观察；atomic_bool 用最轻量的方式共享一个“是否重做”的信号。",
+  "excerpt": "    // Symbols with hidden visibility need to be resolved within the\n    // output file. If a hidden symbol was resolved to a DSO, we'll redo\n    // symbol resolution from scratch with the flag to skip that symbol\n    // next time. This should be rare.\n    std::atomic_bool flag = false;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产代码；std::atomic_bool 是 std::atomic<bool> 的别名，常用于只需布尔状态的并行算法。"
+}
