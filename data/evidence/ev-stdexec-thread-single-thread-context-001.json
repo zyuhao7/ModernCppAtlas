@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-thread-single-thread-context-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/single_thread_context.hpp",
+  "lines": "27-40",
+  "feature": "cpp11.thread",
+  "pattern": "用 std::thread 在构造函数里启动事件循环，并在析构函数里 join",
+  "why_typical": "线程对象的生命周期被绑定到拥有者：构造启动、析构汇合，调用方无需额外管理。这是 RAII 风格的线程封装，也是 std::thread 最常见的生产用法。",
+  "excerpt": "    STDEXEC::run_loop loop_;\n    std::thread       thread_;\n\n   public:\n    single_thread_context()\n      : loop_()\n      , thread_([this] { loop_.run(); })\n    {}\n\n    ~single_thread_context()\n    {\n      loop_.finish();\n      thread_.join();\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；线程在成员初始化列表中以 lambda 启动，析构时先通知循环结束再 join，避免 detach 带来的生命周期失控。"
+}

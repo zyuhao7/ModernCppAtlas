@@ -48,16 +48,25 @@ review:
 #include <vector>
 
 int main() {
-  std::vector<int> values{5, 3, 1, 4, 2};
+  std::vector<int> values(10);
+  std::iota(values.begin(), values.end(), 1);
 
-  std::sort(std::execution::par, values.begin(), values.end());
-  const int sum = std::reduce(std::execution::par, values.begin(), values.end());
+  std::sort(std::execution::par, values.begin(), values.end(),
+            [](int lhs, int rhs) { return lhs > rhs; });
+
+  std::vector<int> doubled(values.size());
+  std::transform(std::execution::par, values.begin(), values.end(),
+                 doubled.begin(), [](int value) { return value * 2; });
+
+  const int sum =
+      std::reduce(std::execution::par, values.begin(), values.end());
 
   std::cout << values.front() << ' ' << values.back() << ' ' << sum << '\n';
+  std::cout << doubled.front() << ' ' << doubled.back() << '\n';
 }
 ```
 
-输出 `1 5 15`。`reduce` 不保证按左结合顺序累加，因此它的初值和运算符必须满足结合律与交换律；需要固定顺序时仍用 `std::accumulate`。完整版本见 [`examples/cpp17/parallel_algorithms.cpp`](../../examples/cpp17/parallel_algorithms.cpp)。
+输出 `10 1 55` 与 `20 2`。示例用并行 `sort` 降序排列、并行 `transform` 逐元素变换，再用 `reduce` 求和；`reduce` 不保证按左结合顺序累加，因此它的初值和运算符必须满足结合律与交换律，需要固定顺序时仍用 `std::accumulate`。完整版本见 [`examples/cpp17/parallel_algorithms.cpp`](../../examples/cpp17/parallel_algorithms.cpp)。
 
 `seq` 明确要求顺序执行且不向量化；`par` 允许跨线程并行；`par_unseq` 进一步允许在同一线程内交错、向量化执行。不传策略的旧重载行为等价于 `seq`。
 

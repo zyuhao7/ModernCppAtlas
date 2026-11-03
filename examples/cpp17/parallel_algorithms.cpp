@@ -10,8 +10,14 @@ int main() {
 
   std::sort(std::execution::par, values.begin(), values.end(),
             [](int lhs, int rhs) { return lhs > rhs; });
+
+  std::vector<int> doubled(values.size());
+  std::transform(std::execution::par, values.begin(), values.end(),
+                 doubled.begin(), [](int value) { return value * 2; });
+
   const int sum =
       std::reduce(std::execution::par, values.begin(), values.end());
 
   std::cout << values.front() << ' ' << values.back() << ' ' << sum << '\n';
+  std::cout << doubled.front() << ' ' << doubled.back() << '\n';
 }

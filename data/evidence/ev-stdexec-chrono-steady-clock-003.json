@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-chrono-steady-clock-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/timed_thread_scheduler.hpp",
+  "lines": "175-185",
+  "feature": "cpp11.chrono",
+  "pattern": "用 steady_clock::now 驱动定时任务，并用 wait_until 等待下一个截止点",
+  "why_typical": "调度器以单调时钟排序定时任务；now 取出当前时刻后弹出所有已到期任务，再把等待截止点交给条件变量的 wait_until，避免忙等。",
+  "excerpt": "        time_point now = std::chrono::steady_clock::now();\n        task_type* op  = heap_.front();\n        while (op && op->time_point_ <= now)\n        {\n          heap_.pop_front();\n          op->set_value_(op);\n          op = heap_.front();\n        }\n        time_point       deadline = op ? op->time_point_ : now + std::chrono::seconds(2);\n        std::unique_lock lock{ready_mutex_};\n        cv_.wait_until(lock, deadline, [this] { return ready_ || stop_requested_; });",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；time_point 比较、now + seconds 运算和 wait_until 组合成事件循环的定时路径，没有轮询。"
+}

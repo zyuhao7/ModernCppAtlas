@@ -390,3 +390,21 @@ features:
     msvc: "16.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-03"
+  cpp11.thread:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-03"
+  cpp11.chrono:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-03"
+  cpp14.integer-sequence:
+    gcc: "4.9"
+    clang: "3.4"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-11-03"

@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-chrono-stopwatch-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/stopwatch.h",
+  "lines": "30-44",
+  "feature": "cpp11.chrono",
+  "pattern": "用 steady_clock 和 duration<double> 实现秒级、毫秒级计时器",
+  "why_typical": "计时需要单调时钟，steady_clock 不受系统时间调整影响；elapsed 返回 duration<double>，elapsed_ms 用 duration_cast 显式换算单位。",
+  "excerpt": "class stopwatch {\n    using clock = std::chrono::steady_clock;\n    std::chrono::time_point<clock> start_tp_;\n\npublic:\n    stopwatch()\n        : start_tp_{clock::now()} {}\n\n    std::chrono::duration<double> elapsed() const {\n        return std::chrono::duration<double>(clock::now() - start_tp_);\n    }\n\n    std::chrono::milliseconds elapsed_ms() const {\n        return std::chrono::duration_cast<std::chrono::milliseconds>(clock::now() - start_tp_);\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；两个接口分别展示 duration 的隐式单位转换和 duration_cast 的显式截断，是 chrono 单位模型的最小完整示例。"
+}
