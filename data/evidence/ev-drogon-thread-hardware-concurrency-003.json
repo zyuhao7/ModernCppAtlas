@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-thread-hardware-concurrency-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/DbClientImpl.cc",
+  "lines": "66-71",
+  "feature": "cpp11.thread",
+  "pattern": "用 std::thread::hardware_concurrency 限制数据库事件循环的线程数",
+  "why_typical": "数据库连接数超过硬件线程数不会带来收益；用 hardware_concurrency 取上限，再与用户请求的连接数取较小值，是线程池定容的常见做法。",
+  "excerpt": "      loops_(type == ClientType::Sqlite3\n                 ? 1\n                 : (connNum < std::thread::hardware_concurrency()\n                        ? connNum\n                        : std::thread::hardware_concurrency()),\n             \"DbLoop\")",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产代码；SQLite 固定单线程，其他数据库按连接数与 hardware_concurrency 的较小值创建事件循环。hardware_concurrency 允许返回 0，调用方仍需处理。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mp-units-integer-sequence-tuple-001",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/ext/algorithm.h",
+  "lines": "167-177",
+  "feature": "cpp14.integer-sequence",
+  "pattern": "用 index_sequence 展开 tuple，把每个元素交给回调",
+  "why_typical": "tuple 不能直接遍历，必须把元素下标变成参数包；index_sequence 提供 0..N-1，配合 std::get 展开每个元素。index_sequence_for 则直接从类型包推导长度。",
+  "excerpt": "template<typename... Ts, typename F, std::size_t... Is>\nconstexpr void for_each_impl(const std::tuple<Ts...>& t, F&& func, std::index_sequence<Is...>)\n{\n  (..., func(std::get<Is>(t)));\n}\n\ntemplate<typename... Ts, typename F>\nconstexpr void for_each(const std::tuple<Ts...>& t, F&& func)\n{\n  for_each_impl(t, std::forward<F>(func), std::index_sequence_for<Ts...>{});\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；index_sequence 在这里同时服务于参数包展开和折叠表达式，是 tuple 遍历的标准写法。"
+}
