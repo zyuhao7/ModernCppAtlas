@@ -64,11 +64,18 @@ int main() {
   }();
 
   static_assert(squares[3] == 9);
-  std::cout << squares[0] << ' ' << squares[3] << '\n';
+
+  constexpr int scale = 10;
+  constexpr auto scaled = [scale](int value) constexpr {
+    return value * scale;
+  };
+  static_assert(scaled(2) == 20);
+
+  std::cout << squares[0] << ' ' << squares[3] << ' ' << scaled(3) << '\n';
 }
 ```
 
-`constexpr auto squares = ...` 要求初始化表达式是常量表达式；立即调用 lambda 在编译期执行循环并返回数组。`static_assert` 进一步证明结果可用于常量求值，而不是碰巧在运行期算出来。
+输出 `0 9 30`。`constexpr auto squares = ...` 要求初始化表达式是常量表达式；立即调用 lambda 在编译期执行循环并返回数组。`scaled` 捕获 `constexpr` 变量并声明为 `constexpr` 闭包，两个 `static_assert` 证明结果可用于常量求值，而不是碰巧在运行期算出来。
 
 ## 进阶用法
 

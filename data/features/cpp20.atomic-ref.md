@@ -43,20 +43,34 @@ review:
 ```cpp
 #include <atomic>
 #include <iostream>
+#include <thread>
+#include <vector>
 
 int main() {
   unsigned value = 0;
   std::atomic_ref<unsigned> ref(value);
 
-  ref.fetch_add(2);
-  ref.fetch_add(3, std::memory_order_relaxed);
-  ref.store(10, std::memory_order_release);
+  std::vector<std::thread> workers;
+  for (int i = 0; i < 4; ++i) {
+    workers.emplace_back([&ref] {
+      for (int j = 0; j < 1000; ++j) {
+        ref.fetch_add(1, std::memory_order_relaxed);
+      }
+    });
+  }
+  for (auto& worker : workers) {
+    worker.join();
+  }
 
   std::cout << value << ' ' << ref.load(std::memory_order_acquire) << '\n';
+
+  ref.store(10, std::memory_order_release);
+  const unsigned previous = ref.exchange(20);
+  std::cout << previous << ' ' << value << ' ' << ref.load() << '\n';
 }
 ```
 
-输出为 `10 10`：普通变量 `value` 仍然是 `unsigned`，原子操作通过 `ref` 生效。完整版本见 [`examples/cpp20/atomic_ref.cpp`](../../examples/cpp20/atomic_ref.cpp)。
+输出 `4000 4000` 与 `10 20 20`。四个线程对同一个普通变量 `value` 各做 1000 次原子累加，随后用 `store`/`exchange` 展示发布写入和读改写；普通变量本身仍是 `unsigned`，原子语义只通过 `ref` 生效。完整版本见 [`examples/cpp20/atomic_ref.cpp`](../../examples/cpp20/atomic_ref.cpp)。
 
 `T` 必须是可平凡复制的类型；被引用对象必须满足 `std::atomic_ref<T>::required_alignment`，并处于可写内存中。`atomic_ref` 只持有地址，不拥有对象，因此所有引用的生命周期都必须落在对象生命周期之内。
 

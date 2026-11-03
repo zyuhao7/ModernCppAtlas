@@ -48,19 +48,30 @@ review:
 
 int main() {
   std::vector<std::string> words{"atlas", "modern", "cpp"};
-  for (const auto &word : words)
-    std::cout << word << ' ';
+
+  bool first = true;
+  for (const auto& word : words) {
+    if (!first) std::cout << ' ';
+    first = false;
+    std::cout << word;
+  }
   std::cout << '\n';
+
+  for (auto& word : words) word += '!';
+  std::cout << words.front() << ' ' << words.back() << '\n';
 
   std::map<std::string, int> counts{{"a", 1}, {"b", 2}};
   int total = 0;
-  for (const auto &entry : counts)
-    total += entry.second;
+  for (const auto& entry : counts) total += entry.second;
+  std::cout << total << ' ' << counts.size() << '\n';
+
+  int raw[] = {3, 1, 4};
+  for (int value : raw) total += value;
   std::cout << total << '\n';
 }
 ```
 
-输出 `atlas modern cpp ` 与 `3`。`entry` 是 `std::pair<const std::string, int>` 的引用，映射的键不可修改。完整版本见 [`examples/cpp11/range_for.cpp`](../../examples/cpp11/range_for.cpp)。
+输出 `atlas modern cpp`、`atlas! cpp!`、`3 2` 与 `11`。示例覆盖只读引用遍历、`auto&` 修改元素、映射键值对和原生数组；`entry` 是 `std::pair<const std::string, int>` 的引用，映射的键不可修改。完整版本见 [`examples/cpp11/range_for.cpp`](../../examples/cpp11/range_for.cpp)。
 
 ## 进阶用法
 

@@ -43,18 +43,36 @@ review:
 ```cpp
 #include <iostream>
 
-enum class Color { red, green, blue };
+enum class Color : unsigned char { red = 1, green, blue };
 enum class Status { ok = 200, not_found = 404 };
+
+const char* name(Color color) {
+  switch (color) {
+    case Color::red:
+      return "red";
+    case Color::green:
+      return "green";
+    case Color::blue:
+      return "blue";
+  }
+  return "unknown";
+}
 
 int main() {
   Color color = Color::green;
   Status status = Status::not_found;
-  std::cout << static_cast<int>(color) << ' ' << static_cast<int>(status)
-            << '\n';
+
+  std::cout << static_cast<int>(color) << ' ' << name(color) << ' '
+            << static_cast<int>(status) << '\n';
+  std::cout << (color == Color::green) << ' ' << (status == Status::ok) << '\n';
+
+  Color next = static_cast<Color>(static_cast<unsigned char>(color) + 1);
+  std::cout << name(next) << ' ' << sizeof(Color) << ' '
+            << static_cast<int>(next) << '\n';
 }
 ```
 
-输出 `1 404`。`Color::green` 与 `Status::not_found` 不会泄漏到外层作用域，也不能直接和整数比较。完整版本见 [`examples/cpp11/enum_class.cpp`](../../examples/cpp11/enum_class.cpp)。
+输出 `2 green 404`、`1 0` 与 `blue 1 3`。示例展示固定底层类型、`switch` 分支、作用域内比较和显式转换；`Color` 的底层类型是 `unsigned char`，因此 `sizeof(Color)` 为 1。完整版本见 [`examples/cpp11/enum_class.cpp`](../../examples/cpp11/enum_class.cpp)。
 
 ## 进阶用法
 
