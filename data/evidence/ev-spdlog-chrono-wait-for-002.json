@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-chrono-wait-for-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/mpmc_blocking_q.h",
+  "lines": "68-79",
+  "feature": "cpp11.chrono",
+  "pattern": "用 chrono::milliseconds 限定条件变量的等待时长",
+  "why_typical": "有界等待把“等到有数据”与“最多等多久”分开：wait_for 接受 chrono 时长，超时返回 false，调用方可以据此在退出时排空队列而不是永久阻塞。",
+  "excerpt": "    bool dequeue_for(T &popped_item, std::chrono::milliseconds wait_duration) {\n        {\n            std::unique_lock<std::mutex> lock(queue_mutex_);\n            if (!push_cv_.wait_for(lock, wait_duration, [this] { return !this->q_.empty(); })) {\n                return false;\n            }\n            popped_item = std::move(q_.front());\n            q_.pop_front();\n        }\n        pop_cv_.notify_one();\n        return true;\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；日志后端的阻塞队列用带超时的出队支持优雅关闭，时长类型直接进入接口签名。"
+}

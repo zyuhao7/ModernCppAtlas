@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-integer-sequence-tasks-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "887-892",
+  "feature": "cpp14.integer-sequence",
+  "pattern": "用 index_sequence_for 展开一组异步任务并逐个启动",
+  "why_typical": "并行等待多个任务时，每个任务需要一个编译期下标来访问 tuple 成员；index_sequence_for 从 Tasks... 推导下标包，展开成对 launch_task<Is> 的调用。",
+  "excerpt": "    template <size_t... Is>\n    void await_suspend_impl(std::coroutine_handle<> handle,\n                            std::index_sequence<Is...>)\n    {\n        ((launch_task<Is>(handle)), ...);\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；调用点传入 index_sequence_for<Tasks...>，index_sequence 在这里承担编译期任务编号，而不是运行期循环变量。"
+}

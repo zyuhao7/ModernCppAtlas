@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-thread-waitpid-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "start/src/core/Instance.cpp",
+  "lines": "76-87",
+  "feature": "cpp11.thread",
+  "pattern": "用 std::thread 运行阻塞的 waitpid 循环，避免阻塞启动线程",
+  "why_typical": "waitpid 是阻塞调用，放在主线程会卡住启动流程；把循环交给独立线程后，主线程可以继续初始化。线程按值捕获 this，阻塞调用与界面初始化解耦。",
+  "excerpt": "    m_hlThread = std::thread([this] {\n        while (true) {\n            int status = 0;\n            int ret    = waitpid(m_hlPid, &status, 0);\n            if (ret == -1) {\n                g_logger->log(Hyprutils::CLI::LOG_ERR, \"Couldn't waitpid for hyprland: {}\", strerror(errno));\n                break;\n            }\n\n            if (WIFEXITED(status))\n                break;\n        }",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产代码；线程成员随后由拥有者 join，lambda 捕获 this 访问成员状态。展示了“把阻塞系统调用移出主线程”的典型动机。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-integer-sequence-tuple-002",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "single_include/nlohmann/json.hpp",
+  "lines": "5230-5234",
+  "feature": "cpp14.integer-sequence",
+  "pattern": "用 index_sequence 把 JSON 数组下标展开为 tuple 元素",
+  "why_typical": "反序列化 tuple 时，第 i 个 JSON 元素对应第 i 个 tuple 字段；index_sequence 让编译器生成一整套带序号的 get 调用，无需手写每个下标。",
+  "excerpt": "template<typename BasicJsonType, typename... Args, std::size_t... Idx>\nstd::tuple<Args...> from_json_tuple_impl_base(BasicJsonType&& j, index_sequence<Idx...> /*unused*/)\n{\n    return std::make_tuple(std::forward<BasicJsonType>(j).at(Idx).template get<Args>()...);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产单头文件；外层用 index_sequence_for<Args...> 生成下标，展开后的表达式按顺序读取每个数组元素。"
+}
