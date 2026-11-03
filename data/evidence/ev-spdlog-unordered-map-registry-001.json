@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-unordered-map-registry-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/registry.h",
+  "lines": "111-113",
+  "feature": "cpp11.unordered-map",
+  "pattern": "用 unordered_map 按名称索引 logger，平均常数时间查找且不要求键有序",
+  "why_typical": "注册表只关心按名字取回 logger，不需要有序遍历；哈希表让每次日志查找保持均摊 O(1)，键值语义清晰。",
+  "excerpt": "    std::mutex logger_map_mutex_, flusher_mutex_;\n    std::recursive_mutex tp_mutex_;\n    std::unordered_map<std::string, std::shared_ptr<logger>> loggers_;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；注册表以 logger 名称为键，unordered_map 是名称到对象映射的标准选择。"
+}

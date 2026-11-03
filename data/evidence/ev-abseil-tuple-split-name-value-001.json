@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-tuple-split-name-value-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/flags/parse.cc",
+  "lines": "284-296",
+  "feature": "cpp11.tuple",
+  "pattern": "用 tuple 一次返回名称、值与空值标志三个结果",
+  "why_typical": "解析函数需要同时返回多个异构结果；std::tuple 避免为一次性返回值定义具名结构体，并在调用处用 tie 解包。",
+  "excerpt": "// For example:\n//      arg           return values\n//   \"--foo=bar\" -> {\"foo\", \"bar\", false}.\n//   \"--foo\"     -> {\"foo\", \"\", false}.\n//   \"--foo=\"    -> {\"foo\", \"\", true}.\nstd::tuple<absl::string_view, absl::string_view, bool> SplitNameAndValue(\n    absl::string_view arg) {\n  // Allow -foo and --foo\n  absl::ConsumePrefix(&arg, \"-\");\n\n  if (arg.empty()) {\n    return std::make_tuple(\"\", \"\", false);\n  }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；函数签名的 tuple 元素顺序与注释中的返回格式一一对应，调用方用结构化绑定或 tie 解包。"
+}

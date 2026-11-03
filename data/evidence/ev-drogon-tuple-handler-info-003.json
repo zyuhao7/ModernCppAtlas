@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-tuple-handler-info-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpAppFramework.h",
+  "lines": "80-80",
+  "feature": "cpp11.tuple",
+  "pattern": "用 tuple 给路由处理器的三个异构字段起别名",
+  "why_typical": "路径、HTTP 方法、处理器名称只在注册与查找时整体传递，用 tuple 别名避免为一个内部三元组引入新类型。",
+  "excerpt": "using HttpHandlerInfo = std::tuple<std::string, HttpMethod, std::string>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；using 别名把 tuple 的用途写清楚，比裸 tuple 在接口中更易读。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-array-digest-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/icf.cc",
+  "lines": "79-81",
+  "feature": "cpp11.array",
+  "pattern": "用 std::array 定义固定长度的哈希摘要类型，并为其特化 std::hash",
+  "why_typical": "摘要长度是算法常量，std::array 让长度成为类型的一部分，可直接按值比较、复制并作为 unordered 容器键。",
+  "excerpt": "static constexpr int64_t HASH_SIZE = 16;\n\nusing Digest = std::array<uint8_t, HASH_SIZE>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；同一文件的 hash<Digest> 特化直接遍历 array，说明固定长度缓冲区用 std::array 比 C 数组更易组合。"
+}

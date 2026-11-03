@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-unordered-map-cache-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/CacheMap.h",
+  "lines": "450-450",
+  "feature": "cpp11.unordered-map",
+  "pattern": "用 unordered_map 作为缓存主存储，配合时间轮做过期清理",
+  "why_typical": "缓存只需按键读写、不要求顺序；哈希表提供均摊常数时间访问，和独立的过期队列解耦。",
+  "excerpt": "    std::unordered_map<T1, MapValue> map_;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；模板缓存类把键类型和值类型参数化，底层仍用 unordered_map 承担主查找。"
+}
