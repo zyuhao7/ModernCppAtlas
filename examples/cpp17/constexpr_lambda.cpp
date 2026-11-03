@@ -11,5 +11,12 @@ int main() {
   }();
 
   static_assert(squares[3] == 9);
-  std::cout << squares[0] << ' ' << squares[3] << '\n';
+
+  constexpr int scale = 10;
+  constexpr auto scaled = [scale](int value) constexpr {
+    return value * scale;
+  };
+  static_assert(scaled(2) == 20);
+
+  std::cout << squares[0] << ' ' << squares[3] << ' ' << scaled(3) << '\n';
 }

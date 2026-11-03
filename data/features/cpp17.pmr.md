@@ -41,14 +41,18 @@ review:
 <!-- compile -->
 
 ```cpp
+#include <cstddef>
 #include <iostream>
 #include <memory_resource>
+#include <new>
+#include <string>
 #include <vector>
 
 int main() {
-  std::pmr::monotonic_buffer_resource pool;
-  std::pmr::vector<int> values(&pool);
+  std::byte buffer[1024];
+  std::pmr::monotonic_buffer_resource pool(buffer, sizeof(buffer));
 
+  std::pmr::vector<int> values(&pool);
   for (int i = 0; i < 5; ++i) {
     values.push_back(i * i);
   }
@@ -58,11 +62,19 @@ int main() {
     sum += value;
   }
 
-  std::cout << values.size() << ' ' << sum << '\n';
+  std::pmr::string text("atlas", &pool);
+
+  std::pmr::polymorphic_allocator<int> alloc(&pool);
+  int* raw = alloc.allocate(1);
+  new (raw) int(7);
+
+  std::cout << values.size() << ' ' << sum << ' ' << *raw << '\n';
+  std::cout << text << ' ' << text.size() << ' '
+            << (values.get_allocator().resource() == &pool) << '\n';
 }
 ```
 
-输出 `5 30`。`values` 的所有分配都来自 `pool`，`pool` 析构时统一释放；完整版本见 [`examples/cpp17/pmr.cpp`](../../examples/cpp17/pmr.cpp)。
+输出 `5 30 7` 与 `atlas 5 1`。示例用栈上缓冲区初始化 `monotonic_buffer_resource`，让 `pmr::vector`、`pmr::string` 和直接分配都从同一个池取内存；`get_allocator().resource()` 确认容器仍绑定到该池。完整版本见 [`examples/cpp17/pmr.cpp`](../../examples/cpp17/pmr.cpp)。
 
 标准库提供几种现成资源：`new_delete_resource()` 与 `null_memory_resource()`、按块分配且不单独回收的 `monotonic_buffer_resource`、面向重复块大小的 `unsynchronized_pool_resource` 和 `synchronized_pool_resource`。`get_default_resource()` 返回进程默认资源，`std::pmr::vector<T>` 不传资源时就使用它。
 

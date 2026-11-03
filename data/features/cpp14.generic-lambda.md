@@ -44,20 +44,32 @@ C++14 允许 lambda 参数写 `auto`。编译器为闭包生成一个带模板 `
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 int main() {
   std::vector<int> numbers{1, 2, 3};
   std::vector<std::string> words{"a", "bb"};
 
-  auto print = [](const auto &value) { std::cout << value << ' '; };
+  auto print = [](const auto& value) { std::cout << value << ' '; };
   std::for_each(numbers.begin(), numbers.end(), print);
   std::for_each(words.begin(), words.end(), print);
   std::cout << '\n';
+
+  auto twice = [](auto value) { return value + value; };
+  std::cout << twice(4) << ' ' << twice(std::string("ab")) << '\n';
+
+  auto forward = [](auto&& value) -> decltype(auto) {
+    return std::forward<decltype(value)>(value);
+  };
+  int x = 7;
+  int& ref = forward(x);
+  ref += 1;
+  std::cout << x << ' ' << forward(9) << '\n';
 }
 ```
 
-输出 `1 2 3 a bb `（末尾有一个空格）。`print` 是一个闭包对象，对它调用 `operator()<int>` 与 `operator()<std::string>` 会各自实例化。完整版本见 [`examples/cpp14/generic_lambda.cpp`](../../examples/cpp14/generic_lambda.cpp)。
+输出 `1 2 3 a bb `（末尾有一个空格）、`8 abab` 与 `8 9`。`print`、`twice` 和 `forward` 分别是 `const auto&`、按值 `auto` 与转发引用 `auto&&` 三种参数写法；`forward` 用 `decltype(auto)` 保留引用，所以 `ref += 1` 改到了原变量。完整版本见 [`examples/cpp14/generic_lambda.cpp`](../../examples/cpp14/generic_lambda.cpp)。
 
 ## 进阶用法
 

@@ -1,11 +1,15 @@
+#include <cstddef>
 #include <iostream>
 #include <memory_resource>
+#include <new>
+#include <string>
 #include <vector>
 
 int main() {
-  std::pmr::monotonic_buffer_resource pool;
-  std::pmr::vector<int> values(&pool);
+  std::byte buffer[1024];
+  std::pmr::monotonic_buffer_resource pool(buffer, sizeof(buffer));
 
+  std::pmr::vector<int> values(&pool);
   for (int i = 0; i < 5; ++i) {
     values.push_back(i * i);
   }
@@ -15,5 +19,13 @@ int main() {
     sum += value;
   }
 
-  std::cout << values.size() << ' ' << sum << '\n';
+  std::pmr::string text("atlas", &pool);
+
+  std::pmr::polymorphic_allocator<int> alloc(&pool);
+  int* raw = alloc.allocate(1);
+  new (raw) int(7);
+
+  std::cout << values.size() << ' ' << sum << ' ' << *raw << '\n';
+  std::cout << text << ' ' << text.size() << ' '
+            << (values.get_allocator().resource() == &pool) << '\n';
 }
