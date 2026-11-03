@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-tuple-name-type-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/gdb-index.cc",
+  "lines": "132-135",
+  "feature": "cpp11.tuple",
+  "pattern": "用 tuple 的字典序比较实现多字段排序键",
+  "why_typical": "比较多个成员时，把字段装进 tuple 后直接用 operator<，避免手写逐字段的短路比较并保持字段顺序清晰。",
+  "excerpt": "  bool operator<(const NameType &other) const {\n    return std::tuple(hash, type, name) <\n           std::tuple(other.hash, other.type, other.name);\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；CTAD 让 std::tuple(...) 省略模板实参，tuple 比较按元素顺序短路，正好对应多字段排序需求。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-unordered-map-strings-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "731-733",
+  "feature": "cpp11.unordered-map",
+  "pattern": "用 unordered_map 建立字符串视图到偏移量的索引",
+  "why_typical": "字符串驻留表按键查找，键指向已有存储且生命周期由调用方保证；unordered_map 避免复制字符串并支持高效插入查找。",
+  "excerpt": "private:\n  std::unordered_map<std::string_view, i64> strings;\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；std::string_view 作键要求底层字符存储稳定，链接器在字符串驻留场景中满足该前提。"
+}

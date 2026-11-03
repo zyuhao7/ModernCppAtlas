@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-array-graph-hash-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/synchronization/internal/graphcycles.cc",
+  "lines": "337-342",
+  "feature": "cpp11.array",
+  "pattern": "用 std::array 声明编译期大小的哈希桶数组，容量来自 constexpr 常量",
+  "why_typical": "桶数由 constexpr 常量给出，数组长度随类型一起确定；成员数组随对象内联存放，不需要堆分配或单独记录容量。",
+  "excerpt": " private:\n  // Number of buckets in hash table for pointer lookups.\n  static constexpr uint32_t kHashTableSize = 262139;  // should be prime\n\n  const Vec<Node*>* nodes_;\n  std::array<int32_t, kHashTableSize> table_;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产路径；constexpr 常量既作桶数又作数组长度，是 std::array 与编译期计算配合的常见模式。"
+}
