@@ -44,6 +44,7 @@ review:
 #include <iostream>
 #include <string>
 #include <tuple>
+#include <type_traits>
 
 std::tuple<std::string, int, bool> parse(const std::string& name, int score) {
   return std::make_tuple(name, score, score >= 60);
@@ -54,14 +55,27 @@ int main() {
   std::cout << std::get<0>(result) << ' ' << std::get<1>(result) << ' '
             << (std::get<2>(result) ? "pass" : "fail") << '\n';
 
+  static_assert(std::tuple_size<decltype(result)>::value == 3, "three fields");
+  static_assert(
+      std::is_same<std::tuple_element<1, decltype(result)>::type, int>::value,
+      "score is int");
+
   int score = 0;
   bool passed = false;
   std::tie(std::ignore, score, passed) = parse("bob", 45);
   std::cout << score << ' ' << (passed ? "pass" : "fail") << '\n';
+
+  auto extended = std::tuple_cat(result, std::make_tuple("extra"));
+  std::cout << std::get<3>(extended) << ' '
+            << std::tuple_size<decltype(extended)>::value << '\n';
+
+  auto a = std::make_tuple(1, std::string("b"));
+  auto b = std::make_tuple(1, std::string("c"));
+  std::cout << (a < b ? "less" : "greater") << '\n';
 }
 ```
 
-输出 `alice 82 pass` 与 `45 fail`。完整版本见 [`examples/cpp11/tuple.cpp`](../../examples/cpp11/tuple.cpp)。
+输出 `alice 82 pass`、`45 fail`、`extra 4` 与 `less`。示例依次展示下标访问、编译期长度与元素类型检查、`tie`/`ignore` 解包、`tuple_cat` 拼接以及字典序比较。完整版本见 [`examples/cpp11/tuple.cpp`](../../examples/cpp11/tuple.cpp)。
 
 ## 进阶用法
 

@@ -41,8 +41,10 @@ C 数组在表达式里会退化成指针，传参后丢失长度；不能按值
 <!-- compile -->
 
 ```cpp
+#include <algorithm>
 #include <array>
 #include <iostream>
+#include <tuple>
 
 int main() {
   std::array<int, 5> values{{3, 1, 4, 1, 5}};
@@ -52,12 +54,23 @@ int main() {
   std::cout << values.size() << ' ' << sum << ' ' << values.front() << ' '
             << values.back() << '\n';
 
+  std::cout << std::get<0>(values) << ' '
+            << std::tuple_size<decltype(values)>::value << '\n';
+
+  std::array<int, 5> copy = values;
+  std::array<int, 5> larger{{3, 1, 4, 1, 6}};
+  std::cout << (copy == values ? "equal" : "different") << ' '
+            << (copy < larger ? "less" : "greater") << '\n';
+
+  std::sort(values.begin(), values.end());
+  std::cout << values[0] << ' ' << values[2] << ' ' << values[4] << '\n';
+
   values.fill(7);
-  std::cout << values[0] << ' ' << values.at(4) << '\n';
+  std::cout << values.at(0) << ' ' << values.at(4) << '\n';
 }
 ```
 
-输出 `5 14 3 5` 与 `7 7`。完整版本见 [`examples/cpp11/array.cpp`](../../examples/cpp11/array.cpp)。
+输出 `5 14 3 5`、`3 5`、`equal less`、`1 3 5` 与 `7 7`。示例依次展示长度查询、按值复制与字典序比较、标准算法排序和整体填充；完整版本见 [`examples/cpp11/array.cpp`](../../examples/cpp11/array.cpp)。
 
 ## 进阶用法
 

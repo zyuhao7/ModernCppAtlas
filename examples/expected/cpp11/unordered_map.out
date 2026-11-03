@@ -1,2 +1,5 @@
-2 2 exists
-found
+3 2 exists
+found 0
+2 erased
+out_of_range
+apple=2 banana=3

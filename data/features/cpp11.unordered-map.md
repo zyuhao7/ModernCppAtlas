@@ -41,24 +41,51 @@ review:
 <!-- compile -->
 
 ```cpp
+#include <algorithm>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 int main() {
   std::unordered_map<std::string, int> counts;
+  counts.reserve(8);
+
   counts["apple"] = 2;
   counts["pear"] += 1;
-
   auto result = counts.emplace("apple", 5);
+  counts.insert(std::make_pair(std::string("banana"), 3));
+
   std::cout << counts.size() << ' ' << counts.at("apple") << ' '
             << (result.second ? "new" : "exists") << '\n';
+
   std::cout << (counts.find("pear") != counts.end() ? "found" : "missing")
-            << '\n';
+            << ' ' << counts.count("grape") << '\n';
+
+  counts.erase("pear");
+  std::cout << counts.size() << ' '
+            << (counts.count("pear") ? "kept" : "erased") << '\n';
+
+  try {
+    counts.at("missing");
+  } catch (const std::out_of_range&) {
+    std::cout << "out_of_range" << '\n';
+  }
+
+  std::vector<std::pair<std::string, int>> ordered(counts.begin(),
+                                                   counts.end());
+  std::sort(ordered.begin(), ordered.end());
+  for (std::size_t i = 0; i < ordered.size(); ++i) {
+    if (i != 0) std::cout << ' ';
+    std::cout << ordered[i].first << '=' << ordered[i].second;
+  }
+  std::cout << '\n';
 }
 ```
 
-输出 `2 2 exists` 与 `found`。`emplace("apple", 5)` 没有覆盖已有值，`second` 为 `false`。完整版本见 [`examples/cpp11/unordered_map.cpp`](../../examples/cpp11/unordered_map.cpp)。
+输出 `3 2 exists`、`found 0`、`2 erased`、`out_of_range` 与 `apple=2 banana=3`。示例覆盖预留容量、`emplace` 不覆盖、`find`/`count`、`erase`、`at` 越界异常，以及把无序结果复制到 `vector` 后排序输出。完整版本见 [`examples/cpp11/unordered_map.cpp`](../../examples/cpp11/unordered_map.cpp)。
 
 ## 进阶用法
 
