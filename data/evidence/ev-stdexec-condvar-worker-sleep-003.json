@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-condvar-worker-sleep-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/static_thread_pool.hpp",
+  "lines": "1145-1159",
+  "feature": "cpp11.condition-variable",
+  "pattern": "线程池工作线程在无任务时用 condition_variable::wait 休眠",
+  "why_typical": "工作窃取失败后线程先改状态再等待；状态由原子量维护，条件变量负责把线程挂起，避免空转消耗 CPU。",
+  "excerpt": "        std::unique_lock lock{mut_};\n        if (stop_requested_)\n        {\n          return result;\n        }\n        state expected = state::running;\n        if (state_.compare_exchange_weak(expected, state::sleeping, __std::memory_order_relaxed))\n        {\n          result = try_remote();\n          if (result.task)\n          {\n            return result;\n          }\n          set_sleeping();\n          cv_.wait(lock);",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；这里用无谓词 wait，因为状态转换由前置的 compare_exchange_weak 完成，唤醒后仍需检查 owns_lock 与任务队列。"
+}

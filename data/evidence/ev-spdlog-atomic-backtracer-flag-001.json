@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-atomic-backtracer-flag-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/backtracer.h",
+  "lines": "18-20",
+  "feature": "cpp11.atomic",
+  "pattern": "用 std::atomic<bool> 保存跨线程读取的启用标志",
+  "why_typical": "enabled_ 会被多个线程读写；用 atomic<bool> 避免为单个布尔值再加一把互斥量，同时保持读取无锁。",
+  "excerpt": "class SPDLOG_API backtracer {\n    mutable std::mutex mutex_;\n    std::atomic<bool> enabled_{false};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；容器本身仍由 mutex_ 保护，atomic 只用于独立的启用标志，两类同步原语按数据分别选择。"
+}

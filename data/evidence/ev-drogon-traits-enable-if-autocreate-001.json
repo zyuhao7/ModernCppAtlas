@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-traits-enable-if-autocreate-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/DrObject.h",
+  "lines": "60-69",
+  "feature": "cpp11.type-traits",
+  "pattern": "用 enable_if 与 is_same 做 SFINAE，检测类是否声明自动创建标志",
+  "why_typical": "框架需要在编译期判断某个控制器类型是否提供 const bool isAutoCreation；第一个重载参与重载决议，检测失败时回退到可变参数版本。",
+  "excerpt": "template <typename T>\nstruct isAutoCreationClass\n{\n    template <class C>\n    static constexpr auto check(C *) -> std::enable_if_t<\n        std::is_same_v<decltype(C::isAutoCreation), const bool>,\n        bool>\n    {\n        return C::isAutoCreation;\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；返回类型中的 enable_if_t 只在条件成立时存在，这是 C++11 起标准的 SFINAE 检测手法。"
+}

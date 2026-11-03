@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-condvar-periodic-worker-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/details/periodic_worker.h",
+  "lines": "31-39",
+  "feature": "cpp11.condition-variable",
+  "pattern": "用 condition_variable::wait_for 配合谓词实现可中断的周期任务",
+  "why_typical": "工作线程需要按固定间隔执行回调，同时在析构时立即醒来退出；wait_for 的谓词检查 active_，把超时与停止条件合并成一次等待。",
+  "excerpt": "        worker_thread_ = std::thread([this, callback_fun, interval]() {\n            for (;;) {\n                std::unique_lock<std::mutex> lock(this->mutex_);\n                if (this->cv_.wait_for(lock, interval, [this] { return !this->active_; })) {\n                    return;  // active_ == false, so exit this thread\n                }\n                callback_fun();\n            }\n        });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-03",
+  "is_test": false,
+  "notes": "生产头文件；wait_for 返回 true 表示谓词成立而非超时，代码据此区分“停止”与“又到周期”。"
+}
