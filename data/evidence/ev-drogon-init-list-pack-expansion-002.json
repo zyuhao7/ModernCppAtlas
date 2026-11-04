@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-init-list-pack-expansion-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/Mapper.h",
+  "lines": "1489-1492",
+  "feature": "cpp11.initializer-list",
+  "pattern": "在 initializer_list 中展开可变参数包，保证参数按顺序绑定",
+  "why_typical": "花括号初始化保证元素从左到右求值，代码借此把每个参数依次写入 binder；逗号表达式返回 0 只是占位，真正目的是固定展开顺序。",
+  "excerpt": "    {\n        auto binder = *client_ << std::move(sql);\n        (void)std::initializer_list<int>{\n            (binder << std::forward<Arguments>(args), 0)...};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产路径；这是 initializer_list 用于强制求值顺序的经典写法，不保存列表本身。"
+}

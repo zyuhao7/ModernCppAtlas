@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-init-list-weights-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/random/discrete_distribution.h",
+  "lines": "121-122",
+  "feature": "cpp11.initializer-list",
+  "pattern": "构造函数直接接收 initializer_list 作为权重序列",
+  "why_typical": "离散分布最自然的调用是直接写出权重表；构造函数重载接受 initializer_list，把权重转交给内部参数对象，调用点无需先建容器。",
+  "excerpt": "  explicit discrete_distribution(std::initializer_list<double> weights)\n      : param_(weights) {}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；与迭代器区间构造函数并存，覆盖小规模常量权重与任意序列两种调用方式。"
+}
