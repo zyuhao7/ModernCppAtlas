@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-alias-format-string-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "180-184",
+  "feature": "cpp11.alias-templates",
+  "pattern": "用别名模板包装格式化库的类型与 remove_cvref",
+  "why_typical": "format_string_t 把可变参数转发给 fmt 的类型，remove_cvref_t 用别名模板补上 C++11 缺少的工具；调用方只写短名字，底层类型可以随依赖版本替换。",
+  "excerpt": "template <typename... Args>\nusing format_string_t = fmt::format_string<Args...>;\n\ntemplate <class T>\nusing remove_cvref_t = typename std::remove_cv<typename std::remove_reference<T>::type>::type;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；两个别名模板都保留了参数，说明别名模板不是简单的 typedef 重命名。"
+}

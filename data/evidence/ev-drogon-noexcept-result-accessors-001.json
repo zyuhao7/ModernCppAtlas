@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-noexcept-result-accessors-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/Result.cc",
+  "lines": "121-134",
+  "feature": "cpp11.noexcept",
+  "pattern": "查询接口与 swap 标注 noexcept，声明不抛异常",
+  "why_typical": "size、swap、columns 只转发指针上的操作，不会抛出业务异常；标注 noexcept 让调用方和标准容器能据此选择更高效的路径。",
+  "excerpt": "Result::SizeType Result::size() const noexcept\n{\n    return resultPtr_->size();\n}\n\nvoid Result::swap(Result &other) noexcept\n{\n    resultPtr_.swap(other.resultPtr_);\n}\n\nResult::RowSizeType Result::columns() const noexcept\n{\n    return resultPtr_->columns();\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产实现文件；同类中真正的查询与移动操作使用 noexcept，而可能分配或抛出的接口不标注。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-noexcept-move-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/status/status.h",
+  "lines": "496-500",
+  "feature": "cpp11.noexcept",
+  "pattern": "移动构造与移动赋值声明 noexcept",
+  "why_typical": "Status 的移动操作只转移内部表示，不分配、不抛异常；显式 noexcept 让标准容器在扩容时优先选择移动而非复制。",
+  "excerpt": "  // Move operators\n\n  // The moved-from state is valid but unspecified.\n  Status(Status&&) noexcept;\n  Status& operator=(Status&&) noexcept;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；声明与实现分离，实现处同样带 noexcept，条目正文举例说明其对容器扩容的影响。"
+}

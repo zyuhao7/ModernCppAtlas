@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-noexcept-string-view-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/base.h",
+  "lines": "547-555",
+  "feature": "cpp11.noexcept",
+  "pattern": "string_view 的访问器全部标注 noexcept",
+  "why_typical": "data、size、begin、end 和 operator[] 只读已有缓冲区，不可能失败；标注 noexcept 是视图类型的基本约定，也让泛型代码可以依赖这个保证。",
+  "excerpt": "  constexpr auto data() const noexcept -> const Char* { return data_; }\n  constexpr auto size() const noexcept -> size_t { return size_; }\n\n  constexpr auto begin() const noexcept -> iterator { return data_; }\n  constexpr auto end() const noexcept -> iterator { return data_ + size_; }\n\n  constexpr auto operator[](size_t pos) const noexcept -> const Char& {\n    return data_[pos];\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；noexcept 与 constexpr 组合，访问器既可编译期求值，也可在运行期用于异常安全边界。"
+}

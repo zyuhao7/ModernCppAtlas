@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-init-list-sinks-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/logger.h",
+  "lines": "63-69",
+  "feature": "cpp11.initializer-list",
+  "pattern": "用 initializer_list 作为构造参数，让单 sink 重载委托到列表重载",
+  "why_typical": "单 sink 构造函数把参数写成花括号列表，再委托给接受 initializer_list 的重载；调用方既能传单个 sink，也能直接传列表，两个入口共用同一段初始化逻辑。",
+  "excerpt": "    // Logger with single sink\n    logger(std::string name, sink_ptr single_sink)\n        : logger(std::move(name), {std::move(single_sink)}) {}\n\n    // Logger with sinks init list\n    logger(std::string name, sinks_init_list sinks)\n        : logger(std::move(name), sinks.begin(), sinks.end()) {}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；sinks_init_list 是 std::initializer_list<sink_ptr> 的别名，条目正文引用了该别名定义。"
+}

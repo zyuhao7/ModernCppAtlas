@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-alias-index-sequence-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/ranges.h",
+  "lines": "164-165",
+  "feature": "cpp11.alias-templates",
+  "pattern": "用别名模板从 tuple 类型推导下标序列",
+  "why_typical": "tuple_index_sequence 把 tuple_size 的结果直接喂给 make_index_sequence，所有使用处只写一个别名；参数化别名让元编程表达式保持可读，而不必重复嵌套的 typename。",
+  "excerpt": "template <typename T>\nusing tuple_index_sequence = make_index_sequence<std::tuple_size<T>::value>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-04",
+  "is_test": false,
+  "notes": "生产头文件；别名模板依赖同一文件前部的 make_index_sequence 定义。"
+}
