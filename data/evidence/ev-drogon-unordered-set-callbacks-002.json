@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-unordered-set-callbacks-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/CacheMap.h",
+  "lines": "55-59",
+  "feature": "cpp11.unordered-set",
+  "pattern": "缓存桶用 unordered_set 去重回调",
+  "why_typical": "同一个回调不应在桶中重复出现，集合语义天然去重；桶本身再放进双端队列，按时间轮推进。",
+  "excerpt": "using CallbackEntryPtr = std::shared_ptr<CallbackEntry>;\nusing WeakCallbackEntryPtr = std::weak_ptr<CallbackEntry>;\n\nusing CallbackBucket = std::unordered_set<CallbackEntryPtr>;\nusing CallbackBucketQueue = std::deque<CallbackBucket>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产头文件；unordered_set 作为队列元素的桶类型，强调成员唯一性。"
+}

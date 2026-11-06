@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-unordered-set-options-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "2003-2007",
+  "feature": "cpp11.unordered-set",
+  "pattern": "链接选项用 unordered_set 做成员去重",
+  "why_typical": "命令行可以重复传入同一个文件名或符号名，集合自动去重；查询只需要判断是否包含，不关心插入顺序。",
+  "excerpt": "    std::unordered_map<std::string_view, u64> section_align;\n    std::unordered_map<std::string_view, u64> section_start;\n    std::unordered_set<std::string_view> ignore_ir_file;\n    std::unordered_set<std::string_view> wrap;\n    std::vector<SectionOrder> section_order;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产头文件；键为 string_view，指向命令行参数的稳定存储。"
+}

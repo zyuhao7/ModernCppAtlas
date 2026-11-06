@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-random-bytes-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/random.cc",
+  "lines": "7-18",
+  "feature": "cpp11.random",
+  "pattern": "用 random_device 直接填充随机字节",
+  "why_typical": "只需要不可预测的字节而非特定分布，random_device 是最直接的来源；按 4 字节切片写入目标缓冲区。",
+  "excerpt": "void get_random_bytes(u8 *buf, i64 size) {\n  std::random_device rand;\n  i64 i = 0;\n\n  for (; i < size - 4; i += 4) {\n    u32 val = rand();\n    memcpy(buf + i, &val, 4);\n  }\n\n  u32 val = rand();\n  memcpy(buf + i, &val, size - i);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产实现文件；random_device 的调用开销较高，适合少量熵而不是大批量模拟。"
+}

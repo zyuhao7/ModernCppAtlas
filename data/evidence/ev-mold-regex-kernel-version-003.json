@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-regex-kernel-version-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/cmdline.cc",
+  "lines": "546-555",
+  "feature": "cpp11.regex",
+  "pattern": "用捕获组解析内核版本号",
+  "why_typical": "版本串前缀固定、只关心前三段数字，正则捕获组把解析与校验合并成一次操作，失败时回退到全零。",
+  "excerpt": "// Parses a kernel version string, e.g. \"6.8.0-47-generic\".\nstatic std::tuple<int, int, int>\nparse_kernel_version(std::string str) {\n  auto flags = std::regex_constants::optimize | std::regex_constants::ECMAScript;\n  static std::regex re(R\"(^(\\d+)\\.(\\d+)\\.(\\d+))\", flags);\n  std::smatch m;\n\n  if (!std::regex_search(str, m, re))\n    return {0, 0, 0};\n  return {std::stoi(m[1]), std::stoi(m[2]), std::stoi(m[3])};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产命令行解析代码；ECMAScript 与 optimize 标志显式指定语法和编译优化。"
+}
