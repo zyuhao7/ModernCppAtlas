@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-co-future-bridge-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "569-583",
+  "feature": "cpp11.future",
+  "pattern": "用 std::promise 与 std::future 把协程结果桥接成旧式异步接口",
+  "why_typical": "框架同时保留回调和协程两种风格，promise/future 让旧接口无需改动就能消费协程结果。",
+  "excerpt": "// Converts a task (or task like) promise into std::future for old-style async\ntemplate <typename Await>\ninline auto co_future(Await &&await) noexcept\n    -> std::future<await_result_t<Await>>\n{\n    using Result = await_result_t<Await>;\n    std::promise<Result> prom;\n    auto fut = prom.get_future();\n    [](std::promise<Result> prom, Await await) -> AsyncTask {\n        try\n        {\n            if constexpr (std::is_void_v<Result>)\n            {\n                co_await std::move(await);\n                prom.set_value();",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产库的兼容层；注释直接说明目的是给 old-style async 提供 future。"
+}

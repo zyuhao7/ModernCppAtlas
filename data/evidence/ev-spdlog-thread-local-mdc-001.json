@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-thread-local-mdc-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/mdc.h",
+  "lines": "44-49",
+  "feature": "cpp11.thread-local",
+  "pattern": "用 thread_local 保存每线程的 MDC 上下文映射",
+  "why_typical": "日志上下文按线程隔离，读路径不需要加锁，也不会把别的线程的键值混进来。",
+  "excerpt": "    static void clear() { get_context().clear(); }\n\n    static mdc_map_t &get_context() {\n        static thread_local mdc_map_t context;\n        return context;\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产日志库；MDC 是典型的每线程状态，thread_local 让静态访问器保持无锁。"
+}

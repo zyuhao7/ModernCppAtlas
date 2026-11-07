@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-future-async-node-001",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/nano_wallet/entry.cpp",
+  "lines": "206-219",
+  "feature": "cpp11.future",
+  "pattern": "用 std::async 在后台构造节点，并通过 wait_for 轮询状态",
+  "why_typical": "GUI 线程不能阻塞，async 把耗时的节点构造移到后台；用 0s 的 wait_for 轮询而非 get 阻塞，事件循环才能继续处理退出请求。",
+  "excerpt": "\t\tauto future = std::async (std::launch::async, [&] {\n\t\t\treturn std::make_shared<nano::node> (data_path, config, work, flags);\n\t\t});\n\t\t// A nested event loop rather than processEvents polling, so Qt hands a quit request from the OS to this loop instead of letting AppKit call exit ()\n\t\tQEventLoop loop;\n\t\tQTimer poll;\n\t\tQObject::connect (&poll, &QTimer::timeout, [&] {\n\t\t\tif (future.wait_for (0s) == std::future_status::ready)\n\t\t\t{\n\t\t\t\tloop.quit ();\n\t\t\t}\n\t\t});\n\t\tpoll.start (50ms);\n\t\tloop.exec ();",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产钱包入口；后台构造节点是典型的长任务，future 与 Qt 事件循环协作。"
+}

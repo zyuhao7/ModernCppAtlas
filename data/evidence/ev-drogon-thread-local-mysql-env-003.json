@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-thread-local-mysql-env-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/mysql_impl/MysqlConnection.cc",
+  "lines": "51-60",
+  "feature": "cpp11.thread-local",
+  "pattern": "用 thread_local 保存每线程的 MySQL 线程环境",
+  "why_typical": "MySQL 的线程相关状态要求按线程初始化，事件循环线程各自持有环境对象，避免跨线程共享。",
+  "excerpt": "MysqlConnection::MysqlConnection(trantor::EventLoop *loop,\n                                 const std::string &connInfo)\n    : DbConnection(loop),\n      mysqlPtr_(std::shared_ptr<MYSQL>(new MYSQL, [](MYSQL *p) {\n          mysql_close(p);\n          delete p;\n      }))\n{\n    static MysqlEnv env;\n    static thread_local MysqlThreadEnv threadEnv;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 ORM 连接构造；进程级 env 与线程级 env 并列出现，正好对照两种生命周期。"
+}
