@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-noreturn-subcommand-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "1588-1590",
+  "feature": "cpp11.attributes",
+  "pattern": "用 [[noreturn]] 标注直接终止进程的子命令入口",
+  "why_typical": "子命令处理函数成功时正常返回、失败时直接退出；标注不返回的分支让模板调用方无需处理返回值。",
+  "excerpt": "template <typename E>\n[[noreturn]]\nvoid process_run_subcommand(Context<E> &ctx, int argc, char **argv);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产链接器；属性放在模板声明与返回类型之间，展示标准的放置位置。"
+}

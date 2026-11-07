@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-udl-json-001",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "5212-5222",
+  "feature": "cpp11.user-defined-literals",
+  "pattern": "用 operator\"\"_json 从字符串字面量直接构造 JSON",
+  "why_typical": "字面量在编译单元内保持可读，运行期用指针加长度解析，不需要额外构造 std::string。",
+  "excerpt": "/// @brief user-defined string literal for JSON values\n/// @sa https://json.nlohmann.me/api/basic_json/operator_literal_json/\nJSON_HEDLEY_NON_NULL(1)\n#if !defined(JSON_HEDLEY_GCC_VERSION) || JSON_HEDLEY_GCC_VERSION_CHECK(4,9,0)\n    inline nlohmann::json operator \"\"_json(const char* s, std::size_t n)\n#else\n    inline nlohmann::json operator \"\" _json(const char* s, std::size_t n)\n#endif\n{\n    return nlohmann::json::parse(s, s + n);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 JSON 库；为兼容旧 GCC 还保留了带空格的 operator \"\" 写法。"
+}

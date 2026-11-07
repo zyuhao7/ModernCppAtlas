@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-explicit-bool-intrusive-ptr-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__intrusive_ptr.hpp",
+  "lines": "272-280",
+  "feature": "cpp11.explicit-conversion-operators",
+  "pattern": "为侵入式指针实现显式 operator bool 与 operator!",
+  "why_typical": "显式 bool 允许 if (ptr) 的上下文转换，同时阻止与整数或裸指针发生意外的隐式重载。",
+  "excerpt": "      constexpr explicit operator bool() const noexcept\n      {\n        return __data_ != nullptr;\n      }\n\n      constexpr auto operator!() const noexcept -> bool\n      {\n        return __data_ == nullptr;\n      }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产发送者/接收者库；成对提供 operator bool 与 operator!，让条件表达式两边都可读。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-explicit-bool-message-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "src/os.cc",
+  "lines": "100-104",
+  "feature": "cpp11.explicit-conversion-operators",
+  "pattern": "为系统错误消息包装器实现显式 operator bool",
+  "why_typical": "同一个类还有到字符串视图的隐式转换，bool 转换必须显式，避免在条件判断之外被意外使用。",
+  "excerpt": "  ~system_message() { LocalFree(message_); }\n  explicit operator bool() const noexcept { return result_ != 0; }\n  operator fmt::basic_string_view<wchar_t>() const noexcept {\n    return fmt::basic_string_view<wchar_t>(message_, result_);\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产跨平台工具代码；Windows 错误消息包装器只在条件表达式里检查是否有内容。"
+}

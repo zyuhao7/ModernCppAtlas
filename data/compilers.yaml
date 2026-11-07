@@ -462,3 +462,21 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-07"
+  cpp11.attributes:
+    gcc: "4.8"
+    clang: "3.3"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.user-defined-literals:
+    gcc: "4.7"
+    clang: "3.1"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.explicit-conversion-operators:
+    gcc: "4.5"
+    clang: "3.0"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"

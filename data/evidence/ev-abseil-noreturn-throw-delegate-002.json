@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-noreturn-throw-delegate-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/throw_delegate.h",
+  "lines": "39-47",
+  "feature": "cpp11.attributes",
+  "pattern": "在异常委托接口上批量标注 [[noreturn]]",
+  "why_typical": "这些函数按标准库接口的约定抛出异常，[[noreturn]] 让 -fno-exceptions 构建下的调用点仍能按不返回优化。",
+  "excerpt": "[[noreturn]] void ThrowStdLogicError(const std::string& what_arg);\n[[noreturn]] void ThrowStdLogicError(const char* what_arg);\n[[noreturn]] void ThrowStdInvalidArgument(const std::string& what_arg);\n[[noreturn]] void ThrowStdInvalidArgument(const char* what_arg);\n[[noreturn]] void ThrowStdDomainError(const std::string& what_arg);\n[[noreturn]] void ThrowStdDomainError(const char* what_arg);\n[[noreturn]] void ThrowStdLengthError(const std::string& what_arg);\n[[noreturn]] void ThrowStdLengthError(const char* what_arg);\n[[noreturn]] void ThrowStdOutOfRange(const std::string& what_arg);",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产基础库；注释说明接口用于同时支持有/无异常构建，属性是契约的一部分。"
+}
