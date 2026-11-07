@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-regex-conn-string-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/DbConnection.cc",
+  "lines": "21-30",
+  "feature": "cpp11.regex",
+  "pattern": "用静态 regex 解析连接串并逐段提取键值",
+  "why_typical": "连接串格式固定且需要反复解析，静态构造 std::regex 只编译一次，循环中复用 smatch 与 regex_search 提取每组键值。",
+  "excerpt": "std::map<std::string, std::string> DbConnection::parseConnString(\n    const std::string &connInfo)\n{\n    static const std::regex re(\n        R\"((\\w+) *= *('(?:[^\\n]|\\\\[^\\n])+'|(?:\\S|\\\\\\S)+))\");\n    std::smatch what;\n    std::map<std::string, std::string> params;\n    std::string str = connInfo;\n\n    while (std::regex_search(str, what, re))",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产实现文件；正则作为静态常量避免每次调用重新编译模式。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-unordered-set-connections-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/DbClientImpl.h",
+  "lines": "96-102",
+  "feature": "cpp11.unordered-set",
+  "pattern": "连接池用 unordered_set 维护连接集合",
+  "why_typical": "连接池只关心成员是否存在以及快速增删，不需要顺序；用 unordered_set 表达集合语义，配合互斥量保护。",
+  "excerpt": "    mutable std::mutex connectionsMutex_;\n    std::unordered_set<DbConnectionPtr> connections_;\n    // Set by closeAll() (under connectionsMutex_) so that newConnection()\n    // cannot start a connection after the pool has been closed.\n    bool closed_{false};\n    std::unordered_set<DbConnectionPtr> readyConnections_;\n    std::unordered_set<DbConnectionPtr> busyConnections_;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产头文件；同一类型分别维护全部、空闲与忙碌三个集合，查找是均摊常数时间。"
+}

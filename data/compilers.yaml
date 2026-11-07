@@ -426,3 +426,21 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-04"
+  cpp11.regex:
+    gcc: "4.9"
+    clang: "2.8"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-06"
+  cpp11.random:
+    gcc: "4.5"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-06"
+  cpp11.unordered-set:
+    gcc: "4.4"
+    clang: "3.1"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-06"

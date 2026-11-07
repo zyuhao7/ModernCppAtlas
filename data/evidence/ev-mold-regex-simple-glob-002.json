@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-regex-simple-glob-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/multi-glob.cc",
+  "lines": "75-78",
+  "feature": "cpp11.regex",
+  "pattern": "静态编译 glob 正则并用 regex_match 判定整个模式",
+  "why_typical": "只用一次匹配即可判断是否为简单 glob；静态 regex 加 optimize 标志让模式在首次调用时编译，后续调用复用。",
+  "excerpt": "static bool is_simple_pattern(std::string_view pat) {\n  static std::regex re(R\"(\\*?[^*[?]+\\*?)\", std::regex_constants::optimize);\n  return std::regex_match(pat.begin(), pat.end(), re);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产库文件；regex_match 要求整个输入匹配，语义与正则搜索不同。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-random-work-steal-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/static_thread_pool.hpp",
+  "lines": "1021-1034",
+  "feature": "cpp11.random",
+  "pattern": "用均匀分布随机选择工作窃取目标",
+  "why_typical": "工作窃取需要从候选队列中随机挑一个以分散竞争；uniform_int_distribution 把引擎输出限制在有效下标范围。",
+  "excerpt": "    inline auto _static_thread_pool::thread_state::try_steal(std::span<workstealing_victim> victims)\n      -> _static_thread_pool::thread_state::pop_result\n    {\n      if (victims.empty())\n      {\n        return {.task = nullptr, .queue_index = index_};\n      }\n      std::uniform_int_distribution<std::uint32_t> dist(0,\n                                                        static_cast<std::uint32_t>(victims.size()\n                                                                                   - 1));\n      std::uint32_t                                victim_index = dist(rng_);\n      auto&                                        v            = victims[victim_index];\n      return {.task = v.try_steal(), .queue_index = v.index()};\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产头文件；分布对象在每次窃取时构造，范围随候选数量变化。"
+}

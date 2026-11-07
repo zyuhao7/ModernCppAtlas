@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-random-string-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/Utilities.cc",
+  "lines": "184-198",
+  "feature": "cpp11.random",
+  "pattern": "用均匀分布和线程局部 mt19937 生成随机字符串",
+  "why_typical": "字符表长度决定分布范围，thread_local 引擎避免每次调用重复播种，random_device 只在首次构造时提供熵。",
+  "excerpt": "std::string genRandomString(int length)\n{\n    static const std::string_view char_space =\n        \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\n    std::uniform_int_distribution<size_t> dist(0, char_space.size() - 1);\n    thread_local std::mt19937 rng(std::random_device{}());\n\n    std::string str;\n    str.resize(length);\n    for (char &ch : str)\n    {\n        ch = char_space[dist(rng)];\n    }\n\n    return str;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-06",
+  "is_test": false,
+  "notes": "生产工具函数；随机数用于生成令牌类字符串，不能依赖可预测的全局 rand。"
+}
