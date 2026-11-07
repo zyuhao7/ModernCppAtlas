@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-explicit-bool-optional-ptr-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/optional_ptr.hpp",
+  "lines": "78-86",
+  "feature": "cpp11.explicit-conversion-operators",
+  "pattern": "为 optional_ptr 实现显式 operator bool 作为可空检查",
+  "why_typical": "检查前保留 debug_assert 语义；显式 bool 让条件判断保持安全，同时不暴露到底层 unique_ptr 的隐式转换。",
+  "excerpt": "\texplicit operator bool () const\n\t{\n\t\treturn static_cast<bool> (ptr);\n\t}\n\n\tbool is_initialized () const\n\t{\n\t\treturn static_cast<bool> (ptr);\n\t}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产节点的可空指针包装；operator bool 与 is_initialized 都转发到内部 unique_ptr。"
+}

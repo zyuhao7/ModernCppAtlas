@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-noreturn-throw-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "308-313",
+  "feature": "cpp11.attributes",
+  "pattern": "用 [[noreturn]] 标注总是抛异常的日志错误辅助函数",
+  "why_typical": "函数只负责抛出 spdlog_ex，标注 [[noreturn]] 后编译器知道调用点之后不可达，减少误报和冗余代码。",
+  "excerpt": "private:\n    std::string msg_;\n};\n\n[[noreturn]] SPDLOG_API void throw_spdlog_ex(const std::string &msg, int last_errno);\n[[noreturn]] SPDLOG_API void throw_spdlog_ex(std::string msg);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产日志库；两个重载都抛出异常，[[noreturn]] 让调用方的错误分支更清晰。"
+}

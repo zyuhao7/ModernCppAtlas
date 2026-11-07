@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-udl-sql-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/Criteria.h",
+  "lines": "62-68",
+  "feature": "cpp11.user-defined-literals",
+  "pattern": "用 operator\"\"_sql 包装自定义 SQL 字符串",
+  "why_typical": "后缀把普通字符串标记成 CustomSql，API 在类型层面就能区分自定义 SQL 与参数化查询。",
+  "excerpt": "/**\n * @brief User-defined literal to convert a string to CustomSql\n */\ninline CustomSql operator\"\"_sql(const char *str, size_t)\n{\n    return CustomSql(str);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 ORM 头文件；字面量只做轻量包装，避免在调用点显式构造 CustomSql。"
+}

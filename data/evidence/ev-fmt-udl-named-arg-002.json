@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-udl-named-arg-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/format.h",
+  "lines": "4150-4161",
+  "feature": "cpp11.user-defined-literals",
+  "pattern": "用 operator\"\"_a 创建命名格式参数",
+  "why_typical": "调用点写 \"answer\"_a=42，比 fmt::arg(\"answer\", 42) 更接近格式串的阅读顺序，编译期版本还能检查模板参数。",
+  "excerpt": "/**\n * User-defined literal equivalent of `fmt::arg`, but with compile-time checks.\n *\n * **Example**:\n *\n *     using namespace fmt::literals;\n *     fmt::print(\"The answer is {answer}.\", \"answer\"_a=42);\n */\ntemplate <detail::fixed_string S> constexpr auto operator\"\"_a() {\n  using char_t = remove_cvref_t<decltype(*S.data)>;\n  return detail::udl_arg<char_t, sizeof(S.data) / sizeof(char_t), S>();\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产格式化库；注释直接给出 % 号风格的用法示例，属性版本由 FMT_USE_NONTYPE_TEMPLATE_ARGS 选择。"
+}
