@@ -444,3 +444,21 @@ features:
     msvc: "16.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-06"
+  cpp11.future:
+    gcc: "4.5"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.thread-local:
+    gcc: "4.8"
+    clang: "3.3"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.alignas-alignof:
+    gcc: "4.8"
+    clang: "3.0"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"

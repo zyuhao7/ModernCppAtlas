@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-alignas-digit-table-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/format.h",
+  "lines": "1015-1027",
+  "feature": "cpp11.alignas-alignof",
+  "pattern": "用 alignas(2) 对齐两位数查表数据",
+  "why_typical": "查表是格式化热路径，跨硬件边界的不对齐访问更慢；对齐后编译器能生成更合适的加载指令。",
+  "excerpt": "// Converts value in the range [0, 100) to a string. GCC generates a bit better\n// code when value is pointer-size (https://www.godbolt.org/z/5fEPMT1cc).\ninline auto digits2(size_t value) noexcept -> const char* {\n  // Align data since unaligned access may be slower when crossing a\n  // hardware-specific boundary.\n  alignas(2) static constexpr char data[] =\n      \"0001020304050607080910111213141516171819\"\n      \"2021222324252627282930313233343536373839\"\n      \"4041424344454647484950515253545556575859\"\n      \"6061626364656667686970717273747576777879\"\n      \"8081828384858687888990919293949596979899\";\n  return &data[value * 2];\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产格式化库；常量表按 2 字节对齐与每项两个字符的布局一致。"
+}

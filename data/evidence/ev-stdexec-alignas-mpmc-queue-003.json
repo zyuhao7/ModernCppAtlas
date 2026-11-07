@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-alignas-mpmc-queue-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__atomic_intrusive_queue.hpp",
+  "lines": "31-45",
+  "feature": "cpp11.alignas-alignof",
+  "pattern": "用 alignas(64) 对齐多生产者单消费者原子队列",
+  "why_typical": "队列头指针是跨线程 CAS 的热点，按缓存行对齐可避免与相邻数据产生伪共享。",
+  "excerpt": "  // An atomic queue that supports multiple producers and a single consumer.\n  template <auto _NextPtr>\n  class __atomic_intrusive_queue;\n\n  template <class _Tp, _Tp* _Tp::* _NextPtr>\n  class alignas(64) __atomic_intrusive_queue<_NextPtr>\n  {\n   public:\n    STDEXEC_ATTRIBUTE(host, device)\n    constexpr auto push(_Tp* __node) noexcept -> bool\n    {\n      STDEXEC_ASSERT(__node != nullptr);\n      _Tp* __old_head = __head_.load(__std::memory_order_relaxed);\n      do\n      {",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产发送者/接收者库；64 字节对齐对应常见缓存行宽度，服务跨线程调度。"
+}

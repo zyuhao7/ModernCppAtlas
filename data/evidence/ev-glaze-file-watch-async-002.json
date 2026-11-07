@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-file-watch-async-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/file/file_watch.hpp",
+  "lines": "29-42",
+  "feature": "cpp11.future",
+  "pattern": "用 shared_ptr 持有 std::future 管理后台文件监视任务",
+  "why_typical": "future 与 shared_ptr 一起表达任务生命周期，句柄销毁时 future 析构等待任务结束，调用方不需要显式 join。",
+  "excerpt": "      std::shared_ptr<thread_handler> h{new thread_handler(), [](auto* ptr) {\n                                           ptr->alive = false;\n                                           delete ptr;\n                                        }};\n\n      h->future = std::async([alive = &h->alive, path, callback = std::move(callback)] {\n         namespace fs = std::filesystem;\n         if (!fs::exists(path)) {\n            throw std::runtime_error(\"File \" + path.string() + \" does not exist.\\n\");\n         }\n\n         auto prev = fs::last_write_time(path);\n         while (*alive) {\n            auto t = fs::last_write_time(path);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产库工具；注释说明该实现适合单个文件的热重载场景，任务由 future 自动收敛。"
+}

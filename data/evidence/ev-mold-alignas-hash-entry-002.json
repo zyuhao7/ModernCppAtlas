@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-alignas-hash-entry-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "576-590",
+  "feature": "cpp11.alignas-alignof",
+  "pattern": "用 alignas(32) 对齐哈希表条目并按 alignof 分配内存",
+  "why_typical": "高并发哈希表把条目按较大的 2 的幂对齐以减少缓存行伪共享，分配时再用 alignof(Entry) 保持同一契约。",
+  "excerpt": "  struct alignas(32) Entry {\n    Atomic<const char *> key;\n    u32 keylen;\n    T value;\n  };\n\n  void resize(i64 nbuckets) {\n    assert(!entries);\n    this->nbuckets = std::max<i64>(MIN_NBUCKETS, bit_ceil(nbuckets));\n    i64 bufsize = sizeof(Entry) * this->nbuckets;\n\n    // Allocate a zero-initialized buffer. We use mmap() if available\n    // because it's faster than malloc() and memset().\n#ifdef _WIN32\n    entries = (Entry *)_aligned_malloc(bufsize, alignof(Entry));",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产链接器的并发哈希表；注释明确说明对齐是为了避免不必要的缓存行伪共享。"
+}
