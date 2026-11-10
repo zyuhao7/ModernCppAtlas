@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-ref-qualified-builder-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/status/status_builder.h",
+  "lines": "200-202",
+  "feature": "cpp11.ref-qualifiers",
+  "pattern": "链式构建器按左值/右值分别返回引用",
+  "why_typical": "左值链式调用返回 lvalue 引用，临时对象上的链式调用返回 rvalue 引用并允许移动。",
+  "excerpt": "  // Returns `*this` to allow method chaining.\n  StatusBuilder& SetAppend() &;\n  ABSL_MUST_USE_RESULT StatusBuilder&& SetAppend() &&;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产状态构建器接口；引用限定让临时对象链式调用也能高效转移所有权。"
+}

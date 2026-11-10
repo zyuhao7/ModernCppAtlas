@@ -480,3 +480,21 @@ features:
     msvc: "18.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-07"
+  cpp11.delegating-constructors:
+    gcc: "4.7"
+    clang: "3.0"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.ref-qualifiers:
+    gcc: "4.8.1"
+    clang: "2.9"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"
+  cpp11.trailing-return-type:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-07"

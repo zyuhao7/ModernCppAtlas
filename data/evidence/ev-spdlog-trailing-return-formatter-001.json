@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-trailing-return-formatter-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/stopwatch.h",
+  "lines": "60-65",
+  "feature": "cpp11.trailing-return-type",
+  "pattern": "格式化器用 decltype(ctx.out()) 推导返回类型",
+  "why_typical": "返回类型依赖模板参数的表达式，尾置返回让 ctx 进入作用域后再推导。",
+  "excerpt": "struct formatter<spdlog::stopwatch> : formatter<double> {\n    template <typename FormatContext>\n    auto format(const spdlog::stopwatch &sw, FormatContext &ctx) const -> decltype(ctx.out()) {\n        return formatter<double>::format(sw.elapsed().count(), ctx);\n    }\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产格式化适配器；尾置返回是 decltype 表达式的标准写法。"
+}

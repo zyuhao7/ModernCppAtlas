@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-delegating-variadic-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/os.h",
+  "lines": "332-337",
+  "feature": "cpp11.delegating-constructors",
+  "pattern": "变参构造函数委托给去掉末尾参数的同一构造函数",
+  "why_typical": "委托构造配合可变参数模板，把尾部标志位从参数包中剥离后再补齐。",
+  "excerpt": "  constexpr ostream_params() {}\n\n  template <typename... T>\n  ostream_params(T... params, int new_oflag) : ostream_params(params...) {\n    oflag = new_oflag;\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 I/O 参数结构体；委托目标与当前构造函数签名不同，靠重载决议选择。"
+}

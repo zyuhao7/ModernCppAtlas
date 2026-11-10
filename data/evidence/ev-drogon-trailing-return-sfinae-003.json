@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-trailing-return-sfinae-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/inc/drogon/orm/Mapper.h",
+  "lines": "55-63",
+  "feature": "cpp11.trailing-return-type",
+  "pattern": "SFINAE 探测函数用尾置返回构造 decltype 条件",
+  "why_typical": "返回类型需要引用参数名 U 才能写出，尾置返回是唯一可行位置。",
+  "excerpt": "  private:\n    using yes = std::true_type;\n    using no = std::false_type;\n\n    template <typename U>\n    static auto test(int) -> decltype(U::sqlForFindingByPrimaryKey(), yes());\n\n    template <typename>\n    static no test(...);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 ORM 映射器；detection idiom 依赖尾置返回完成条件推导。"
+}
