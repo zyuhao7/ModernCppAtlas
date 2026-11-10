@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-inheriting-ctors-amount-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/numbers.hpp",
+  "lines": "93-101",
+  "feature": "cpp11.inheriting-constructors",
+  "pattern": "金额值类型继承基类构造函数，只重写比较运算",
+  "why_typical": "派生类型保留基类全部构造入口，仅覆盖需要变化的行为。",
+  "excerpt": "class amount : public uint128_union\n{\npublic:\n\tusing uint128_union::uint128_union;\n\n\tauto operator<=> (nano::amount const & other) const\n\t{\n\t\treturn uint128_union::operator<=> (other);\n\t}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产账本金额类型；构造完全继承，比较改为三路比较。"
+}

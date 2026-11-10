@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-raw-string-regex-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/DbConnection.cc",
+  "lines": "21-31",
+  "feature": "cpp11.raw-string-literals",
+  "pattern": "连接串解析正则用原始字符串保留反斜杠",
+  "why_typical": "正则表达式含多层反斜杠，原始字符串省去双写。",
+  "excerpt": "std::map<std::string, std::string> DbConnection::parseConnString(\n    const std::string &connInfo)\n{\n    static const std::regex re(\n        R\"((\\w+) *= *('(?:[^\\n]|\\\\[^\\n])+'|(?:\\S|\\\\\\S)+))\");\n    std::smatch what;\n    std::map<std::string, std::string> params;\n    std::string str = connInfo;\n\n    while (std::regex_search(str, what, re))\n    {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 ORM 连接串解析；原始字符串内的反斜杠与正则语义一一对应。"
+}

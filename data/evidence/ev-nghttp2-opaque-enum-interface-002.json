@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-opaque-enum-interface-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_memcached_connection.h",
+  "lines": "45-49",
+  "feature": "cpp11.opaque-enum-declaration",
+  "pattern": "接口头文件前置声明带固定底层类型的枚举",
+  "why_typical": "连接类只需要枚举类型名作成员与参数，完整枚举值定义放在实现侧。",
+  "excerpt": "namespace shrpx {\n\nstruct MemcachedRequest;\nenum class MemcachedOp : uint8_t;\nenum class MemcachedStatusCode : uint16_t;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 HTTP/2 代理连接头；前置声明让接口不必暴露枚举定义。"
+}

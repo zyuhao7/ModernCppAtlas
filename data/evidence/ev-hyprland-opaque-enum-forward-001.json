@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-opaque-enum-forward-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/desktop/state/Fadeout.hpp",
+  "lines": "10-13",
+  "feature": "cpp11.opaque-enum-declaration",
+  "pattern": "头文件内先前置声明枚举，再按需包含完整定义",
+  "why_typical": "前置声明固定底层类型后，头文件可以用枚举类型声明成员而不引入定义。",
+  "excerpt": "namespace Render {\n    class IFramebuffer;\n    enum class eSceneMode : uint8_t;\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产桌面合成器状态头；前置声明打断头文件循环依赖。"
+}
