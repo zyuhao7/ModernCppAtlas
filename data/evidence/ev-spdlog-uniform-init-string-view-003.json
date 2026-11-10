@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-uniform-init-string-view-003",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/common.h",
+  "lines": "345-348",
+  "feature": "cpp11.uniform-initialization",
+  "pattern": "字符串视图用花括号直接构造",
+  "why_typical": "指针与长度明确交给构造函数，避免括号初始化可能触发的隐式转换歧义。",
+  "excerpt": "SPDLOG_CONSTEXPR_FUNC spdlog::string_view_t to_string_view(const memory_buf_t &buf)\n    SPDLOG_NOEXCEPT {\n    return spdlog::string_view_t{buf.data(), buf.size()};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产日志缓冲区转换；同一写法覆盖窄字符与宽字符两个重载。"
+}

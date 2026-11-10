@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-uniform-init-parse-result-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/compile.h",
+  "lines": "329-340",
+  "feature": "cpp11.uniform-initialization",
+  "pattern": "解析结果结构体用聚合花括号初始化",
+  "why_typical": "聚合体按声明顺序绑定成员，不需要手写构造函数或逐字段赋值。",
+  "excerpt": "template <typename Char> struct parse_arg_id_result {\n  arg_id_kind kind;\n  arg_ref<Char> arg_id;\n  const Char* arg_id_end;\n};\n\ntemplate <int ID, typename Char>\nconstexpr auto parse_arg_id(const Char* begin, const Char* end) {\n  auto handler = arg_id_handler<Char>{arg_id_kind::none, arg_ref<Char>{}};\n  auto arg_id_end = parse_arg_id(begin, end, handler);\n  return parse_arg_id_result<Char>{handler.kind, handler.arg_id, arg_id_end};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产编译期格式串解析；聚合初始化与返回值构造一体。"
+}

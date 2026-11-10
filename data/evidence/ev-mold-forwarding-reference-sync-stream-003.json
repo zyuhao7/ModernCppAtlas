@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-forwarding-reference-sync-stream-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/common.h",
+  "lines": "95-98",
+  "feature": "cpp11.forwarding-references",
+  "pattern": "输出代理模板用 T&& 与 std::forward 转交参数",
+  "why_typical": "链式 operator<< 需要把任意类型按原值类别交给内部流，转发引用是唯一通用写法。",
+  "excerpt": "  template <typename T> SyncStream &operator<<(T &&val) {\n    ss << std::forward<T>(val);\n    return *this;\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产链接器同步输出封装；自己实现 std::osyncstream 的兼容版本。"
+}

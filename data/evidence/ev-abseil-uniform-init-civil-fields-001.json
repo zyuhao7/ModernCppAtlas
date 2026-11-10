@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-uniform-init-civil-fields-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/time/internal/cctz/include/cctz/civil_time_detail.h",
+  "lines": "338-349",
+  "feature": "cpp11.uniform-initialization",
+  "pattern": "时间字段用花括号统一构造",
+  "why_typical": "窄化检查在编译期拦住字段宽度不符的初始化，几种对齐函数写法完全一致。",
+  "excerpt": "CONSTEXPR_F fields align(minute_tag, fields f) noexcept {\n  return fields{f.y, f.m, f.d, f.hh, f.mm, 0};\n}\nCONSTEXPR_F fields align(hour_tag, fields f) noexcept {\n  return fields{f.y, f.m, f.d, f.hh, 0, 0};\n}\nCONSTEXPR_F fields align(day_tag, fields f) noexcept {\n  return fields{f.y, f.m, f.d, 0, 0, 0};\n}\nCONSTEXPR_F fields align(month_tag, fields f) noexcept {\n  return fields{f.y, f.m, 1, 0, 0, 0};\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 civil-time 实现；花括号调用显式构造函数并逐字段赋值。"
+}

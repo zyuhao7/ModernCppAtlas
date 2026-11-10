@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-call-once-sqlite-config-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "orm_lib/src/sqlite3_impl/Sqlite3Connection.cc",
+  "lines": "97-103",
+  "feature": "cpp11.call-once",
+  "pattern": "类静态 once_flag 只设置一次 SQLite 全局配置",
+  "why_typical": "数据库连接可创建多个实例，但全局配置必须进程内只执行一次。",
+  "excerpt": "    std::call_once(once_, []() {\n        auto ret = sqlite3_config(SQLITE_CONFIG_MULTITHREAD);\n        if (ret != SQLITE_OK)\n        {\n            LOG_FATAL << \"SQLITE_CONFIG_MULTITHREAD is not supported!\";\n        }\n    });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 SQLite 连接初始化；错误处理放在一次性初始化体内。"
+}
