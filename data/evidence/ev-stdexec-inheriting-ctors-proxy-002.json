@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-inheriting-ctors-proxy-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__any.hpp",
+  "lines": "643-649",
+  "feature": "cpp11.inheriting-constructors",
+  "pattern": "引用代理结构体继承别名基类的构造函数",
+  "why_typical": "模板别名基类的构造签名无法逐一手写，继承构造函数是唯一省事写法。",
+  "excerpt": "  struct __reference_model\n    : _Interface<__mcall1<__bases_of<_Interface>, __reference_root<_Interface, _Value, _Extension>>>\n  {\n    using __base_t = _Interface<\n      __mcall1<__bases_of<_Interface>, __reference_root<_Interface, _Value, _Extension>>>;\n    using __base_t::__base_t;\n  };",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 P2300 实现内部；派生结构体仅通过别名引入构造。"
+}

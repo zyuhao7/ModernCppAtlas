@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-inheriting-ctors-random-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/random/random.h",
+  "lines": "103-112",
+  "feature": "cpp11.inheriting-constructors",
+  "pattern": "派生位生成器用 using 引入基类全部构造函数",
+  "why_typical": "派生类只补充类型别名与静态成员，构造逻辑完全复用基类。",
+  "excerpt": " public:\n  using result_type = typename Base::result_type;\n\n  // BitGen()\n  // BitGen(SeedSequence seed_seq)\n  //\n  // Copy disallowed.\n  // Move allowed.\n  using Base::Base;\n  using Base::operator=;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产随机数接口；`using Base::Base` 与赋值运算符一并引入。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-opaque-enum-central-fwd-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/fwd.hpp",
+  "lines": "8-14",
+  "feature": "cpp11.opaque-enum-declaration",
+  "pattern": "集中式前向声明头文件统一声明多个枚举",
+  "why_typical": "公共 fwd 头把跨模块共享的枚举一次前置声明，减少包含关系。",
+  "excerpt": "namespace nano\n{\nenum class block_type : uint8_t;\nenum class epoch : uint8_t;\nenum class network_type : uint16_t;\nenum class database_backend;\nenum class work_version;",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产节点核心库；同时展示固定底层类型与默认底层类型的声明。"
+}

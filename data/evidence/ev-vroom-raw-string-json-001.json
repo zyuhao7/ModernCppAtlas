@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-raw-string-json-001",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/routing/ors_wrapper.cpp",
+  "lines": "14-22",
+  "feature": "cpp11.raw-string-literals",
+  "pattern": "请求体 JSON 片段用原始字符串避免转义引号",
+  "why_typical": "JSON 内含大量双引号，原始字符串让源码与报文保持一致。",
+  "excerpt": "OrsWrapper::OrsWrapper(const std::string& profile, const Server& server)\n  : HttpWrapper(profile,\n                server,\n                \"matrix\",\n                \"durations\",\n                \"distances\",\n                \"directions\",\n                R\"(\"geometry_simplify\":\"false\",\"continue_straight\":\"false\")\") {\n}",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产路由请求构造；同一构造函数里普通字符串与原始字符串混用。"
+}

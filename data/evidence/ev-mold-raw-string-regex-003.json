@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-raw-string-regex-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/arch-riscv.cc",
+  "lines": "1076-1082",
+  "feature": "cpp11.raw-string-literals",
+  "pattern": "RISC-V 扩展名解析用原始字符串编写正则",
+  "why_typical": "正则需要字面反斜杠与分组，原始字符串让模式保持可读。",
+  "excerpt": "static std::vector<Extn> parse_arch_string(std::string_view str) {\n  auto flags = std::regex_constants::optimize | std::regex_constants::ECMAScript;\n  static std::regex re(R\"(^([a-z]|[a-z][a-z0-9]*[a-z])(\\d+)p(\\d+)(_|$))\", flags);\n\n  std::vector<Extn> vec;\n\n  for (;;) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产链接器架构解析；原始字符串直接承载正则转义序列。"
+}

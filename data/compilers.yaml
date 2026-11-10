@@ -498,3 +498,21 @@ features:
     msvc: "16.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-07"
+  cpp11.opaque-enum-declaration:
+    gcc: "4.6"
+    clang: "3.1"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"
+  cpp11.inheriting-constructors:
+    gcc: "4.8"
+    clang: "3.3"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"
+  cpp11.raw-string-literals:
+    gcc: "4.5"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"
