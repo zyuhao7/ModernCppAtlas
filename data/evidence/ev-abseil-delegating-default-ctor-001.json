@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-delegating-default-ctor-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/random/uniform_int_distribution.h",
+  "lines": "106-111",
+  "feature": "cpp11.delegating-constructors",
+  "pattern": "默认构造函数委托给带下界参数的重载",
+  "why_typical": "默认构造与带参构造共享同一套参数校验逻辑，委托避免了复制初始化列表。",
+  "excerpt": "  uniform_int_distribution() : uniform_int_distribution(0) {}\n\n  explicit uniform_int_distribution(\n      result_type lo,\n      result_type hi = (std::numeric_limits<result_type>::max)())\n      : param_(lo, hi) {}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产随机分布实现；默认构造是所有其他构造路径的入口。"
+}

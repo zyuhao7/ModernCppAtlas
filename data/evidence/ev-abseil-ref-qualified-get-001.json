@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-ref-qualified-get-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/container/internal/compressed_tuple.h",
+  "lines": "90-93",
+  "feature": "cpp11.ref-qualifiers",
+  "pattern": "按值类别提供 const&、&、const&&、&& 四个 get 重载",
+  "why_typical": "同一访问器用引用限定精确匹配左值/右值，右值路径返回可移动引用。",
+  "excerpt": "  constexpr const T& get() const& { return value; }\n  constexpr T& get() & { return value; }\n  constexpr const T&& get() const&& { return std::move(*this).value; }\n  constexpr T&& get() && { return std::move(*this).value; }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产容器内部存储抽象；四个重载完整覆盖 const 与值类别组合。"
+}

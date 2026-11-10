@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-delegating-copy-ctor-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/mold.h",
+  "lines": "2213-2218",
+  "feature": "cpp11.delegating-constructors",
+  "pattern": "拷贝构造函数委托给按名称与标志构造的重载",
+  "why_typical": "复制语义复用值构造逻辑，避免在成员初始化列表里重复推导。",
+  "excerpt": "  Symbol() = default;\n\n  Symbol(std::string_view name, bool demangle)\n    : nameptr(name.data()), namelen(name.size()), demangle(demangle) {}\n\n  Symbol(const Symbol<E> &other) : Symbol(other.name(), other.demangle) {}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产链接器符号类型；拷贝构造与值构造共享同一初始化路径。"
+}

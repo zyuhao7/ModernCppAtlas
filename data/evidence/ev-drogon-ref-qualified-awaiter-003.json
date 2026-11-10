@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-ref-qualified-awaiter-003",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "234-248",
+  "feature": "cpp11.ref-qualifiers",
+  "pattern": "协程结果访问器按对象值类别返回引用或值",
+  "why_typical": "左值协程返回 lvalue 引用，右值协程移动结果，避免不必要的复制。",
+  "excerpt": "        T &&result() &&\n        {\n            if (exception_ != nullptr)\n                std::rethrow_exception(exception_);\n            assert(value.has_value() == true);\n            return std::move(value.value());\n        }\n\n        T &result() &\n        {\n            if (exception_ != nullptr)\n                std::rethrow_exception(exception_);\n            assert(value.has_value() == true);\n            return value.value();\n        }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产协程封装；result() 的 && 与 & 重载直接决定结果所有权的转移方式。"
+}

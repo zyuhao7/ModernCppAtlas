@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-trailing-return-path-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/std.h",
+  "lines": "354-360",
+  "feature": "cpp11.trailing-return-type",
+  "pattern": "路径辅助类把返回类型写在参数列表之后",
+  "why_typical": "成员函数返回类型写在声明尾部，与函数名和参数分离，便于对齐阅读。",
+  "excerpt": "class path : public std::filesystem::path {\n public:\n  auto display_string() const -> std::string {\n    const std::filesystem::path& base = *this;\n    return fmt::format(FMT_STRING(\"{}\"), base);\n  }\n  auto system_string() const -> std::string { return string(); }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-07",
+  "is_test": false,
+  "notes": "生产 std::filesystem 适配代码；同一类内多个方法统一使用尾置返回。"
+}
