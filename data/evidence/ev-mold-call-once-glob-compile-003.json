@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-call-once-glob-compile-003",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/multi-glob.cc",
+  "lines": "27-29",
+  "feature": "cpp11.call-once",
+  "pattern": "call_once 惰性编译 glob 模式",
+  "why_typical": "首次匹配时才编译正则，后续调用直接复用结果。",
+  "excerpt": "std::optional<i64> MultiGlob::find(std::string_view str) {\n  std::call_once(once, [&] { compile(); });\n  i64 val = -1;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产链接器 glob 匹配；once_flag 是 MultiGlob 的成员。"
+}

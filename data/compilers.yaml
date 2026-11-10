@@ -516,3 +516,21 @@ features:
     msvc: "16.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-10"
+  cpp11.uniform-initialization:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"
+  cpp11.forwarding-references:
+    gcc: "4.3"
+    clang: "2.9"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"
+  cpp11.call-once:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-10"

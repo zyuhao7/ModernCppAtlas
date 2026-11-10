@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-call-once-json-config-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/JsonConfigAdapter.cc",
+  "lines": "10-12",
+  "feature": "cpp11.call-once",
+  "pattern": "静态 once_flag 只配置一次 JSON 解析器",
+  "why_typical": "局部静态标志配合 call_once，多个请求线程并发调用时初始化也只执行一次。",
+  "excerpt": "    static std::once_flag once;\n    static Json::CharReaderBuilder builder;\n    std::call_once(once, []() { builder[\"collectComments\"] = false; });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产配置解析入口；once_flag 与受保护对象同处函数作用域。"
+}

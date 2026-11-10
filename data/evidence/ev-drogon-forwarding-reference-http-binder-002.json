@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-forwarding-reference-http-binder-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/HttpBinder.h",
+  "lines": "231-236",
+  "feature": "cpp11.forwarding-references",
+  "pattern": "构造函数用 FUNCTION&& 与 std::forward 保存回调",
+  "why_typical": "模板构造函数接收任意可调用对象，按值类别转发，避免多余拷贝。",
+  "excerpt": "    HttpBinder(FUNCTION &&func) : func_(std::forward<FUNCTION>(func))\n    {\n        static_assert(traits::isHTTPFunction,\n                      \"Your API handler function interface is wrong!\");\n        handlerName_ = DrClassMap::demangle(typeid(FUNCTION).name());\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 HTTP 路由绑定；转发后立即用静态断言校验函数签名。"
+}
