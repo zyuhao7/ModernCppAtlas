@@ -1,10 +1,12 @@
 # ModernCppAtlas
 
-> **C++11–C++20 完整覆盖，C++23 进行中**的现代 C++ 特性图谱：使用场景、真实项目证据、进阶用法、开源库联动。
+> **C++11 到 C++26 的现代 C++ 特性图谱**：每个特性配可编译示例、固定 commit 的真实项目证据、进阶用法与开源库联动。
 
-[![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
+[![CI](https://github.com/zyuhao7/ModernCppAtlas/actions/workflows/ci.yml/badge.svg)](https://github.com/zyuhao7/ModernCppAtlas/actions/workflows/ci.yml) [![Content License](https://img.shields.io/badge/content-CC%20BY%204.0-lightgrey)](LICENSE-CONTENT) [![Code License](https://img.shields.io/badge/code-MIT-blue)](LICENSE)
 
 **在线阅读：** <https://zyuhao7.github.io/ModernCppAtlas/>
+
+快速入口：[按使用场景](https://zyuhao7.github.io/ModernCppAtlas/features/scenarios/) · [按标准版本](https://zyuhao7.github.io/ModernCppAtlas/features/) · [按难度](https://zyuhao7.github.io/ModernCppAtlas/features/difficulties/) · [证据索引](https://zyuhao7.github.io/ModernCppAtlas/evidence/)
 
 ## 这是什么
 
@@ -15,7 +17,20 @@
 3. 进阶怎么用，有哪些陷阱和边界？
 4. 能和哪些开源库组合，组合的收益与代价是什么？
 
-覆盖范围：C++11、C++14、C++17、C++20 已完整覆盖；C++23 正在补齐，首批为 `std::expected`、`std::mdspan`、`std::print`、deducing this；C++26 尚无条目，收录规则见下节。
+每个 A 级条目还带一个可直接编译运行的示例：多个编号场景、中文注释、稳定输出，页面把程序输出原样贴出来并逐场景解释。
+
+## 当前规模
+
+| 标准  | 条目 | 其中 A 级 | 说明                                    |
+| ----- | ---- | --------- | --------------------------------------- |
+| C++11 | 46   | 46        | 高频特性已覆盖，示例全部展开为多场景    |
+| C++14 | 4    | 4         | 只收对日常写法影响大的特性              |
+| C++17 | 20   | 19        | 库设施为主，1 条为证据不足的标准条目    |
+| C++20 | 20   | 18        | 含 concepts、ranges、协程等难点         |
+| C++23 | 2    | 0         | `std::expected`、`std::print`，起步阶段 |
+| C++26 | 0    | 0         | 收录规则见下文                          |
+
+合计 **92 个条目**（87 条 A 级、5 条 B 级）、**275 条证据**、**87 个可编译示例**、**3 张库联动卡片**，语料固定到 **17 个开源仓库**的具体 commit。当前处于单人维护阶段，已发布证据全部为 `manual` 级。
 
 ## 不是什么
 
@@ -40,17 +55,25 @@
 
 每个特性一个 Markdown 文件，YAML frontmatter + 固定章节。A 级七节：
 
-| 章节         | 内容                                     | 字数上限     |
-| ------------ | ---------------------------------------- | ------------ |
-| 解决什么问题 | 痛点与旧写法对比                         | 300          |
-| 基础用法     | 最小可编译示例 + 输出                    | 1 示例 + 200 |
-| 进阶用法     | 组合、泛型、性能相关细节                 | 800          |
-| 真实项目证据 | 项目 / 路径 / commit / 用法 / 为什么典型 | 表格         |
-| 陷阱与边界   | 生命周期、未定义行为、可移植性           | 500          |
-| 库联动       | 与哪些库组合、收益与代价                 | 400          |
-| 横向对比     | 替代方案与跨标准演进                     | 500          |
+| 章节         | 内容                                      | 篇幅参考     |
+| ------------ | ----------------------------------------- | ------------ |
+| 解决什么问题 | 痛点与旧写法对比                          | 300 字       |
+| 基础用法     | 最小可编译示例 + 输出，或多场景示例与解读 | 1 示例 + 200 |
+| 进阶用法     | 组合、泛型、性能相关细节                  | 800          |
+| 真实项目证据 | 项目 / 路径 / commit / 用法 / 为什么典型  | 表格         |
+| 陷阱与边界   | 生命周期、未定义行为、可移植性            | 500          |
+| 库联动       | 与哪些库组合、收益与代价                  | 400          |
+| 横向对比     | 替代方案与跨标准演进                      | 500          |
 
-B 级只写问题、基础用法、证据、陷阱、横向对比。写作规则：删除一切不能帮助读者判断“该不该用、怎么用、什么时候别用”的内容。
+B 级只写问题、基础用法、证据、陷阱、横向对比。写作规则：删除一切不能帮助读者判断“该不该用、怎么用、什么时候别用”的内容。篇幅是写作参考，不由 CI 强制。
+
+示例的约定：
+
+- 放在 `examples/cppNN/<snake_case>.cpp`，标准由目录决定，文件名不参与判断。
+- 3–6 个编号场景，输出形如 `[2] emplace apple inserted = false`，每个场景只演示一个机制。
+- 输出必须确定：不打印随机值、地址、核数或计时；需要展示随机性时断言取值范围。
+- 快照放在 `examples/expected/cppNN/<name>.out`，由 `verify_examples.py --run` 逐字节比对。
+- 页面把输出贴进“基础用法”，并逐场景解释，而不是让读者自己跑。
 
 ## 证据标准
 
@@ -125,7 +148,7 @@ review:
    - 生成代码已标记，且例外有独立审核人与书面理由；
    - 编译器下限与 `data/compilers.yaml` 一致，并指向对应标准的 cppreference 表；
    - A/B 级“基础用法”代码块带 `<!-- compile -->` 标记，并在页面标准下编译通过；
-   - 示例代码在对应标准下编译通过。
+   - 示例代码在对应标准下编译通过，运行输出与快照一致。
 3. **人工复核**：
    - 领域审核：用法是否正确、是否典型、是否反模式；
    - 证据审核：可追溯性、许可证、上下文是否断章取义；
@@ -146,6 +169,17 @@ review:
 - `status: deprecated`：被标记废弃，给出替代方案与迁移方式。
 - `status: removed`：被后续提案替代或移除，保留条目并指向替代方案。
 
+## 新增一个条目
+
+以 A 级条目为例：
+
+1. 复制 `data/features/` 下同标准的现有页面，改 `id`（必须等于文件名去 `.md`，且前缀与 `standard` 一致）、`title`、`compilers`、`last_verified`。
+2. 在 `data/evidence/` 下每条约 3 个证据文件，填固定 commit、路径、行段、许可证与摘录；摘录必须与 commit 原文一致。
+3. 在 frontmatter 的 `claims` 中把每条可检验主张映射到证据 ID，保证没有孤证。
+4. 写 `examples/cppNN/<name>.cpp`，跑 `uv run tools/verify_examples.py --run --update-expected` 生成快照，再把输出贴回页面。
+5. 本地跑一遍 `uv run tools/validate.py --check-corpus`、`uv run tools/check_snippets.py --compiler g++` 与单元测试。
+6. 按 `.github/pull_request_template.md` 的清单自查后提交 PR。
+
 ## 构建与演示示例
 
 示例编译到 `build/examples/<标准>/`，不写入源码目录；二进制不提交：
@@ -157,9 +191,17 @@ make verify     # 编译运行并比对 examples/expected 快照
 make clean      # 删除 build/
 ```
 
+只编译一个示例可以直接指定目标：
+
+```bash
+make build/examples/cpp11/unordered_map
+```
+
 用 `CXX=clang++ make examples` 切换编译器。
 
 ## 本地验证
+
+按 CI 顺序执行：
 
 ```bash
 uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
@@ -169,12 +211,14 @@ uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、�
 uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
 uv run tools/check_snippets.py --compiler g++  # 编译正文中标记的代码块
 uv run python -m unittest discover -s tests -v  # 工具与输出目录安全边界回归测试
-uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 生成并构建站点
+uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 先生成再构建站点
 uv run tools/check_links.py                   # 站内链接与锚点检查（需先构建站点）
 uv run tools/check_search.py                  # 中文搜索冒烟（需先构建站点）
 ```
 
 `tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径、行段、许可证与摘录原文。证据按自身固定 commit 校验，不要求等于语料当前版本；缺失的历史 commit 会自动尝试浅拉取。
+
+`build_site.py` 必须先于 `mkdocs`、`check_links.py`、`check_search.py`；顺序颠倒会检查到旧的 `.site-docs/`。
 
 示例行为变化时，用 `uv run tools/verify_examples.py --run --update-expected` 更新 `examples/expected/` 下的输出快照，并在 PR 中说明预期变化。
 
@@ -186,6 +230,20 @@ uv run ruff format tools && uv run ruff check tools
 uv run clang-format -i examples/*/*.cpp
 uv run mdformat README.md todo.md data/features .github/pull_request_template.md
 ```
+
+## 持续集成
+
+`.github/workflows/ci.yml` 跑五个独立任务：
+
+| 任务       | 内容                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| `format`   | ruff、clang-format、mdformat 检查                                                          |
+| `validate` | schema 与数据契约；拉取固定语料后逐条复核 permalink 与摘录原文                             |
+| `tests`    | 工具链单元测试                                                                             |
+| `examples` | GCC 14 与 Clang 18 双编译器矩阵，编译运行全部示例、比对快照、编译正文片段、`make examples` |
+| `site`     | 生成站点源码、`mkdocs build --strict`、链接与中文搜索检查                                  |
+
+`site` 通过后，`main` 分支的推送会部署到 GitHub Pages；`monthly.yml` 每月扫描候选用法并检查证据新鲜度，失败时自动开 issue。
 
 ## 参与贡献
 
