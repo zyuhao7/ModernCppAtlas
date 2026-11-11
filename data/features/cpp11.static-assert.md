@@ -57,7 +57,16 @@ int main() {
 }
 ```
 
-输出 `49`。两条断言都在编译期通过；若把 `checked_square(3.5)` 传入，第二条断言会在编译期报错并显示消息。完整版本见 [`examples/cpp11/static_assert.cpp`](../../examples/cpp11/static_assert.cpp)。
+输出 `49`。两条断言都在编译期通过；若把 `checked_square(3.5)` 传入，第二条断言会在编译期报错并显示消息。完整版本见 [`examples/cpp11/static_assert.cpp`](../../examples/cpp11/static_assert.cpp)，四个场景的输出为：
+
+```text
+[1] int32_t bytes = 4
+[2] checked_square(7) = 49
+[3] header bytes = 8
+[4] priority order ok = true
+```
+
+场景 1 在 `main` 里校验平台假设 `sizeof(std::int32_t) == 4`；场景 2 把断言放进模板，只有实例化时才检查，传入浮点类型会立刻报出定制消息；场景 3 在命名空间作用域锁定结构体布局等于 8 字节，适合与外部二进制协议对齐；场景 4 断言枚举取值的顺序关系，`low < normal < high` 这条隐含约定一旦被重排就编译失败。
 
 ## 进阶用法
 

@@ -73,7 +73,16 @@ int main() {
 }
 ```
 
-输出 `4 1`、`1 100` 与 `100 7`。四个线程各做一次 `fetch_add`，主线程 join 后读到 4；`compare_exchange_strong` 把 4 换成 100 并返回成功，随后 `exchange(7)` 返回旧值 100。完整版本见 [`examples/cpp11/atomic.cpp`](../../examples/cpp11/atomic.cpp)。
+输出 `4 1`、`1 100` 与 `100 7`。四个线程各做一次 `fetch_add`，主线程 join 后读到 4；`compare_exchange_strong` 把 4 换成 100 并返回成功，随后 `exchange(7)` 返回旧值 100。完整版本见 [`examples/cpp11/atomic.cpp`](../../examples/cpp11/atomic.cpp)，四个场景的输出为：
+
+```text
+[1] counter = 4000
+[2] payload after acquire = 99
+[3] first = true, second = false, stale expected = 100, slot = 100
+[4] exchange returned 4000, counter now = 1
+```
+
+场景 1 让四个线程各做 1000 次 `fetch_add`，`relaxed` 足够，最终计数确定是 4000。场景 2 演示发布/获取：写线程先写普通变量 `payload`，再用 `release` 置标志；读线程用 `acquire` 自旋等待，看到标志时 `payload` 必然可见，读到 99。场景 3 是 `compare_exchange` 的期望值陷阱：第一次成功把 4 换成 100；第二次传入过期的期望值 0 失败，`stale` 被改写成当前值 100，`slot` 保持 100。场景 4 的 `exchange` 原子地返回旧值 4000 并写入 1。
 
 `T` 必须是可平凡复制的类型；浮点数的 `fetch_add` 到 C++20 才进入标准，C++11 下浮点原子只保证 `load`、`store`、`exchange` 和比较交换。需要 `atomic_ref` 语义时，C++20 提供对已有对象的原子引用。
 

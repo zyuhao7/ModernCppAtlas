@@ -68,7 +68,17 @@ int main() {
 }
 ```
 
-输出 `9`。`Square` 用 `final` 禁止派生，`area` 用 `override` 让签名错误在编译期暴露。完整版本见 [`examples/cpp11/override_final.cpp`](../../examples/cpp11/override_final.cpp)。
+输出 `9`。`Square` 用 `final` 禁止派生，`area` 用 `override` 让签名错误在编译期暴露。完整版本见 [`examples/cpp11/override_final.cpp`](../../examples/cpp11/override_final.cpp)，四个场景的输出为：
+
+```text
+[1] square area = 9 circle area = 3.14159
+[2] derived id = 2, derived tag = base, base id = 1
+[3] tracked released
+[3] tracked destroyed
+[4] composed square area = 4
+```
+
+场景 1 把 `Square`（类级 `final`）和 `Circle` 一起放进 `vector<unique_ptr<Shape>>`，通过基类指针调用 `name()` 与 `area()`，虚表分派到各自实现，输出 `square area = 9` 与 `circle area = 3.14159`。场景 2 只把 `final` 加在虚函数上：`Base::tag` 声明为 `final`，`Derived` 仍能覆写 `id` 并得到 `2`，但不能再覆写 `tag`，调用 `derived.tag()` 返回基类的 `"base"`；源码中保留了一行被注释掉的违规覆写，展示它会在编译期失败。场景 3 用 `~Tracked() override` 覆写虚析构：`unique_ptr<Resource>` 删除 `Tracked` 时先调用 `release()`，再经由虚析构输出 `destroyed`，证明 `override` 对析构函数同样生效。场景 4 表明 `final` 只阻止继承、不阻止组合：`Wrapper` 里正常持有 `Square` 成员并调用其 `area()`。被注释掉的 `Derived::tag` 覆写和 `class X : public Square` 都是编译期错误，因此不进入运行输出。
 
 ## 进阶用法
 

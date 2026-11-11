@@ -72,7 +72,16 @@ int main() {
 }
 ```
 
-输出 `2 green 404`、`1 0` 与 `blue 1 3`。示例展示固定底层类型、`switch` 分支、作用域内比较和显式转换；`Color` 的底层类型是 `unsigned char`，因此 `sizeof(Color)` 为 1。完整版本见 [`examples/cpp11/enum_class.cpp`](../../examples/cpp11/enum_class.cpp)。
+输出 `2 green 404`、`1 0` 与 `blue 1 3`。完整版本见 [`examples/cpp11/enum_class.cpp`](../../examples/cpp11/enum_class.cpp)，四个场景的输出为：
+
+```text
+[1] color = 2, name = green, status = 404
+[2] sizeof(Color) = 1, sizeof(Status) = 2
+[3] blue + 1 = 4, name = unknown
+[4] same type compare = true
+```
+
+场景 1 用限定名取枚举值，转整数必须显式 `static_cast`；场景 2 对比两种底层类型，`Color : unsigned char` 占 1 字节，`Status : std::uint16_t` 占 2 字节，都不再是普通 `enum` 默认的 `int` 宽度；场景 3 把 `blue` 转成底层类型加一后再转回枚举，得到没有名字的 4，`name` 回退到 `"unknown"`，说明范围校验要自己做；场景 4 演示同一枚举类型可以比较，换成另一个枚举类型或整数都会编译失败。
 
 ## 进阶用法
 

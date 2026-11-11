@@ -70,7 +70,17 @@ int main() {
 }
 ```
 
-输出 `1 1`、`0` 与 `2 2`。`Buffer` 的移动构造和移动赋值都标注 `noexcept`，因此 `is_nothrow_move_constructible` 为真；`may_throw` 没有异常说明，`noexcept(may_throw(1))` 为假。完整版本见 [`examples/cpp11/noexcept.cpp`](../../examples/cpp11/noexcept.cpp)。
+输出 `1 1`、`0` 与 `2 2`。`Buffer` 的移动构造和移动赋值都标注 `noexcept`，因此 `is_nothrow_move_constructible` 为真；`may_throw` 没有异常说明，`noexcept(may_throw(1))` 为假。完整版本见 [`examples/cpp11/noexcept.cpp`](../../examples/cpp11/noexcept.cpp)，五个场景的输出为：
+
+```text
+[1] nothrow move: Buffer = true, Thrower = false
+[2] noexcept(safe_add) = true, noexcept(may_throw) = false
+[3] move_if_noexcept rvalue: Buffer = true, Thrower = false
+[4] relay_safe = true, relay_risky = false
+[5] noexcept move: moves = 2, copies = 0; throwing move: moves = 0, copies = 2
+```
+
+场景 1 对比两个类：`Buffer` 的移动构造标了 `noexcept`，`Thrower` 的没标，`is_nothrow_move_constructible` 给出不同答案。场景 2 用运算符形式查询两个普通函数，`noexcept(expr)` 在编译期求值。场景 3 展示标准库的选择机制：`std::move_if_noexcept` 对 `Buffer` 返回右值引用，对 `Thrower` 退回左值引用。场景 4 让异常说明由表达式推导：`relay_safe` 声明为 `noexcept(noexcept(safe_add(1)))` 因此为真，而 `relay_risky` 依赖一个没有异常说明的声明，结果为假。场景 5 是最直接的性能对照：两次 `reserve` 强制扩容，`noexcept` 移动的类只发生 2 次移动、0 次拷贝，没标的类正好相反，2 次拷贝、0 次移动。
 
 `noexcept` 是承诺而不是检查：函数体内真的抛出异常时，程序会调用 `std::terminate`，不会退回到调用方。标注前要确认函数及其调用的所有代码都不会抛出。
 

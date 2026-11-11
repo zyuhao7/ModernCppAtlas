@@ -61,7 +61,18 @@ int main() {
 }
 ```
 
-输出 `valid 10` 与 `42`。`sum.valid()` 在 `get()` 之前为真，`promise` 写入后等待方立即就绪。完整版本见 [`examples/cpp11/future.cpp`](../../examples/cpp11/future.cpp)。
+输出 `valid 10` 与 `42`。`sum.valid()` 在 `get()` 之前为真，`promise` 写入后等待方立即就绪。完整版本见 [`examples/cpp11/future.cpp`](../../examples/cpp11/future.cpp)，六个场景的输出为：
+
+```text
+[1] valid before get = true, result = 10, valid after get = false
+[2] answer = 42
+[3] product = 42
+[4] caught = task failed
+[5] first = atlas, second = atlas
+[6] timeout = true
+```
+
+场景 1 展示 `async` 的完整生命周期：`get()` 之前 `valid()` 为真，取出 10 之后 future 变 invalid。场景 2 由另一个线程调用 `promise.set_value`，等待方 `get()` 得到 42。场景 3 用 `packaged_task` 把 lambda 与共享状态绑定，先构造再交给 `std::thread` 执行。场景 4 让任务抛 `runtime_error`，异常存进共享状态并在 `get()` 处重新抛出。场景 5 用 `shared_future` 重复 `get()`，两个消费者读到同一结果。场景 6 用 1ms 的 `wait_for` 观察未就绪状态，稳定返回 `timeout`。
 
 ## 进阶用法
 

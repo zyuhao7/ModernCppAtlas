@@ -65,7 +65,18 @@ int main() {
 }
 ```
 
-输出 `1 two 3.5 ` 与 `3`。递归到空参数包时匹配无参重载，这是 C++11/14 处理参数包的经典写法。完整版本见 [`examples/cpp11/variadic_templates.cpp`](../../examples/cpp11/variadic_templates.cpp)。
+输出 `1 two 3.5 ` 与 `3`。递归到空参数包时匹配无参重载，这是 C++11/14 处理参数包的经典写法。完整版本见 [`examples/cpp11/variadic_templates.cpp`](../../examples/cpp11/variadic_templates.cpp)，五个场景的输出为：
+
+```text
+[1] args:1 two 3.5
+[1] count = 3
+[2] pack_size(1,2,3,4) = 4
+[3] sum = 10
+[4] size = 3, joined = a b c
+[5] tuple size = 3, field 1 = two
+```
+
+场景 1 用两个递归模板分别打印和计数，每层剥掉一个实参，空包由无参重载终止。场景 2 的 `sizeof...(Args)` 在编译期直接给出个数，不需要任何递归实例化。场景 3 对同类型实参递归求和，体感上简单，但每个实参都会生成一层实例。场景 4 把参数包展开进 `std::vector<std::string>` 的初始化列表，`std::forward<Args>(args)...` 逐个保留值类别。场景 5 用 `std::tuple<int, std::string, double>` 说明参数包在类模板里描述成员类型，`tuple_size` 仍是 3。
 
 ## 进阶用法
 

@@ -71,7 +71,16 @@ int main() {
 }
 ```
 
-输出 `atlas modern cpp`、`atlas! cpp!`、`3 2` 与 `11`。示例覆盖只读引用遍历、`auto&` 修改元素、映射键值对和原生数组；`entry` 是 `std::pair<const std::string, int>` 的引用，映射的键不可修改。完整版本见 [`examples/cpp11/range_for.cpp`](../../examples/cpp11/range_for.cpp)。
+输出 `atlas modern cpp`、`atlas! cpp!`、`3 2` 与 `11`。示例覆盖只读引用遍历、`auto&` 修改元素、映射键值对和原生数组；`entry` 是 `std::pair<const std::string, int>` 的引用，映射的键不可修改。完整版本见 [`examples/cpp11/range_for.cpp`](../../examples/cpp11/range_for.cpp)，四个场景的输出为：
+
+```text
+[1] atlas modern cpp
+[2] front = atlas!, back = cpp!
+[3] total = 3, entries = 2
+[4] sum = 8, raw[0] = 3
+```
+
+场景 1 用 `const auto&` 只读打印，不产生字符串复制；场景 2 用 `auto&` 原地拼接 `!`，`words.front()` 和 `words.back()` 都被改写；场景 3 遍历 `std::map`，`entry.second` 累加得到 3；场景 4 用 `auto` 按值遍历 C 数组，`value *= 10` 只改副本，`raw[0]` 仍是 3，与 `auto&` 形成对照。
 
 ## 进阶用法
 

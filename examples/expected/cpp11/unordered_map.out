@@ -1,5 +1,6 @@
-3 2 exists
-found 0
-2 erased
-out_of_range
-apple=2 banana=3
+[1] after operator[] size = 3, pear = 1, grape = 0
+[2] emplace apple inserted = false, emplace banana inserted = true, apple = 2
+[3] find(pear) = found, count(kiwi) = 0
+[4] at(missing) throws out_of_range, size = 4
+[5] erase(pear) = 1, count(pear) = 0
+[6] apple=2 banana=3 grape=0

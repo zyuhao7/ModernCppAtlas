@@ -75,7 +75,17 @@ int main() {
 }
 ```
 
-输出 `alice 82 pass`、`45 fail`、`extra 4` 与 `less`。示例依次展示下标访问、编译期长度与元素类型检查、`tie`/`ignore` 解包、`tuple_cat` 拼接以及字典序比较。完整版本见 [`examples/cpp11/tuple.cpp`](../../examples/cpp11/tuple.cpp)。
+输出 `alice 82 pass`、`45 fail`、`extra 4` 与 `less`。示例依次展示下标访问、编译期长度与元素类型检查、`tie`/`ignore` 解包、`tuple_cat` 拼接以及字典序比较。完整版本见 [`examples/cpp11/tuple.cpp`](../../examples/cpp11/tuple.cpp)，五个场景的输出为：
+
+```text
+[1] alice 82 pass
+[2] size = 3, element 1 is int = true
+[3] score = 45, result = fail
+[4] last = extra, size = 4
+[5] a < b = true
+```
+
+场景 1 用 `get<0>` 到 `get<2>` 依次读出三个异构元素；场景 2 用 `tuple_size` 和 `tuple_element` 在编译期查询长度与元素类型，`static_assert` 与运行期打印同时验证；场景 3 用 `std::tie(std::ignore, score, passed)` 跳过名字，只把后两个字段绑定到已有变量；场景 4 的 `tuple_cat` 把三元组拼成四元组；场景 5 对比两个首元素相同、次元素不同的 tuple，字典序先比较第一个不同元素，因此 `"b" < "c"` 为真。
 
 ## 进阶用法
 

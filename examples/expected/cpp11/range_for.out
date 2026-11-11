@@ -1,4 +1,4 @@
-atlas modern cpp
-atlas! cpp!
-3 2
-11
+[1] atlas modern cpp
+[2] front = atlas!, back = cpp!
+[3] total = 3, entries = 2
+[4] sum = 8, raw[0] = 3

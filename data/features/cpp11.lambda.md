@@ -61,7 +61,16 @@ int main() {
 }
 ```
 
-输出 `3 14`：排序按降序进行，`above` 按值保存了 `threshold`，`total` 通过引用被累加。完整版本见 [`examples/cpp11/lambda.cpp`](../../examples/cpp11/lambda.cpp)。
+输出 `3 14`：排序按降序进行，`above` 按值保存了 `threshold`，`total` 通过引用被累加。完整版本见 [`examples/cpp11/lambda.cpp`](../../examples/cpp11/lambda.cpp)，四个场景的输出为：
+
+```text
+[1] count = 3, total = 14
+[2] by_value = 2, by_reference = 10
+[3] closure count = 3, outer count = 0
+[4] function pointer = 36
+```
+
+场景 2 在创建两个 lambda 后修改 `threshold`：按值捕获仍返回 2，按引用捕获返回 10，说明捕获发生在 lambda 创建时；场景 3 给 `mutable` lambda 连续调用三次，闭包内部计数变成 3，外部变量仍是 0；场景 4 把无捕获 lambda 赋给函数指针，验证它没有闭包状态。
 
 ## 进阶用法
 

@@ -1,3 +1,5 @@
-atlas
-moved
-atlas
+[1] items = atlas moved, source text = atlas
+[2] text = lvalue, temp = rvalue, const_ref = const lvalue
+[3] forwarded moves = 1, unforwarded copies = 1
+[4] text after auto&& write = atlas!
+[5] & && -> & = true, && -> && = true

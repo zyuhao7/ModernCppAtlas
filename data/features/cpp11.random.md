@@ -73,7 +73,18 @@ int main() {
 }
 ```
 
-输出 `dice: 2 4 4 5 5 5` 与 `cards: 3 1 5 4 2`。同一个种子和同一个标准库实现会得到相同序列；换实现时分布的具体映射可能不同。完整版本见 [`examples/cpp11/random.cpp`](../../examples/cpp11/random.cpp)。
+输出 `dice: 2 4 4 5 5 5` 与 `cards: 3 1 5 4 2`。同一个种子和同一个标准库实现会得到相同序列；换实现时分布的具体映射可能不同。完整版本见 [`examples/cpp11/random.cpp`](../../examples/cpp11/random.cpp)，六个场景的输出为：
+
+```text
+[1] dice: 2 4 4 5 5 5
+[2] in [0,1) = true
+[3] coin = tails
+[4] cards: 5 1 2 3 4
+[5] reproducible = true
+[6] seeded result in [1,100] = true
+```
+
+场景 1 用 `uniform_int_distribution` 生成六次骰子点数并排序；场景 2 换用浮点分布，断言结果落在 `[0, 1)` 内；场景 3 的 `bernoulli_distribution` 按概率产生布尔值；场景 4 用 `std::shuffle` 打乱序列，验证结果是元素集合的排列。场景 5 让两个独立引擎使用同一种子，第一次取值必然相同，这就是可复现的来源。场景 6 用 `random_device` 播种，但它的取值本身不可复现，因此只检查播种后的结果落在指定区间，避免把随机输出写进快照。
 
 ## 进阶用法
 

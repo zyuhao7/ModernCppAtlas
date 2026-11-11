@@ -1,3 +1,4 @@
-4 1
-1 100
-100 7
+[1] counter = 4000
+[2] payload after acquire = 99
+[3] first = true, second = false, stale expected = 100, slot = 100
+[4] exchange returned 4000, counter now = 1

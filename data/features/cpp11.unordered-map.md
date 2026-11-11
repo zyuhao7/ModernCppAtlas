@@ -85,7 +85,18 @@ int main() {
 }
 ```
 
-输出 `3 2 exists`、`found 0`、`2 erased`、`out_of_range` 与 `apple=2 banana=3`。示例覆盖预留容量、`emplace` 不覆盖、`find`/`count`、`erase`、`at` 越界异常，以及把无序结果复制到 `vector` 后排序输出。完整版本见 [`examples/cpp11/unordered_map.cpp`](../../examples/cpp11/unordered_map.cpp)。
+输出 `3 2 exists`、`found 0`、`2 erased`、`out_of_range` 与 `apple=2 banana=3`。示例覆盖预留容量、`emplace` 不覆盖、`find`/`count`、`erase`、`at` 越界异常，以及把无序结果复制到 `vector` 后排序输出。完整版本见 [`examples/cpp11/unordered_map.cpp`](../../examples/cpp11/unordered_map.cpp)，六个场景的输出为：
+
+```text
+[1] after operator[] size = 3, pear = 1, grape = 0
+[2] emplace apple inserted = false, emplace banana inserted = true, apple = 2
+[3] find(pear) = found, count(kiwi) = 0
+[4] at(missing) throws out_of_range, size = 4
+[5] erase(pear) = 1, count(pear) = 0
+[6] apple=2 banana=3 grape=0
+```
+
+场景 1 是 `operator[]` 的陷阱：`counts["grape"]` 只为读取，却插入了一个值初始化的 `0`，于是大小变成 `3`。场景 2 用 `emplace` 对照：对已存在的 `apple` 插入失败（`false`）、不覆盖原值 `2`；对新键 `banana` 插入成功（`true`）。场景 3 用 `find` 判断命中、用 `count` 回答存在性，`kiwi` 未插入因此为 `0`。场景 4 强调 `at` 与 `operator[]` 的分工：`at("missing")` 抛 `std::out_of_range`，容器大小保持不变，而 `operator[]` 会静默插入。场景 5 的 `erase` 返回实际删除数量 `1`，之后 `count("pear")` 归零。场景 6 提醒遍历顺序由哈希与桶数决定、不可依赖：先复制进 `vector` 再 `std::sort`，才得到稳定的 `apple=2 banana=3 grape=0`。
 
 ## 进阶用法
 

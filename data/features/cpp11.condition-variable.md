@@ -91,7 +91,15 @@ int main() {
 }
 ```
 
-输出 `3 6`。生产者在锁内把 1、2、3 放入队列并通知；消费者在谓词成立前持续等待，醒来后一次排空队列，看到 `done` 后退出。完整版本见 [`examples/cpp11/condition_variable.cpp`](../../examples/cpp11/condition_variable.cpp)。
+输出 `3 6`。生产者在锁内把 1、2、3 放入队列并通知；消费者在谓词成立前持续等待，醒来后一次排空队列，看到 `done` 后退出。完整版本见 [`examples/cpp11/condition_variable.cpp`](../../examples/cpp11/condition_variable.cpp)，三个场景的输出为：
+
+```text
+[1] count = 3, total = 6
+[2] timeout with false predicate = true
+[3] ready predicate = true
+```
+
+场景 1 是标准的生产者/消费者：`lock_guard` 只在写队列时持有锁，`notify_one` 在解锁之后发出；消费者用 `unique_lock` 配合带谓词的 `wait`，被唤醒后一次排空队列。场景 2 用 `wait_for` 加 10ms 超时和恒假谓词，稳定返回 `false`，说明超时路径的返回值。场景 3 在等待前先把条件置真，`wait_for` 立即返回 `true`，不会真的等满超时。
 
 谓词由调用方提供，`wait(lock, pred)` 等价于“循环检查 `pred()`，为假就等待”。条件变量本身不保存状态，状态必须放在共享变量里，并由同一把互斥量保护。
 

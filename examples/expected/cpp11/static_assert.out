@@ -1,1 +1,4 @@
-49
+[1] int32_t bytes = 4
+[2] checked_square(7) = 49
+[3] header bytes = 8
+[4] priority order ok = true

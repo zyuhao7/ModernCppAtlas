@@ -70,7 +70,18 @@ int main() {
 }
 ```
 
-输出 `5 14 3 5`、`3 5`、`equal less`、`1 3 5` 与 `7 7`。示例依次展示长度查询、按值复制与字典序比较、标准算法排序和整体填充；完整版本见 [`examples/cpp11/array.cpp`](../../examples/cpp11/array.cpp)。
+输出 `5 14 3 5`、`3 5`、`equal less`、`1 3 5` 与 `7 7`。示例依次展示长度查询、按值复制与字典序比较、标准算法排序和整体填充；完整版本见 [`examples/cpp11/array.cpp`](../../examples/cpp11/array.cpp)，六个场景的输出为：
+
+```text
+[1] size = 5, sum = 14, front = 3, back = 5
+[2] get<0> = 3, tuple_size = 5
+[3] copy == values: true, values < larger: true
+[4] zeros = 0 0, zero count = 5
+[5] sorted = 1 3 5
+[6] at(10) throws out_of_range, after fill = 7 7
+```
+
+场景 1 把数组按 `const&` 传给 `sum`，长度随对象一起传递，不会像 C 数组那样退化成指针，`size()` 仍是 `5`、和为 `14`。场景 2 用 `std::get<0>` 按编译期下标取值，`std::tuple_size` 在编译期读出长度 `5`。场景 3 验证值语义：按值复制得到独立对象，`==` 与 `<` 都是逐元素比较，因此副本相等、原数组小于末位改成 `6` 的数组。场景 4 的 `values{}` 空花括号做值初始化，五个元素全为 `0`，用 `std::count` 数出 `5` 个零。场景 5 把 `begin()`/`end()` 交给 `std::sort` 原地排序，读首、中、尾得到 `1 3 5`。场景 6 对照两种访问方式：`at(10)` 越界抛 `std::out_of_range` 被捕获，而 `fill(7)` 把每个元素整体赋值为 `7`。
 
 ## 进阶用法
 

@@ -1,1 +1,4 @@
-3 14
+[1] count = 3, total = 14
+[2] by_value = 2, by_reference = 10
+[3] closure count = 3, outer count = 0
+[4] function pointer = 36

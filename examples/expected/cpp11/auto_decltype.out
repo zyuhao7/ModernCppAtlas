@@ -1,1 +1,4 @@
-30 5
+[1] copied = 2, x = 1
+[2] plain = 5, x after alias = 7
+[3] middle = 30
+[4] count = 5, unsigned = true

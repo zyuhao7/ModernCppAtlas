@@ -70,7 +70,17 @@ int main() {
 }
 ```
 
-输出 `0 0`、`3 4`、`3 1 3` 与 `atlas`。空花括号把聚合体成员值初始化为零，`corner` 按声明顺序绑定 `3` 和 `4`，容器与字符串则走各自的构造函数。完整版本见 [`examples/cpp11/uniform_initialization.cpp`](../../examples/cpp11/uniform_initialization.cpp)。
+输出 `0 0`、`3 4`、`3 1 3` 与 `atlas`。空花括号把聚合体成员值初始化为零，`corner` 按声明顺序绑定 `3` 和 `4`，容器与字符串则走各自的构造函数。完整版本见 [`examples/cpp11/uniform_initialization.cpp`](../../examples/cpp11/uniform_initialization.cpp)，五个场景的输出为：
+
+```text
+[1] origin = 0 0
+[2] corner = 3 4, returned = 5 6
+[3] brace size = 2, paren size = 10, paren value = 20
+[4] braced -> brace [1, 9], paren -> paren [1, 9]
+[5] label = atlas, words = 3
+```
+
+场景 1 的 `Point origin{}` 是值初始化，两个成员都得到 `0`，不会读到未定义值。场景 2 展示聚合体按声明顺序绑定：`{3, 4}` 依次填入 `x`、`y`，`make_point` 用 `return {x, y}` 直接构造返回值。场景 3 是统一初始化最著名的语义分叉：`vector{10, 20}` 走 `initializer_list` 得到两个元素，`vector(10, 20)` 走数量构造得到十个 `20`。场景 4 用自定义 `Range` 放大同一现象：花括号优先匹配 `initializer_list` 构造函数（`brace`），圆括号匹配 `(int, int)` 构造函数（`paren`），两者数值相同但走的路径不同。场景 5 说明花括号同样适用于标准库类型：`std::string{"atlas"}` 避免圆括号被误读，`vector<string>{"a", "b", "c"}` 一次给出三个元素。窄化检查是编译期错误，因此只在源码注释里保留 `int narrowed{3.9}` 这类反例。
 
 ## 进阶用法
 

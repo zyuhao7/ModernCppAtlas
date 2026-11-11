@@ -1,3 +1,8 @@
-13 13 lambda
-set empty
-12
+[1] function pointer = 5, target is raw = true
+[1] lambda = 15, target is raw = false
+[2] original = 13, copy = 13
+[3] empty is set = false, call throws bad_function_call
+[4] bind(add, 5, _1)(7) = 12
+[5] mem_fn total = 10
+[6] add(2, 3) = 5
+[6] mul(2, 3) = 6
