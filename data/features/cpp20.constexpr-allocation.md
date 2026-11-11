@@ -64,7 +64,17 @@ int main() {
 }
 ```
 
-输出 `14 30`。`compile_time` 在编译期求值，`run_time` 因为实参来自运行期而走普通执行路径；同一个函数两种求值都成立。完整版本见 [`examples/cpp20/constexpr_allocation.cpp`](../../examples/cpp20/constexpr_allocation.cpp)。
+完整版本见 [`examples/cpp20/constexpr_allocation.cpp`](../../examples/cpp20/constexpr_allocation.cpp)，五个场景的输出为：
+
+```text
+[1] compile-time sum = 14, runtime sum = 30
+[2] squares = 0 1 4 9
+[3] runtime n = 6 -> 55
+[4] compile mode = 1, runtime mode = 2
+[5] static_assert values = 14 5
+```
+
+场景 1 对照同一个 `sum_squares` 的两次调用：`constexpr` 变量在编译期求值得到 `14`，实参来自运行期的调用走普通路径得到 `30`。场景 2 的 `consteval` 函数在内部 `new` 出临时数组，把结果复制进 `std::array` 后释放，地址没有逃出常量求值。场景 3 说明分配大小不必是常量，`n` 在运行期给出也能正常执行。场景 4 用 `std::is_constant_evaluated()` 区分求值时机，编译期返回原值、运行期加一。场景 5 把结果直接用在 `static_assert` 里，确认整个调用确实是常量表达式。
 
 分配不要求是常量大小。`n` 可以是运行期实参，只有当整个调用出现在常量表达式中时才进入求值器，此时 `new` 返回常量求值器管理的存储。
 

@@ -1,1 +1,5 @@
-3.14159 3.14159
+[1] pi<double> = 3.14159, pi<float> = 3.14159
+[2] is_small<char> = 1, is_small<double> = 0
+[3] is_string<int> = 0, is_string<std::string> = 1
+[4] square<3> = 9, square<4> = 16
+[5] counter<int> = 42, counter<double> = 1.5

@@ -1,7 +1,6 @@
-3 2
-apple 1
-1 0
-amy 30 1
-11 22
-amy:95 bob:90
-312
+[1] divmod(17, 5) = 3 remainder 2
+[2] inserted = 1, key = apple, duplicate = 0, kept value = 1
+[3] user = amy, age = 30, active = 1
+[4] copy = 100 2, point = 11 22
+[5] scores = amy:95 bob:90
+[6] array = 3 1 2

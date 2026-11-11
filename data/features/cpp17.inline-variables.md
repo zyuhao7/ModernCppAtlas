@@ -71,7 +71,17 @@ template <typename T> inline T cache;
 
 同一翻译单元内取地址，得到的是同一个对象；跨翻译单元共享同一实体是标准保证，但动态库可能各自解析符号。需要稳定 ABI 时，不要把变量地址当作跨模块契约。
 
-完整示例见 [`examples/cpp17/inline_variables.cpp`](../../examples/cpp17/inline_variables.cpp)。
+完整版本见 [`examples/cpp17/inline_variables.cpp`](../../examples/cpp17/inline_variables.cpp)，五个场景的输出为：
+
+```text
+[1] same address = 1, value = 3
+[2] array size = 3, max = 3, calls = 0
+[3] service = atlas, size = 5
+[4] cross function same = 1
+[5] calls after bump = 2
+```
+
+场景 1 两次取 `config::kMaxRetries` 的地址，指针相等说明是同一实体。场景 2 把 `inline constexpr` 常量直接用作 `std::array` 的长度，同时展示类内 `static inline` 计数器的初始值。场景 3 的 `kServiceName` 是 `string_view`，长度在编译期已知。场景 4 通过两个函数各自取地址再比较，说明单一实体不依赖取地址的位置。场景 5 说明 `static inline` 成员是可变的共享对象，两次递增后为 `2`。
 
 ## 真实项目证据
 

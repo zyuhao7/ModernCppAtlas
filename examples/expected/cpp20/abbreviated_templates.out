@@ -1,5 +1,5 @@
-4
-3
-2
-1
-0
+[1] ascending = 0 1 2 3 4
+[2] descending = 4 3 2 1 0
+[3] words = a b c
+[4] counter = 42, ticket = 8
+[5] swapped = 9 7

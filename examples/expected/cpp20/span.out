@@ -1,8 +1,7 @@
-6
-9
-13
-6
-2 3
-4
-60 70
-12
+[1] sums = 6 9 13
+[2] fixed sum = 6
+[3] subspan = 2 3
+[3] first = 4
+[4] scaled = 60 70
+[5] bytes = 12
+[6] empty size = 0

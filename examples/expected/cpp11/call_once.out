@@ -1,1 +1,7 @@
-1
+[1] threads = 8, init count = 1
+[2] attempt 1 threw: first try fails
+[2] attempts = 2, finished = yes
+[3] member init count = 1
+[4] winner = first
+[5] shared after join = 42
+[6] first = 7, second = 7, loads = 1 1

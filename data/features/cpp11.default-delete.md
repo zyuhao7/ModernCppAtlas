@@ -76,7 +76,18 @@ int main() {
 }
 ```
 
-输出 `1 2`。`Point` 显式默认了拷贝操作，`NonCopyable` 删除拷贝后任何复制尝试都会编译失败。完整版本见 [`examples/cpp11/default_delete.cpp`](../../examples/cpp11/default_delete.cpp)。
+输出 `1 2`。`Point` 显式默认了拷贝操作，`NonCopyable` 删除拷贝后任何复制尝试都会编译失败。完整版本见 [`examples/cpp11/default_delete.cpp`](../../examples/cpp11/default_delete.cpp)，六个场景的输出为：
+
+```text
+[1] origin.x = 1, copy.x = 9
+[2] default Point = 0 0
+[3] NonCopyable copyable = 0, copy assignable = 0
+[4] Handle id = 7, default constructible = 0
+[5] moved.size = 3, source.size = 0, copyable = 0, movable = 1
+[6] buffers = 2, sizes = 2 4
+```
+
+场景 1 的 `= default` 保留值语义：副本改 `x` 不影响原对象。场景 2 说明显式默认的默认构造函数仍然执行类内成员初始化器，`Point` 的新对象是 `0 0`。场景 3 用类型萃取观察删除结果：`NonCopyable` 既不可复制也不可复制赋值，这些检查在编译期完成，不产生运行时开销。场景 4 演示 `= delete` 不只用于特殊成员：`Handle() = delete` 让默认构造不可用，带 `int` 的构造函数照常工作。场景 5 的 `Buffer` 删除拷贝、手写移动，移动后源对象大小归零，萃取结果为 `copyable = 0, movable = 1`。场景 6 用 `vector` 验证只可移动类型能正常扩容，`push_back` 与 `emplace_back` 都走移动路径。
 
 ## 进阶用法
 

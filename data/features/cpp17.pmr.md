@@ -74,7 +74,17 @@ int main() {
 }
 ```
 
-输出 `5 30 7` 与 `atlas 5 1`。示例用栈上缓冲区初始化 `monotonic_buffer_resource`，让 `pmr::vector`、`pmr::string` 和直接分配都从同一个池取内存；`get_allocator().resource()` 确认容器仍绑定到该池。完整版本见 [`examples/cpp17/pmr.cpp`](../../examples/cpp17/pmr.cpp)。
+完整版本见 [`examples/cpp17/pmr.cpp`](../../examples/cpp17/pmr.cpp)，5 个场景的输出为：
+
+```text
+[1] values = 0 1 4 9 16, size = 5
+[2] sum = 30
+[3] text = atlas, size = 5
+[4] same resource = 1
+[5] raw = 7
+```
+
+场景 1 用栈上缓冲区初始化 `monotonic_buffer_resource`，`pmr::vector` 的元素全部来自该池。场景 2 遍历容器求和，说明容器接口与普通 `vector` 完全一致。场景 3 让 `pmr::string` 绑定同一资源，字符存储也走池分配。场景 4 用 `get_allocator().resource()` 确认容器仍指向原始池，类型擦除没有丢掉资源身份。场景 5 通过 `polymorphic_allocator` 直接分配并放置构造，展示容器之外的通用分配接口。
 
 标准库提供几种现成资源：`new_delete_resource()` 与 `null_memory_resource()`、按块分配且不单独回收的 `monotonic_buffer_resource`、面向重复块大小的 `unsynchronized_pool_resource` 和 `synchronized_pool_resource`。`get_default_resource()` 返回进程默认资源，`std::pmr::vector<T>` 不传资源时就使用它。
 

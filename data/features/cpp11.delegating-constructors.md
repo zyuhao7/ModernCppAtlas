@@ -63,7 +63,17 @@ int main() {
 }
 ```
 
-输出 `start info` 与 `start debug`。默认构造函数只负责选择默认级别，真正的成员初始化集中在一个地方。完整版本见 [`examples/cpp11/delegating_constructors.cpp`](../../examples/cpp11/delegating_constructors.cpp)。
+输出 `start info` 与 `start debug`。默认构造函数只负责选择默认级别，真正的成员初始化集中在一个地方。完整版本见 [`examples/cpp11/delegating_constructors.cpp`](../../examples/cpp11/delegating_constructors.cpp)，五个场景的输出为：
+
+```text
+[1] level = info, copies = 0
+[2] copy level = info, copies = 1
+[3] retries = 3, name = default
+[4] timeout = 15
+[5] caught: bad port, delegated bodies = 0
+```
+
+场景 1 是默认构造委托到带参数的构造函数，`level` 与 `copies` 都由被委托者初始化。场景 2 让拷贝构造函数也委托：复制时把 `copies` 加一，再交给同一个根构造函数，复制逻辑只有一份。场景 3 的 `Config` 有两个公开入口，最终都收敛到私有的两参数构造函数，这是委托最常见的组织方式。场景 4 演示执行顺序：`Timeout(10)` 先把 `timeout_` 初始化为 10，委托者的函数体随后把它加到 15，证明目标完成时对象已经是完整对象。场景 5 展示异常路径：委托目标因端口为负抛出，委托者的函数体从未执行，计数器保持 0。
 
 ## 进阶用法
 

@@ -69,7 +69,17 @@ int main() {
 }
 ```
 
-`append` 保留了显式的 `T` 来固定元素类型，`const auto &y` 再接受任意可遍历容器。两个 `sort` 各自把容器和比较器推导成独立的模板参数；调用方不需要写 `<std::vector<int>>`。
+完整版本见 [`examples/cpp20/abbreviated_templates.cpp`](../../examples/cpp20/abbreviated_templates.cpp)，五个场景的输出为：
+
+```text
+[1] ascending = 0 1 2 3 4
+[2] descending = 4 3 2 1 0
+[3] words = a b c
+[4] counter = 42, ticket = 8
+[5] swapped = 9 7
+```
+
+场景 1 的 `append` 保留显式 `T` 固定元素类型，`const auto&` 接收任意可遍历来源，随后单参数 `sort` 排成升序。场景 2 换用双参数 `sort`，比较器类型由 `auto` 推导，`std::greater<>` 让结果变成降序。场景 3 把同一组辅助函数用于 `std::string` 容器，验证元素类型不参与推导也能工作。场景 4 的 `advance` 在参数位置写 `std::integral auto&`，`int` 与 `unsigned` 分别推导出各自的模板实例。场景 5 用 `std::same_as<int> auto&` 要求两个参数都是 `int` 引用，推导出的模板参数被约束强制为同一类型。
 
 ## 进阶用法
 
@@ -88,8 +98,6 @@ void sort(auto &vec, auto less) { std::sort(vec.begin(), vec.end(), less); }
 ```
 
 `advance` 只接受满足 `std::integral` 的参数；两个 `sort` 靠参数数量区分，容器和比较器都可以各自推导。mold 的 `append` 展示了混合写法：显式模板参数负责元素类型，缩写参数负责容器类型，调用点只写实际实参。
-
-完整示例见 [`examples/cpp20/abbreviated_templates.cpp`](../../examples/cpp20/abbreviated_templates.cpp)。
 
 ## 真实项目证据
 

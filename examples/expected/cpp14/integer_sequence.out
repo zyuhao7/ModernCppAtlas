@@ -1,3 +1,6 @@
-4 12
-1 2.5 atlas 
-3
+[1] values = 0 2 4 6
+[1] size = 4, sum = 12
+[2] squares = 0 1 4 9
+[3] tuple = 1 2.5 atlas
+[4] tuple size = 3, index count = 3
+[5] letters = a b c

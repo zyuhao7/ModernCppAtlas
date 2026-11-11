@@ -52,18 +52,18 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/byte.cpp`](../../examples/cpp17/byte.cpp)：
+完整版本见 [`examples/cpp17/byte.cpp`](../../examples/cpp17/byte.cpp)，六个场景的输出为：
 
 ```text
-CA FE 1 5 5 0
-version: 1
-compressed: 1
-flags: 6
-length: 1280
-size: 1
+[1] header = CA FE 01 05 05 00
+[2] version = 1
+[3] compressed = 1, encrypted = 0
+[4] flags = 6, compressed = 0, encrypted = 1
+[5] length = 1280
+[6] sizeof(byte) = 1
 ```
 
-`std::byte{...}` 从整数列表初始化是允许的；`std::byte b = 42` 不允许隐式转换。读取数值必须显式 `std::to_integer`。示例用字节数组模拟协议头：先按十六进制打印原始字节，再用位掩码读写标志位，最后把两个字节拼成 16 位长度。
+`std::byte{...}` 从整数列表初始化是允许的；`std::byte b = 42` 不允许隐式转换。读取数值必须显式 `std::to_integer`。场景 1 按两位十六进制打印协议头原始字节；场景 2 取出版本号；场景 3 用位掩码查询两个标志位，`compressed` 为 1、`encrypted` 为 0；场景 4 先置位再清位，标志字节从 `0x05` 变成 `0x06`，两个查询结果随之翻转；场景 5 把两个字节拼成 16 位长度 `1280`；场景 6 确认 `std::byte` 恰好占一个字节。
 
 ## 进阶用法
 

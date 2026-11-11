@@ -59,16 +59,17 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp20/concepts.cpp`](../../examples/cpp20/concepts.cpp)：
+完整版本见 [`examples/cpp20/concepts.cpp`](../../examples/cpp20/concepts.cpp)，五个场景的输出为：
 
 ```text
-42
-10
-2.5
-6
+[1] advance int = 42, advance double = 4.5
+[2] clamp int = 10, clamp double = 2.5
+[3] sum ints = 6, sum doubles = 1.75
+[4] Incrementable<int> = 1, Numeric<double> = 1, Numeric<std::string> = 0
+[5] has_size = 1, missing = 0
 ```
 
-`requires(T value) { ... }` 不求值，只检查表达式是否合法、返回类型是否满足要求。`Incrementable` 作为约束写在模板参数上，不满足的类型不会进入函数体实例化。示例另外用 `Numeric` 约束普通函数，用 `requires` 子句约束范围算法。
+场景 1 的 `advance_one` 受 `Incrementable` 约束，`int` 与 `double` 都能通过前置与后置自增的复合要求。场景 2 的 `Numeric` 用 `||` 组合两个标准 concept，`clamp_value` 对整数与浮点都给出同一套夹取逻辑。场景 3 的 `sum` 用 `requires` 子句把范围算法限制在数值元素上，`int` 与 `double` 向量各自推导出正确的累加类型。场景 4 直接把 concept 当布尔常量使用，`std::string` 不满足 `Numeric` 输出 0，说明 concept 本身可在运行期语句中求值。场景 5 的 `has_size` 是两个 `requires` 表达式组成的变量模板，用来探测成员函数存在性；它是概念约束之外另一种常见用法。
 
 ## 进阶用法
 

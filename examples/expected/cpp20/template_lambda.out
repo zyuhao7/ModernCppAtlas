@@ -1,1 +1,5 @@
-7 3 3
+[1] sum(3, 4) = 7
+[2] count = 3
+[3] sizes = 3 5
+[4] explicit = 42
+[5] total = 6

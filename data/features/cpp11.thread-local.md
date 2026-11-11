@@ -62,7 +62,19 @@ int main() {
 }
 ```
 
-输出三行 `w`、`wx`、`m`。工作线程的 `trace` 从空串开始累加，`join` 之后主线程访问的是自己的实例，因此只看到 `m`。完整版本见 [`examples/cpp11/thread_local.cpp`](../../examples/cpp11/thread_local.cpp)。
+输出三行 `w`、`wx`、`m`。工作线程的 `trace` 从空串开始累加，`join` 之后主线程访问的是自己的实例，因此只看到 `m`。完整版本见 [`examples/cpp11/thread_local.cpp`](../../examples/cpp11/thread_local.cpp)，四个场景的输出为：
+
+```text
+[1] w
+[1] wx
+[1] m
+[2] worker ids = 1 2
+[2] main ids = 1 2
+[3] session closed for worker
+[4] per_thread = 1 1 1, shared = 3
+```
+
+场景 1 是命名空间作用域的实例隔离：工作线程看到 `w`、`wx`，主线程的 `trace` 仍是空的，所以只打印 `m`。场景 2 用块作用域的 `static thread_local` 计数，工作线程与主线程都从 0 开始，各自得到 `1 2`。场景 3 证明非平凡类型由线程自己负责析构：`Session` 的析构函数在工作线程退出时执行。场景 4 对照普通 `static` 与 `thread_local`：`shared` 跨三个线程累加到 3，`per_thread` 在每个新线程里都重置为 1。
 
 ## 进阶用法
 

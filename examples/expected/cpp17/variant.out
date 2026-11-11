@@ -1,8 +1,7 @@
-number 42
-text atlas
-number 7
-42
-1
-0 1
-1
-bad_variant_access
+[1] 42 -> number 42, atlas -> text atlas
+[2] get_if int = 42, get_if string = null
+[3] index a = 0, index b = 1, holds string = 1
+[4] wrong type -> bad_variant_access
+[5] default index = 0, monostate = 1
+[5] after assign index = 1, value = 7
+[6] const char* -> string = 1, value = hello, in_place bool = 1

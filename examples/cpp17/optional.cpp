@@ -32,22 +32,22 @@ int main() {
   };
 
   const auto host = find_value(config, "host");
-  std::cout << host.value_or("<unset>") << '\n';
+  std::cout << "[1] host = " << host.value_or("<unset>") << '\n';
 
   const auto port = parse_int(find_value(config, "port").value_or(""));
-  std::cout << port.value_or(80) << '\n';
+  std::cout << "[2] port = " << port.value_or(80) << '\n';
 
-  std::cout << parse_int("nope").value_or(-1) << '\n';
-  std::cout << find_value(config, "timeout").value_or("30") << '\n';
+  std::cout << "[3] invalid parse = " << parse_int("nope").value_or(-1) << '\n';
+  std::cout << "[4] missing key = "
+            << find_value(config, "timeout").value_or("30") << '\n';
 
   std::optional<bool> enabled = false;
-  std::cout << "present: " << enabled.has_value() << ", enabled: " << *enabled
-            << '\n';
+  std::cout << "[5] present = " << enabled.has_value()
+            << ", value = " << *enabled << '\n';
 
   std::optional<std::string> label;
   label.emplace("atlas");
-  std::cout << label.value() << '\n';
-
+  std::cout << "[6] emplace = " << label.value();
   label.reset();
-  std::cout << label.value_or("none") << '\n';
+  std::cout << ", after reset = " << label.value_or("none") << '\n';
 }

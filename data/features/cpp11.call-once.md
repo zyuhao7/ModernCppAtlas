@@ -70,7 +70,19 @@ int main() {
 }
 ```
 
-输出 `1`。八个线程同时调用 `std::call_once`，`init` 只执行一次，其余线程等待它完成后再继续。完整版本见 [`examples/cpp11/call_once.cpp`](../../examples/cpp11/call_once.cpp)。
+输出 `1`。八个线程同时调用 `std::call_once`，`init` 只执行一次，其余线程等待它完成后再继续。完整版本见 [`examples/cpp11/call_once.cpp`](../../examples/cpp11/call_once.cpp)，六个场景的输出为：
+
+```text
+[1] threads = 8, init count = 1
+[2] attempt 1 threw: first try fails
+[2] attempts = 2, finished = yes
+[3] member init count = 1
+[4] winner = first
+[5] shared after join = 42
+[6] first = 7, second = 7, loads = 1 1
+```
+
+场景 1 是基本语义：八个线程竞争同一个标志，计数器只加一次。场景 2 展示失败重试：第一次初始化抛出异常，标志不标记完成，第二次调用重新执行并成功，最终尝试次数是 2。场景 3 把成员函数指针和对象指针一起转发给 `call_once`，四个线程仍然只初始化一次。场景 4 说明同一标志上的后续可调用对象不会再执行，只有最先到达的那个生效。场景 5 验证同步可见性：线程在初始化中写入的 `42` 在 `join` 之后被主线程读到。场景 6 让每个对象持有自己的 `once_flag`，两个实例各自的惰性加载只发生一次。
 
 ## 进阶用法
 

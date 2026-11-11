@@ -1,1 +1,5 @@
-3.14159 0 128 4788187
+[1] bits of 1.0f = 3F800000
+[2] value = 3.14159, sign = 0, exponent = 128, mantissa = 4788187
+[3] round trip = 1, bits = 40490FDB
+[4] unsigned = FFFFFFFF, signed = -1
+[5] same size = 1, trivially copyable = 1

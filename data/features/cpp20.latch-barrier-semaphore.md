@@ -63,7 +63,19 @@ int main() {
 }
 ```
 
-输出 `42`。`start.count_down()` 返回后 latch 计数归零，工作线程的 `wait` 随即放行；`join` 保证对 `value` 的写入在线程结束后才被读取。完整用法见 [`examples/cpp20/latch_barrier_semaphore.cpp`](../../examples/cpp20/latch_barrier_semaphore.cpp)，其中还演示了 `std::barrier` 与 `std::counting_semaphore`。
+`start.count_down()` 返回后 latch 计数归零，工作线程的 `wait` 随即放行；`join` 保证对 `value` 的写入在线程结束后才被读取。
+
+完整版本见 [`examples/cpp20/latch_barrier_semaphore.cpp`](../../examples/cpp20/latch_barrier_semaphore.cpp)，五个场景的输出为：
+
+```text
+[1] latch value = 42
+[2] latch waiters = 3, total = 3
+[3] barrier arrivals = 4
+[4] semaphore permits = 2, finished = 4
+[5] signaled value = 5
+```
+
+场景 1 用计数值 1 的 latch 做“发令枪”：工作线程先 `wait`，主线程 `count_down` 后它才写入 `42`。场景 2 反过来让三个工作线程各自 `count_down`，主线程 `wait` 到三者都完成统计，`total` 固定为 3。场景 3 的 barrier 每轮要求两个参与者到齐，线程与主线程各走两轮，`arrivals` 累计为 4。场景 4 的计数信号量把并发限制在 2，四个任务分两批取得许可，完成数仍是确定的 4。场景 5 用初始许可为 0 的 `binary_semaphore` 实现生产者通知，`acquire` 等待到 `release` 才继续。
 
 三者的差别在于生命周期：latch 只能倒数一次；barrier 每轮重置，适合反复同步的多阶段流水线；semaphore 不关心“到齐”，只控制同时持有许可的数量。
 

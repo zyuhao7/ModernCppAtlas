@@ -1,1 +1,6 @@
-1 2
+[1] origin.x = 1, copy.x = 9
+[2] default Point = 0 0
+[3] NonCopyable copyable = 0, copy assignable = 0
+[4] Handle id = 7, default constructible = 0
+[5] moved.size = 3, source.size = 0, copyable = 0, movable = 1
+[6] buffers = 2, sizes = 2 4

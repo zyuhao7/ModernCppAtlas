@@ -70,7 +70,17 @@ int main() {
 }
 ```
 
-输出 `4000 4000` 与 `10 20 20`。四个线程对同一个普通变量 `value` 各做 1000 次原子累加，随后用 `store`/`exchange` 展示发布写入和读改写；普通变量本身仍是 `unsigned`，原子语义只通过 `ref` 生效。完整版本见 [`examples/cpp20/atomic_ref.cpp`](../../examples/cpp20/atomic_ref.cpp)。
+完整版本见 [`examples/cpp20/atomic_ref.cpp`](../../examples/cpp20/atomic_ref.cpp)，五个场景的输出为：
+
+```text
+[1] value = 4000, loaded = 4000
+[2] previous = 10, after exchange = 20
+[3] success = 1, value = 30, failed = 0, expected = 30
+[4] copied sees = 25, original = 25
+[5] flags = 1
+```
+
+场景 1 是核心用例：四个线程对同一个普通 `unsigned` 各做 1000 次 `fetch_add`，`join` 之后读到的值确定是 4000，普通变量本身仍是 `unsigned`。场景 2 展示 `store` 发布写入与 `exchange` 读改写，`exchange` 返回旧值 `10`，对象变成 `20`。场景 3 的 `compare_exchange_strong` 成功时把 `20` 换成 `30`；第二次故意用错误的期望值，失败后 `expected` 被更新为当前值 `30`，这是比较交换最容易被忽略的细节。场景 4 说明 `atomic_ref` 可拷贝，拷贝出的引用指向同一对象，`fetch_sub` 之后两边看到同一个值。场景 5 演示位运算：`fetch_or` 置位、`fetch_and` 配合按位取反清位。
 
 `T` 必须是可平凡复制的类型；被引用对象必须满足 `std::atomic_ref<T>::required_alignment`，并处于可写内存中。`atomic_ref` 只持有地址，不拥有对象，因此所有引用的生命周期都必须落在对象生命周期之内。
 

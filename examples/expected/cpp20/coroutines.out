@@ -1,3 +1,5 @@
-range: 1 2 3 4
-task: 24
-caught: boom
+[1] range = 1 2 3 4
+[2] range = 10 11 12
+[3] compute(2) = 24
+[4] compute(0) = 0
+[5] caught: boom

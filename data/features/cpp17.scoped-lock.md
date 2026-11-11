@@ -54,15 +54,16 @@ void transfer(Account &from, Account &to, int amount) {
 }
 ```
 
-完整示例见 [`examples/cpp17/scoped_lock.cpp`](../../examples/cpp17/scoped_lock.cpp)：
+完整版本见 [`examples/cpp17/scoped_lock.cpp`](../../examples/cpp17/scoped_lock.cpp)，4 个场景的输出为：
 
 ```text
-total 2000
-a 800 b 1200
-unchanged 800 1200
+[1] total = 2000
+[2] a = 800, b = 1200
+[3] unchanged = 800 1200
+[4] after deposit = 850
 ```
 
-示例启动 100 个线程，分别从 `a` 到 `b` 与从 `b` 到 `a` 转账；两个方向的调用都同时锁住两个账户。若换成固定顺序的 `lock_guard`，两个方向的代码必须写成同一顺序才不会死锁。最后一条演示余额不足时在锁内检查并直接返回。
+场景 1 启动 100 个线程，分别从 `a` 到 `b` 与从 `b` 到 `a` 转账，两个方向都在同一次 `scoped_lock` 中锁住两个账户，`total` 始终守恒。场景 2 的具体余额由转账次数决定、与调度顺序无关，所以可以稳定输出。场景 3 演示余额不足时在锁内检查并直接返回，两个账户不变。场景 4 用单参数形式保护独立账户的更新，说明 `scoped_lock` 也能替代 `lock_guard`。
 
 ## 进阶用法
 

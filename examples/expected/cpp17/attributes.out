@@ -1,1 +1,5 @@
-7 11
+[1] compute(3) = 6
+[2] outcome = 7
+[3] classify(0) = 11, classify(1) = 10, classify(2) = 0
+[4] read_level = 5
+[5] attribute not in type = 1

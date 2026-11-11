@@ -1,2 +1,5 @@
-5 30 7
-atlas 5 1
+[1] values = 0 1 4 9 16, size = 5
+[2] sum = 30
+[3] text = atlas, size = 5
+[4] same resource = 1
+[5] raw = 7

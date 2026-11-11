@@ -1,5 +1,6 @@
-10 30 50
-5 4
-7 14 21
-test build deploy
-deploy build
+[1] scaled odds = 10 30 50
+[2] last two = 5 4
+[3] multiples of 7 = 7 14 21
+[4] tasks by priority = test build deploy
+[5] top priorities = deploy build
+[6] odd count = 3, first odd = 1

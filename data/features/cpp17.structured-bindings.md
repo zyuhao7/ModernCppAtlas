@@ -58,17 +58,18 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/structured_bindings.cpp`](../../examples/cpp17/structured_bindings.cpp)：
+完整版本见 [`examples/cpp17/structured_bindings.cpp`](../../examples/cpp17/structured_bindings.cpp)，六个场景的输出为：
 
 ```text
-3 2
-apple 1
-1 0
-amy 30 1
-11 22
-amy:95 bob:90
-312
+[1] divmod(17, 5) = 3 remainder 2
+[2] inserted = 1, key = apple, duplicate = 0, kept value = 1
+[3] user = amy, age = 30, active = 1
+[4] copy = 100 2, point = 11 22
+[5] scores = amy:95 bob:90
+[6] array = 3 1 2
 ```
+
+场景 1 把 `tuple` 返回值的两个位置直接命名为 `quotient`、`remainder`。场景 2 绑定 `insert` 返回的 `pair<iterator, bool>`：第一次插入成功，第二次重复插入时 `inserted` 为假且容器保留旧值。场景 3 一次绑定三个不同类型的元素。场景 4 对照 `auto` 与 `auto&`：按值绑定修改的是副本，按引用绑定写回 `point`。场景 5 在遍历 `map` 时用 `const auto&` 同时拿到键和值，避免复制每个元素。场景 6 说明数组按元素分解，绑定数量必须与长度一致。
 
 `auto [q, r]` 中的 `q`、`r` 不是新的 `tuple` 成员，而是隐藏对象内部子对象的别名。`insert` 返回 `pair<iterator, bool>`，绑定后可以直接用 `it` 和 `inserted`，不必记住哪个是 `.first`。
 

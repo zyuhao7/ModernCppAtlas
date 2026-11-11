@@ -1,3 +1,4 @@
-total 2000
-a 800 b 1200
-unchanged 800 1200
+[1] total = 2000
+[2] a = 800, b = 1200
+[3] unchanged = 800 1200
+[4] after deposit = 850

@@ -82,7 +82,16 @@ int main() {
 }
 ```
 
-输出 `4 exists`、`found missing`、`3` 与 `2 yes`。重复插入不会改变大小，`count` 适合成员判断，自定义 `Point` 通过哈希与相等函数去重。完整版本见 [`examples/cpp11/unordered_set.cpp`](../../examples/cpp11/unordered_set.cpp)。
+输出 `4 exists`、`found missing`、`3` 与 `2 yes`。重复插入不会改变大小，`count` 适合成员判断，自定义 `Point` 通过哈希与相等函数去重。完整版本见 [`examples/cpp11/unordered_set.cpp`](../../examples/cpp11/unordered_set.cpp)，四个场景的输出为：
+
+```text
+[1] size = 4, duplicate insert = exists, count(3) = 1, erase(1) = 1, size = 3
+[2] input = 6, unique = 3, count(5) = 1
+[3] first = new, duplicate = exists, size = 2, find = hit
+[4] atlas = 1, Atlas = 0
+```
+
+场景 1 把插入、计数、删除放在一条链上：重复插入返回 `exists`，`count` 只可能是 0 或 1，`erase` 返回实际删除的元素数。场景 2 用迭代器区间构造集合，输入 6 个元素、3 个不同值，去重是构造过程的一部分。场景 3 的 `Point` 需要自定义哈希与相等，`emplace` 的 `second` 直接说明是否插入，`find` 用于成员判断。场景 4 提醒默认的字符串相等区分大小写，`Atlas` 与 `atlas` 是两个不同的键。
 
 ## 进阶用法
 

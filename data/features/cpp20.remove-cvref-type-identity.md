@@ -55,7 +55,17 @@ int main() {
 }
 ```
 
-`std::remove_cvref_t<const int&>` 是 `int`；`std::type_identity_t<int>` 仍然是 `int`，但它的作用是让类型处于非推导上下文，而不是改变类型本身。
+完整版本见 [`examples/cpp20/remove_cvref_type_identity.cpp`](../../examples/cpp20/remove_cvref_type_identity.cpp)，五个场景的输出为：
+
+```text
+[1] const int& -> int = 1, const int(&)[3] -> int[3] = 1
+[2] remove_cvref keeps array = 1, decay makes pointer = 1
+[3] held type is int& = 1, value_type is int = 1, x = 7
+[4] select(held.value, 3) = 10
+[5] const holder = 9, value_type is int = 1
+```
+
+场景 1 用 `static_assert` 与布尔输出确认 `remove_cvref_t<const int&>` 是 `int`，而 `remove_cvref_t<const int(&)[3]>` 保留数组类型 `int[3]`。场景 2 把两个工具放在一起对照：`remove_cvref` 不去掉数组边界，`decay_t` 会退化成 `const int*`，说明二者不能互相替代。场景 3 的 `Holder` 通过推导指引保留原始引用类型，成员是 `int&`，但 `value_type` 被剥成 `int`，修改 `held.value` 就是修改 `x`。场景 4 的 `select` 用 `std::type_identity_t<T>` 让第二个参数不参与推导，两个实参必须在同一类型下匹配。场景 5 用 `const int` 构造 `Holder`，确认顶层 `const` 加引用同样被 `remove_cvref` 去掉，`value_type` 仍是 `int`。
 
 ## 进阶用法
 
@@ -77,8 +87,6 @@ void select(T value, std::type_identity_t<T> same) {
 `Holder` 的推导指引保留原始 `T`，成员类型由调用方决定；`value_type` 则明确剥掉引用和顶层 cv，供算法或接口使用。`select(1, 2)` 中 `T` 从第一个参数推导为 `int`，第二个参数的 `type_identity_t<T>` 不参与推导，只做类型匹配；如果实参类型不同，编译失败而不是悄悄推导出另一套类型。
 
 与 `decay_t` 的区别仍在数组和函数：`remove_cvref_t<const int(&)[3]>` 保持 `int[3]`，`decay_t` 会退化成 `int*`。需要保留数组边界时不能图省事。
-
-完整示例见 [`examples/cpp20/remove_cvref_type_identity.cpp`](../../examples/cpp20/remove_cvref_type_identity.cpp)。
 
 ## 真实项目证据
 

@@ -70,7 +70,18 @@ int main() {
 }
 ```
 
-输出 `2 4`、`2 11` 与 `1`。`Matrix<int>` 就是 `std::vector<std::vector<int>>`，`Table` 只是给 map 的两个参数起了名字，`remove_cvref_t` 把引用与顶层 cv 去掉。完整版本见 [`examples/cpp11/alias_templates.cpp`](../../examples/cpp11/alias_templates.cpp)。
+输出 `2 4`、`2 11` 与 `1`。完整版本见 [`examples/cpp11/alias_templates.cpp`](../../examples/cpp11/alias_templates.cpp)，六个场景的输出为：
+
+```text
+[1] rows = 2, cell = 4, same as vector<vector<int>> = 1
+[2] entries = 2, modern = 11
+[3] find(alice) = hit, at(ALICE) = 90
+[4] twice(21) = 42, enable_if_t<true, int> is int = 1
+[5] remove_cvref_t<const int&> is int = 1
+[6] Fn<int, int>(2, 3) = 5
+```
+
+场景 1 用 `std::is_same` 证明 `Matrix<int>` 与 `std::vector<std::vector<int>>` 是同一个类型，别名没有引入新的类型身份。场景 2 的 `Table<std::string, int>` 只是给键值容器起了短名。场景 3 展示别名的实用能力——把哈希与相等策略固定在右侧，`CiMap` 的键忽略大小写，`find("alice")` 能命中以 `"Alice"` 插入的项。场景 4 说明别名不能特化：先写 `enable_if_impl` 类模板做偏特化，再用 `enable_if_t` 把 `typename ...::type` 收短，`twice` 因此只接受整型。场景 5 的 `remove_cvref_t` 把 `const int&` 还原为 `int`。场景 6 的 `Fn<int, int>` 用参数包转发签名。
 
 `remove_cvref_t` 的名字模仿 C++20 的 `std::remove_cvref_t`；在 C++11 项目中常由库自己补一个，升级标准后可以直接切换到标准库版本。
 

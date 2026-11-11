@@ -9,14 +9,19 @@ struct Account {
   std::mutex mu;
 };
 
-void transfer(Account &from, Account &to, int amount) {
+void transfer(Account& from, Account& to, int amount) {
   std::scoped_lock lock(from.mu, to.mu);
   if (from.balance < amount) return;
   from.balance -= amount;
   to.balance += amount;
 }
 
-int snapshot(Account &account) {
+void deposit(Account& account, int amount) {
+  std::scoped_lock lock(account.mu);
+  account.balance += amount;
+}
+
+int snapshot(Account& account) {
   std::scoped_lock lock(account.mu);
   return account.balance;
 }
@@ -30,13 +35,16 @@ int main() {
     workers.emplace_back([&] { transfer(a, b, 7); });
     workers.emplace_back([&] { transfer(b, a, 3); });
   }
-  for (std::thread &worker : workers) worker.join();
+  for (std::thread& worker : workers) worker.join();
 
   const int a_balance = snapshot(a);
   const int b_balance = snapshot(b);
-  std::cout << "total " << a_balance + b_balance << '\n';
-  std::cout << "a " << a_balance << " b " << b_balance << '\n';
+  std::cout << "[1] total = " << a_balance + b_balance << '\n';
+  std::cout << "[2] a = " << a_balance << ", b = " << b_balance << '\n';
 
   transfer(b, a, 5000);
-  std::cout << "unchanged " << snapshot(a) << ' ' << snapshot(b) << '\n';
+  std::cout << "[3] unchanged = " << snapshot(a) << ' ' << snapshot(b) << '\n';
+
+  deposit(a, 50);
+  std::cout << "[4] after deposit = " << snapshot(a) << '\n';
 }

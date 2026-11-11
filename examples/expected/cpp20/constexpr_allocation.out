@@ -1,1 +1,5 @@
-14 30
+[1] compile-time sum = 14, runtime sum = 30
+[2] squares = 0 1 4 9
+[3] runtime n = 6 -> 55
+[4] compile mode = 1, runtime mode = 2
+[5] static_assert values = 14 5

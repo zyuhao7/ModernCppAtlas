@@ -10,46 +10,59 @@ struct User {
   int level;
 };
 
-void print(const std::string &key, const std::any &value) {
+void print(const std::any& value) {
   if (!value.has_value()) {
-    std::cout << key << ": empty\n";
+    std::cout << "empty";
     return;
   }
   if (value.type() == typeid(int)) {
-    std::cout << key << ": int " << std::any_cast<int>(value) << '\n';
+    std::cout << "int " << std::any_cast<int>(value);
   } else if (value.type() == typeid(std::string)) {
-    std::cout << key << ": string " << std::any_cast<const std::string &>(value)
-              << '\n';
+    std::cout << "string " << std::any_cast<const std::string&>(value);
   } else if (value.type() == typeid(User)) {
-    const User &user = std::any_cast<const User &>(value);
-    std::cout << key << ": user " << user.name << ' ' << user.level << '\n';
+    const User& user = std::any_cast<const User&>(value);
+    std::cout << "user " << user.name << ' ' << user.level;
   } else {
-    std::cout << key << ": unknown\n";
+    std::cout << "unknown";
   }
 }
 
 int main() {
   std::any value = 42;
-  print("count", value);
+  std::cout << "[1] count = ";
+  print(value);
+  std::cout << '\n';
 
   value = std::string("atlas");
-  print("name", value);
+  std::cout << "[2] name = ";
+  print(value);
+  std::cout << '\n';
+  std::cout << "[2] reference cast = "
+            << std::any_cast<const std::string&>(value) << '\n';
 
   std::vector<std::any> values{User{"amy", 3}, 7, std::string("x")};
-  for (std::size_t i = 0; i < values.size(); ++i) print("item", values[i]);
+  for (std::size_t i = 0; i < values.size(); ++i) {
+    std::cout << "[3] item " << i << " = ";
+    print(values[i]);
+    std::cout << '\n';
+  }
 
   value.reset();
-  print("after reset", value);
-
-  const std::any &first = values[0];
-  std::cout << std::any_cast<const User &>(first).name << '\n';
-
-  int *number = std::any_cast<int>(&values[1]);
-  std::cout << "pointer cast " << *number << '\n';
-
+  std::cout << "[4] has_value = " << value.has_value() << '\n';
   try {
-    std::cout << std::any_cast<int>(first) << '\n';
-  } catch (const std::bad_any_cast &) {
-    std::cout << "bad_any_cast\n";
+    (void)std::any_cast<int>(value);
+  } catch (const std::bad_any_cast&) {
+    std::cout << "[4] cast = bad_any_cast\n";
   }
+
+  int* number = std::any_cast<int>(&values[1]);
+  std::cout << "[5] pointer cast = " << *number << '\n';
+  std::cout << "[5] wrong pointer cast = "
+            << (std::any_cast<std::string>(&values[1]) == nullptr) << '\n';
+
+  const std::any text = "atlas";
+  std::cout << "[6] stored type is const char* = "
+            << (text.type() == typeid(const char*)) << '\n';
+  std::cout << "[6] cast to string = "
+            << (std::any_cast<std::string>(&text) == nullptr) << '\n';
 }

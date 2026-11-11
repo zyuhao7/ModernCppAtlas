@@ -1,4 +1,5 @@
-42
-10
-2.5
-6
+[1] advance int = 42, advance double = 4.5
+[2] clamp int = 10, clamp double = 2.5
+[3] sum ints = 6, sum doubles = 1.75
+[4] Incrementable<int> = 1, Numeric<double> = 1, Numeric<std::string> = 0
+[5] has_size = 1, missing = 0

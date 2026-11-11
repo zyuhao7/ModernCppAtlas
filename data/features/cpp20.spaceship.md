@@ -58,18 +58,17 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp20/spaceship.cpp`](../../examples/cpp20/spaceship.cpp)：
+完整版本见 [`examples/cpp20/spaceship.cpp`](../../examples/cpp20/spaceship.cpp)，五个场景的输出为：
 
 ```text
-1
-0
-1
-1.4.1 1.10.0 2.0.0
-1
-0 0 0
+[1] a<b = 1, a==b = 0, is_lt = 1
+[2] sorted = 1.4.1 1.10.0 2.0.0
+[3] x<y = 1
+[4] nan: lt = 0, gt = 0, eq = 0
+[5] ordering types: strong = 1, partial = 1
 ```
 
-`a <=> b` 返回 `std::strong_ordering`；`a < b` 由编译器重写为 `(a <=> b) < 0`，`a == b` 由隐式声明的默认 `operator==` 处理。
+场景 1 的 `a <=> b` 返回 `std::strong_ordering`，`a < b` 由编译器重写为 `(a <=> b) < 0`，`a == b` 由隐式声明的默认 `operator==` 处理，`std::is_lt` 直接检查序关系。场景 2 把 `<=>` 交给 `std::ranges::sort`，结果是按 major、minor、patch 依次比较的顺序，`1.4.1` 排在 `1.10.0` 之前。场景 3 的 `Measurement` 含 `double` 成员，默认比较降为 `partial_ordering`。场景 4 用 `NaN` 构造“无序”状态：`<`、`>`、`==` 全为假，必须用 `std::is_eq` 之类函数判断而不是与 0 比较。场景 5 用 `static_assert` 确认两种返回类型，把“浮点成员降低序强度”落到类型层面。
 
 ## 进阶用法
 

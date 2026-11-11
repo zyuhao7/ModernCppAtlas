@@ -1,9 +1,6 @@
-sum: 15
-sum empty: 0
-all true: 1
-all true empty: 1
-any true: 1
-any true empty: 0
-joined: 1 2.5 atlas
-total: 60
-count: 3
+[1] sum = 15, empty = 0
+[2] all = 1, all empty = 1, any = 1, any empty = 0
+[3] joined: 1 2.5 atlas
+[4] total = 60
+[5] all integral = 1, mixed integral = 0
+[6] count = 3

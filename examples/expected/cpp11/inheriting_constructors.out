@@ -1,2 +1,10 @@
-int:7
-str:atlas
+base int:7
+base str:atlas
+[1] first.value = 7, second.label = atlas
+[2] extra after inherited ctor = 5
+[3] copied value = 7, extra = 5
+base int:0
+tagged default body
+base int:3
+[4] default value = 0, inherited value = 3
+[5] constructible from int = 1, from string = 1

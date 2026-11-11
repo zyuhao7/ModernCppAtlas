@@ -62,18 +62,19 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/variant.cpp`](../../examples/cpp17/variant.cpp)：
+完整版本见 [`examples/cpp17/variant.cpp`](../../examples/cpp17/variant.cpp)，六个场景的输出为：
 
 ```text
-number 42
-text atlas
-number 7
-42
-1
-0 1
-1
-bad_variant_access
+[1] 42 -> number 42, atlas -> text atlas
+[2] get_if int = 42, get_if string = null
+[3] index a = 0, index b = 1, holds string = 1
+[4] wrong type -> bad_variant_access
+[5] default index = 0, monostate = 1
+[5] after assign index = 1, value = 7
+[6] const char* -> string = 1, value = hello, in_place bool = 1
 ```
+
+场景 1 用 `std::visit` 加 `Overloaded` 覆盖全部备选类型，漏掉一种就是编译错误。场景 2 用 `get_if` 探测同一对象：命中返回指针，未命中返回 `nullptr`，全程不抛异常。场景 3 的 `index()`、`holds_alternative` 展示运行期类型查询。场景 4 故意用 `get<T>` 取错类型，捕获 `std::bad_variant_access`。场景 5 用 `std::monostate` 表示空状态，赋值后索引与值同步变化。场景 6 提醒 `const char*` 在 P0608 之后选择 `std::string` 而不是 `bool`，需要 `bool` 时用 `in_place_type` 明确指定。
 
 示例用 `std::visit` 覆盖全部备选类型，用 `get_if` 做不抛异常的探测，再演示 `get<T>` 取错类型时的 `std::bad_variant_access`。
 

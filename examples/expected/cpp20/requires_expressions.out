@@ -1,1 +1,6 @@
-1 0 3 0
+[1] Sized<Range> = 1, Sized<int> = 0
+[2] length(Range{}) = 3, length(42) = 0
+[3] HasValue<Entry> = 1, HasValue<Empty> = 0
+[4] Sized<WrongSize> = 0
+[5] static_assert passed = 1
+[6] NoexceptSized<NoThrow> = 1, NoexceptSized<Throwing> = 0

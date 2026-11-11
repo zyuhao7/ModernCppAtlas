@@ -1,2 +1,5 @@
-10 1 55
-20 2
+[1] sorted front = 10, back = 1
+[2] doubled front = 20, back = 2
+[3] sum = 55
+[4] even count = 5
+[5] ordered sum = 55, policy independent = 1

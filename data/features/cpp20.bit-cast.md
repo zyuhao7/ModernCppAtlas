@@ -50,7 +50,17 @@ int main() {
 }
 ```
 
-`0x3f800000` 是 IEEE 754 单精度 `1.0f` 的位表示；`bit_cast` 把它复制为 `float`，不经过数值转换。换一种类型或改变位模式，结果也随之改变。
+完整版本见 [`examples/cpp20/bit_cast.cpp`](../../examples/cpp20/bit_cast.cpp)，五个场景的输出为：
+
+```text
+[1] bits of 1.0f = 3F800000
+[2] value = 3.14159, sign = 0, exponent = 128, mantissa = 4788187
+[3] round trip = 1, bits = 40490FDB
+[4] unsigned = FFFFFFFF, signed = -1
+[5] same size = 1, trivially copyable = 1
+```
+
+场景 1 在编译期把 `1.0f` 转成 `uint32_t`，`static_assert` 验证结果等于 IEEE 754 的 `0x3f800000`。场景 2 反向把 `0x40490fdb` 转成 `float` 得到圆周率近似值，再用移位与掩码拆出符号、指数、尾数三段。场景 3 做一次往返转换，位模式完全还原，说明 `bit_cast` 只搬运位表示、不做数值转换。场景 4 在有符号与无符号整数之间搬运位模式：`-1` 的位表示是 `0xFFFFFFFF`，转回有符号仍是 `-1`。场景 5 在运行期确认 `bit_cast` 的两个前提——大小相同、可平凡复制。
 
 ## 进阶用法
 
@@ -70,8 +80,6 @@ std::uint32_t mantissa = raw & 0x7fffff;
 `static_assert` 在编译期验证 IEEE 754 布局；运行期代码用同样的 `bit_cast` 读取原始位，再用移位和掩码拆字段。这里假设 `float` 是 32 位 IEEE 754，跨平台代码应先检查 `std::numeric_limits<float>::is_iec559` 与 `sizeof(float)`。
 
 多字节类型的字节序由平台决定。需要跨平台交换二进制数据时，先用 `std::endian` 判断端序，再决定是否交换字节；`bit_cast` 本身不负责序列化。
-
-完整示例见 [`examples/cpp20/bit_cast.cpp`](../../examples/cpp20/bit_cast.cpp)。
 
 ## 真实项目证据
 

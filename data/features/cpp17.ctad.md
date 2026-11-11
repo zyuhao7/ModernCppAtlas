@@ -79,7 +79,18 @@ PtrBox box{new int{7}};  // 推导为 PtrBox<int>，不是 PtrBox<int*>
 
 指引必须对调用点可见：它要和类模板放在同一命名空间，并在使用前声明。只在某个 `.cpp` 里定义的指引不会影响其他翻译单元；标准库的 `std::pair`、`std::vector` 指南由各自头文件统一提供。
 
-完整示例见 [`examples/cpp17/ctad.cpp`](../../examples/cpp17/ctad.cpp)，演示指针包装与标准容器两种推导。
+完整版本见 [`examples/cpp17/ctad.cpp`](../../examples/cpp17/ctad.cpp)，六个场景的输出为：
+
+```text
+[1] pair = 1 2.5
+[2] vector size = 3, values = 1 2 3
+[3] box = 42, type is Box<int> = 1
+[4] ptrbox = 42, type is PtrBox<int> = 1
+[5] names deduce const char* = 1, explicit strings = a bb
+[6] tuple size = 3
+```
+
+场景 1 的 `std::pair p{1, 2.5}` 推导为 `std::pair<int, double>`，`static_assert` 锁定这一结果。场景 2 的 `std::vector v{1, 2, 3}` 走 `initializer_list` 指引，推导为 `std::vector<int>`。场景 3 的 `Box box{42}` 由显式指引映射为 `Box<int>`。场景 4 说明显式指引的必要性：`PtrBox pbox{&number}` 若没有 `PtrBox(T*) -> PtrBox<T>`，隐式指引会得到 `PtrBox<int*>`，显式指引才表达“指针指向的类型是参数”。场景 5 提醒 `initializer_list` 的陷阱：`std::vector names{"a", "bb"}` 推导为 `std::vector<const char*>`，需要字符串容器时必须显式写 `std::vector<std::string>`。场景 6 的标准 tuple 同样享受 CTAD，元素个数在编译期确定。
 
 ## 真实项目证据
 

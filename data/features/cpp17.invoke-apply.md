@@ -57,7 +57,18 @@ int main() {
 }
 ```
 
-`std::invoke(&Counter::get, counter)` 等价于 `counter.get()`；成员指针、对象引用和参数由 `invoke` 统一拼装。`std::apply` 把 `args` 的两个元素依次传给 lambda，返回 `6`。
+完整版本见 [`examples/cpp17/invoke_apply.cpp`](../../examples/cpp17/invoke_apply.cpp)，6 个场景的输出为：
+
+```text
+[1] member call = 7
+[2] member data = 7
+[3] tuple product = 6
+[4] array sum = 6
+[5] after add = 8
+[6] free call = 9
+```
+
+场景 1 与 2 分别用成员函数指针和数据成员指针调用，`std::invoke` 统一写成 `invoke(pointer, object)` 的形式，不需要区分 `->*` 或 `.*`。场景 3 与 4 展示 `std::apply` 的两种 tuple-like 输入：`std::tuple` 与 `std::array` 都按元素顺序展开成实参。场景 5 用 `std::ref` 包装对象调用非 const 成员函数，验证写操作确实落到原对象。场景 6 说明普通函数指针也走同一条 `invoke` 路径，泛型转发层因此不必为可调用种类写分支。
 
 ## 进阶用法
 
@@ -73,8 +84,6 @@ std::cout << std::invoke(getter, counter) << ' '
 成员函数指针和对象分开保存后，调用点仍写 `std::invoke(pointer, object, args...)`，不必为每种可调用对象写分支。`std::apply` 则处理另一侧：实参已经在一个 tuple-like 对象里，展开时按 `std::get` 的顺序传给可调用对象。
 
 `std::apply` 展开的是 `std::tuple_size` 与 `std::get` 定义的结构；`std::tuple`、`std::pair`、`std::array` 都可以直接使用。自定义 tuple-like 类型要提供对应特化和 `get`，否则不能展开。
-
-完整示例见 [`examples/cpp17/invoke_apply.cpp`](../../examples/cpp17/invoke_apply.cpp)。
 
 ## 真实项目证据
 

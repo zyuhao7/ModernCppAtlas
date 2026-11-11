@@ -57,18 +57,18 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp20/string_range_utilities.cpp`](../../examples/cpp20/string_range_utilities.cpp)：
+完整版本见 [`examples/cpp20/string_range_utilities.cpp`](../../examples/cpp20/string_range_utilities.cpp)，六个场景的输出为：
 
 ```text
-1
-1
-1
-values: 1 3 5
-3 bnn
-words: apple plum
-3
-reverse: 5 3 1
+[1] starts = 1, ends = 1, view starts = 1
+[2] values = 1 3 5
+[3] removed = 3, text = bnn
+[4] words = apple plum
+[5] size = 3, reverse = 5 3 1
+[6] empty prefix = 1, long suffix = 0
 ```
+
+场景 1 在 `std::string` 与 `std::string_view` 上分别检查前后缀，视图版本不构造临时字符串。场景 2 的 `std::erase_if` 一步删掉所有偶数，剩余元素保持相对顺序。场景 3 的 `std::erase` 返回实际删除的数量，`banana` 去掉三个 `a` 得到 `bnn`。场景 4 的 `erase_if` 作用在 `std::map` 上，谓词接收 `value_type`，按 `.second` 删除计数为零的键。场景 5 用 `std::ssize` 得到有符号长度，倒序循环不会在空容器上回绕。场景 6 提醒边界：空前缀恒为真，比原串更长的后缀恒为假，两者都不需要额外判断。
 
 ## 进阶用法
 

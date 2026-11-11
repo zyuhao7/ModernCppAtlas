@@ -1,1 +1,4 @@
-0 9 30
+[1] squares = 0 1 4 9
+[2] scaled(2) = 20, scaled(3) = 30
+[3] table = 10 11 12 13
+[4] runtime scaled(4) = 40

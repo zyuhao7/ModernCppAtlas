@@ -51,15 +51,18 @@ auto deref_or_value(const T& value) {
 }
 ```
 
-`*value` 只在 `T` 为指针时实例化；传入 `int` 时，该分支被丢弃，不会产生“不能解引用 int”的错误。完整示例见 [`examples/cpp17/if_constexpr.cpp`](../../examples/cpp17/if_constexpr.cpp)：
+`*value` 只在 `T` 为指针时实例化；传入 `int` 时，该分支被丢弃，不会产生“不能解引用 int”的错误。完整版本见 [`examples/cpp17/if_constexpr.cpp`](../../examples/cpp17/if_constexpr.cpp)，四个场景的输出为：
 
 ```text
-42
-42
-integer:42
-floating:3.500000
-integer:42
+[1] value = 42, pointer = 42
+[2] int = integer:42
+[2] double = floating:3.500000
+[2] pointer = integer:42
+[3] integral count = 2
+[4] opaque passthrough = 1
 ```
+
+场景 1 同一个函数模板接收 `int` 与 `int*`，指针实例走解引用分支，非指针实例走直接返回分支。场景 2 的 `describe` 用 `if constexpr` 串起指针、整型、浮点三类分支，指针实参先递归解引用再落到整型分支，返回 `integer:42`。场景 3 用展开折叠统计参数包中整型的个数，结果在编译期确定。场景 4 确认非指针类型原样返回：`decltype` 与 `Opaque` 相同，说明丢弃分支没有影响类型推导。
 
 ## 进阶用法
 

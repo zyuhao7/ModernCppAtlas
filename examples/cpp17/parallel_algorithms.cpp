@@ -10,14 +10,25 @@ int main() {
 
   std::sort(std::execution::par, values.begin(), values.end(),
             [](int lhs, int rhs) { return lhs > rhs; });
+  std::cout << "[1] sorted front = " << values.front()
+            << ", back = " << values.back() << '\n';
 
   std::vector<int> doubled(values.size());
   std::transform(std::execution::par, values.begin(), values.end(),
                  doubled.begin(), [](int value) { return value * 2; });
+  std::cout << "[2] doubled front = " << doubled.front()
+            << ", back = " << doubled.back() << '\n';
 
   const int sum =
       std::reduce(std::execution::par, values.begin(), values.end());
+  std::cout << "[3] sum = " << sum << '\n';
 
-  std::cout << values.front() << ' ' << values.back() << ' ' << sum << '\n';
-  std::cout << doubled.front() << ' ' << doubled.back() << '\n';
+  const auto even =
+      std::count_if(std::execution::par, values.begin(), values.end(),
+                    [](int value) { return value % 2 == 0; });
+  std::cout << "[4] even count = " << even << '\n';
+
+  const int ordered = std::accumulate(values.begin(), values.end(), 0);
+  std::cout << "[5] ordered sum = " << ordered
+            << ", policy independent = " << (ordered == sum) << '\n';
 }

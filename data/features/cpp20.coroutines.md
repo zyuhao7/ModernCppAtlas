@@ -99,15 +99,17 @@ int main() {
 }
 ```
 
-`co_yield` 暂停函数并把值交给调用方；`next()` 恢复执行，直到下一个 `co_yield` 或函数结束。完整示例还实现了一个可 `co_await` 的 `Task<T>`，见 [`examples/cpp20/coroutines.cpp`](../../examples/cpp20/coroutines.cpp)：
+`co_yield` 暂停函数并把值交给调用方；`next()` 恢复执行，直到下一个 `co_yield` 或函数结束。完整示例还实现了一个可 `co_await` 的 `Task<T>`，见 [`examples/cpp20/coroutines.cpp`](../../examples/cpp20/coroutines.cpp)，五个场景的输出为：
 
 ```text
-range: 1 2 3 4
-task: 24
-caught: boom
+[1] range = 1 2 3 4
+[2] range = 10 11 12
+[3] compute(2) = 24
+[4] compute(0) = 0
+[5] caught: boom
 ```
 
-示例中 `compute` 连续 `co_await` 两个 `fetch_value`，`fail` 抛出异常并由 `Task::run` 重新抛出。三个输出分别覆盖 `co_yield`、`co_await` 链和异常传播。
+场景 1 与 2 用同一个 `range` 生成器处理不同区间，说明协程按需惰性产出，调用方用 `next()` 一步一步拉取。场景 3 的 `compute` 连续 `co_await` 两个 `fetch_value`，第二个的实参来自第一个的结果，展示协程之间的续接。场景 4 用零种子走同一条链，确认嵌套调用不依赖具体数值。场景 5 的 `fail` 在协程内部抛出异常，由 promise 的 `unhandled_exception` 保存、`Task::run` 重新抛出，异常跨越协程边界仍能正常传播。
 
 ## 进阶用法
 

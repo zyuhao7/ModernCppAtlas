@@ -2,8 +2,6 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <random>
-#include <stdexcept>
 #include <string>
 #include <system_error>
 #include <vector>
@@ -11,19 +9,6 @@
 namespace fs = std::filesystem;
 
 namespace {
-
-fs::path make_unique_temp_dir() {
-  std::random_device rd;
-  for (int attempt = 0; attempt < 32; ++attempt) {
-    fs::path candidate = fs::temp_directory_path() /
-                         ("atlas-filesystem-example-" + std::to_string(rd()) +
-                          "-" + std::to_string(rd()));
-    if (fs::create_directory(candidate)) {
-      return candidate;
-    }
-  }
-  throw std::runtime_error("could not create a unique temporary directory");
-}
 
 struct TempDir {
   fs::path path;
@@ -38,16 +23,21 @@ struct TempDir {
 
 int main() {
   const fs::path log = "/var/log/app/server.log";
-  std::cout << log.parent_path().generic_string() << '\n';
-  std::cout << log.stem().string() << ' ' << log.extension().string() << '\n';
+
+  std::cout << "[1] parent = " << log.parent_path().generic_string()
+            << ", stem = " << log.stem().string()
+            << ", extension = " << log.extension().string() << '\n';
 
   fs::path backup = log;
   backup.replace_filename("backup.log");
-  std::cout << backup.generic_string() << '\n';
+  std::cout << "[1] replaced = " << backup.generic_string() << '\n';
 
-  TempDir temp{make_unique_temp_dir()};
-  const fs::path& root = temp.path;
+  const fs::path root =
+      fs::temp_directory_path() / "moderncppatlas-cpp17-filesystem";
+  std::error_code ec;
+  fs::remove_all(root, ec);
   fs::create_directories(root / "logs" / "archive");
+  TempDir temp{root};
 
   {
     std::ofstream(root / "logs" / "server.log") << "hello";
@@ -60,12 +50,25 @@ int main() {
   }
   std::sort(entries.begin(), entries.end());
 
-  std::cout << "entries:";
-  for (const auto& name : entries) std::cout << ' ' << name;
+  std::cout << "[2] entries =";
+  for (const auto& name : entries) {
+    std::cout << ' ' << name;
+  }
   std::cout << '\n';
+  std::cout << "[2] archive = " << fs::is_directory(root / "logs" / "archive")
+            << '\n';
 
-  std::cout << "size: " << fs::file_size(root / "logs" / "server.log") << '\n';
-  std::cout << "relative: "
+  std::cout << "[3] size = " << fs::file_size(root / "logs" / "server.log")
+            << ", relative = "
             << fs::relative(root / "logs" / "server.log", root).generic_string()
             << '\n';
+
+  std::cout << "[4] server regular = "
+            << fs::is_regular_file(root / "logs" / "server.log")
+            << ", logs directory = " << fs::is_directory(root / "logs")
+            << ", missing = " << fs::exists(root / "logs" / "missing.txt")
+            << '\n';
+
+  std::cout << "[5] normalized = "
+            << fs::path("a/b/../c").lexically_normal().generic_string() << '\n';
 }

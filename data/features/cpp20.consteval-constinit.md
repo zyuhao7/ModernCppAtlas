@@ -53,7 +53,17 @@ int main() {
 }
 ```
 
-`square` 只能以常量表达式调用；把运行期变量传进去会直接编译失败。`global_counter` 由 `square(4)` 常量初始化，因此在进入 `main` 前已经确定，不存在动态初始化顺序问题；它仍然可以在运行时递增。
+完整版本见 [`examples/cpp20/consteval_constinit.cpp`](../../examples/cpp20/consteval_constinit.cpp)，五个场景的输出为：
+
+```text
+[1] square(5) = 25
+[2] global_counter = 10
+[3] token = 16, second = 25
+[4] local = 7
+[5] table size = 4
+```
+
+场景 1 的 `square` 是立即函数，`static_assert` 与普通输出都只能拿到编译期结果。场景 2 的 `global_counter` 用 `constinit` 加常量初始化，初始化在进入 `main` 前完成，之后仍可递增到 10。场景 3 的 `Token` 构造函数是 `consteval`，`Token{4}` 与 `Token{5}` 都在编译期完成校验与计算，类型本身携带“已校验”的不变式。场景 4 把 `constinit` 用在块作用域的 `static` 局部变量上，同样获得常量初始化，并且之后可以修改。场景 5 用 `square(2)` 直接给出数组维度，展示立即函数结果可以作为编译期常量参与声明。
 
 ## 进阶用法
 
@@ -72,8 +82,6 @@ static_assert(square(5) == 25);
 `Token token{4}` 在编译期完成校验和计算；传入运行期变量会直接编译失败。这样类型本身就表达了“已校验”的不变式，调用方不需要额外运行时检查。
 
 `constinit` 与 `constexpr` 的差别在可变性：`constinit int counter = square(3);` 保证常量初始化，但 `counter` 之后仍可修改。它适用于静态存储期和线程存储期变量，包括块作用域的 `static`；自动变量不能标 `constinit`。
-
-完整示例见 [`examples/cpp20/consteval_constinit.cpp`](../../examples/cpp20/consteval_constinit.cpp)。
 
 ## 真实项目证据
 

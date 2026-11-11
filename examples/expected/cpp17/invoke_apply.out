@@ -1,3 +1,6 @@
-7 7
-6
-6
+[1] member call = 7
+[2] member data = 7
+[3] tuple product = 6
+[4] array sum = 6
+[5] after add = 8
+[6] free call = 9

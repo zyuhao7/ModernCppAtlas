@@ -57,7 +57,17 @@ int main() {
 }
 ```
 
-输出 `\d+\.\d+` 与 `{"name":"atlas","size":3}`。反斜杠与双引号都按字面保留。完整版本见 [`examples/cpp11/raw_string_literals.cpp`](../../examples/cpp11/raw_string_literals.cpp)。
+输出 `\d+\.\d+` 与 `{"name":"atlas","size":3}`。反斜杠与双引号都按字面保留。完整版本见 [`examples/cpp11/raw_string_literals.cpp`](../../examples/cpp11/raw_string_literals.cpp)，五个场景的输出为：
+
+```text
+[1] raw = \d+\.\d+, equals escaped = 1
+[2] json = {"name":"atlas","size":3}
+[3] custom = {"text":")"}
+[4] newlines = 1, bytes = 17
+[5] built = {"id":42}
+```
+
+场景 1 把原始字符串与普通转义写法比较，两者内容完全相同，证明原始形式只是另一种字面量写法。场景 2 说明 JSON 中的双引号不再需要 `\"`。场景 3 使用 `json` 作为自定义分隔符，内容因此可以包含默认终止序列 `)"`。场景 4 的换行属于字符串内容：源码里断成两行，字符串里就有一个换行，总长度为 17 字节。场景 5 展示原始字符串与普通字符串拼接，用于构造带运行时值的 JSON 片段。
 
 ## 进阶用法
 

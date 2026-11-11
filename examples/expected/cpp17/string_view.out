@@ -1,4 +1,5 @@
-[host] [example.com]
-cpp
-
-[alpha][beta][][gamma]
+[1] key = host, value = example.com
+[2] main.cpp -> cpp, README -> none
+[3] parts = 4, joined = alpha|beta||gamma
+[4] view size = 5, strlen = 2
+[5] stripped = atlas, size = 5

@@ -1,6 +1,5 @@
-1
-0
-1
-1.4.1 1.10.0 2.0.0
-1
-0 0 0
+[1] a<b = 1, a==b = 0, is_lt = 1
+[2] sorted = 1.4.1 1.10.0 2.0.0
+[3] x<y = 1
+[4] nan: lt = 0, gt = 0, eq = 0
+[5] ordering types: strong = 1, partial = 1

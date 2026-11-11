@@ -14,18 +14,25 @@ int main() {
     values.push_back(i * i);
   }
 
+  std::cout << "[1] values =";
+  for (int value : values) {
+    std::cout << ' ' << value;
+  }
+  std::cout << ", size = " << values.size() << '\n';
+
   int sum = 0;
   for (int value : values) {
     sum += value;
   }
+  std::cout << "[2] sum = " << sum << '\n';
 
   std::pmr::string text("atlas", &pool);
+  std::cout << "[3] text = " << text << ", size = " << text.size() << '\n';
+  std::cout << "[4] same resource = "
+            << (values.get_allocator().resource() == &pool) << '\n';
 
   std::pmr::polymorphic_allocator<int> alloc(&pool);
   int* raw = alloc.allocate(1);
   new (raw) int(7);
-
-  std::cout << values.size() << ' ' << sum << ' ' << *raw << '\n';
-  std::cout << text << ' ' << text.size() << ' '
-            << (values.get_allocator().resource() == &pool) << '\n';
+  std::cout << "[5] raw = " << *raw << '\n';
 }

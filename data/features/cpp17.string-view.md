@@ -59,14 +59,17 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/string_view.cpp`](../../examples/cpp17/string_view.cpp)：
+完整版本见 [`examples/cpp17/string_view.cpp`](../../examples/cpp17/string_view.cpp)，五个场景的输出为：
 
 ```text
-[host] [example.com]
-cpp
-
-[alpha][beta][][gamma]
+[1] key = host, value = example.com
+[2] main.cpp -> cpp, README -> none
+[3] parts = 4, joined = alpha|beta||gamma
+[4] view size = 5, strlen = 2
+[5] stripped = atlas, size = 5
 ```
+
+场景 1 在同一个 `std::string` 上切出两段视图再 `trim`，全程不复制字符。场景 2 的 `file_extension` 同时处理带目录与无扩展名两种情况，没有扩展名时返回空视图。场景 3 用 `substr` 切分 CSV，空字段保留为长度 0 的视图，`parts` 的四个元素全部指向原字符串。场景 4 对比 `size()` 与 `strlen`：视图保留 5 个字符，而 C API 在嵌入的 `'\0'` 处截断为 2。场景 5 用 `remove_prefix`、`remove_suffix` 只移动视图边界，原缓冲区不变。
 
 ## 进阶用法
 
