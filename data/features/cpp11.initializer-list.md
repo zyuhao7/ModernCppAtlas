@@ -82,7 +82,16 @@ int main() {
 }
 ```
 
-输出 `4 10`、`60` 与 `3 24`。`Numbers` 的构造函数先把列表复制进 `values_`，`total` 直接遍历视图，第三个例子展示 `initializer_list` 也能像普通范围一样使用。完整版本见 [`examples/cpp11/initializer_list.cpp`](../../examples/cpp11/initializer_list.cpp)。
+输出 `4 10`、`60` 与 `3 24`。`Numbers` 的构造函数先把列表复制进 `values_`，`total` 直接遍历视图，第三个例子展示 `initializer_list` 也能像普通范围一样使用。完整版本见 [`examples/cpp11/initializer_list.cpp`](../../examples/cpp11/initializer_list.cpp)，四个场景的输出为：
+
+```text
+[1] size = 4, sum = 10
+[2] total = 60
+[3] copy size = 3, shared storage = true
+[4] paren -> paren value = 12, brace -> brace value = 7
+```
+
+场景 1 让构造函数把列表复制进自己的 `std::vector`，因此列表失效后成员仍然有效；场景 2 把花括号列表直接传给函数参数，`std::accumulate` 遍历 `initializer_list` 本身；场景 3 复制 `initializer_list` 只复制视图，两个对象的 `begin()` 相等，说明底层数组由调用点共享；场景 4 让一个类型同时拥有 `Widget(int, int)` 与 `Widget(std::initializer_list<int>)` 两个构造函数：圆括号调用前者得 12，花括号优先匹配列表构造函数得 7。
 
 `initializer_list` 本身不拥有元素，底层数组由编译器在调用点创建，生命周期到完整表达式结束。因此不要保存它的 `begin()` 指针，也不要把列表作为长期存储。
 

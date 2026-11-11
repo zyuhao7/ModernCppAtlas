@@ -1,1 +1,3 @@
-14 14
+[1] kSize = 14, array size = 14
+[2] square(5) at runtime = 25
+[3] square(3) as constant = 9, template size = 4

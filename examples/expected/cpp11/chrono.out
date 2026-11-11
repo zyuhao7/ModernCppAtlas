@@ -1,5 +1,5 @@
-1500 1
-1.5
-60000
-1
-1
+[1] ms = 1500, cast to s = 1, as double s = 1.5
+[2] minute in s = 60, in ms = 60000
+[3] 750ms / 1s = 0.75
+[4] slept at least 2ms = true
+[5] deadline after end = true, remaining s = 0

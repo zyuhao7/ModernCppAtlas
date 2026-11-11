@@ -67,7 +67,20 @@ int main() {
 }
 ```
 
-输出 `13 13 lambda`、`set empty` 与 `12`。示例覆盖普通函数、捕获状态的 lambda、复制、`target_type()` 检查、置空判空，以及 `std::bind` 绑定部分参数；完整版本见 [`examples/cpp11/function.cpp`](../../examples/cpp11/function.cpp)。
+输出 `13 13 lambda`、`set empty` 与 `12`。示例覆盖普通函数、捕获状态的 lambda、复制、`target_type()` 检查、置空判空，以及 `std::bind` 绑定部分参数；完整版本见 [`examples/cpp11/function.cpp`](../../examples/cpp11/function.cpp)，六个场景的输出为：
+
+```text
+[1] function pointer = 5, target is raw = true
+[1] lambda = 15, target is raw = false
+[2] original = 13, copy = 13
+[3] empty is set = false, call throws bad_function_call
+[4] bind(add, 5, _1)(7) = 12
+[5] mem_fn total = 10
+[6] add(2, 3) = 5
+[6] mul(2, 3) = 6
+```
+
+场景 1 用同一个 `std::function<int(int, int)>` 先后装下函数指针 `add` 和捕获了 `offset` 的 lambda：第一次调用得 `5`、`target_type()` 确认目标是裸函数指针；换成 lambda 后得 `15`，`target_type()` 不再是函数指针。场景 2 说明按值复制 `std::function` 会复制目标，原对象与副本各自调用都得到 `13`。场景 3 的默认构造对象判空为 `false`，直接调用抛 `std::bad_function_call`，因此空回调必须先检查。场景 4 用 `std::bind` 固定第一个参数为 `5`，调用时只传剩余实参，`plus_five(7)` 得 `12`。场景 5 用 `std::mem_fn` 把成员函数 `Accumulator::add` 包装成普通可调用对象，两次调用累加到 `10`。场景 6 把 `add` 与 `multiply` 装进 `vector<pair<string, function>>`，同一类型统一存储、运行期按名字分派，输出 `5` 与 `6`。
 
 ## 进阶用法
 

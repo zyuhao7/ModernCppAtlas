@@ -88,7 +88,18 @@ int main() {
 }
 ```
 
-输出 `4 1`、`325 2200 5050` 与 `42`。四个线程分别累加 1–25、26–50、51–75、76–100，主线程在 `join()` 后读取各自结果再汇总；`std::ref` 让线程拿到 `partial[i]` 的引用而不是副本。第二个线程演示 lambda 直接捕获局部变量。完整版本见 [`examples/cpp11/thread.cpp`](../../examples/cpp11/thread.cpp)。
+输出 `4 1`、`325 2200 5050` 与 `42`。四个线程分别累加 1–25、26–50、51–75、76–100，主线程在 `join()` 后读取各自结果再汇总；`std::ref` 让线程拿到 `partial[i]` 的引用而不是副本。第二个线程演示 lambda 直接捕获局部变量。完整版本见 [`examples/cpp11/thread.cpp`](../../examples/cpp11/thread.cpp)，五个场景的输出为：
+
+```text
+[1] workers = 4, joinable = true
+[1] first = 325, last = 2200, total = 5050
+[2] after by-value = 1
+[3] after std::ref = 2
+[4] lambda result = 42
+[5] hardware_concurrency available
+```
+
+场景 1 用四个线程分段累加，`emplace_back` 直接把参数转发给线程构造函数，`join()` 后汇总得 5050。场景 2 说明参数默认按值存进线程内部：`bump_by_value(value)` 改的是副本，主线程的 `value` 仍是 1。场景 3 用 `std::ref` 共享同一 `int`，join 后读到 2；作为对照，直接传 `int&` 无法编译，因为线程参数在存储前会被 decay 成值类型。场景 4 用 lambda 按引用捕获局部变量。场景 5 只打印 `hardware_concurrency()` 是否可用，避免把机器相关的数值写进输出快照。
 
 参数默认按值复制到线程的存储中；需要共享对象时用 `std::ref`/`std::cref` 显式包装。`join()` 只能调用一次，调用后线程变为 non-joinable；`detach()` 让线程在后台继续运行，线程对象不再能等待它。
 

@@ -59,7 +59,15 @@ int main() {
 }
 ```
 
-输出 `14 14`。`sum_squares(3)` 在编译期得到 `14`，直接用作 `std::array` 的长度；`static_assert` 同样在编译期校验。完整版本见 [`examples/cpp11/constexpr.cpp`](../../examples/cpp11/constexpr.cpp)。
+输出 `14 14`。`sum_squares(3)` 在编译期得到 `14`，直接用作 `std::array` 的长度；`static_assert` 同样在编译期校验。完整版本见 [`examples/cpp11/constexpr.cpp`](../../examples/cpp11/constexpr.cpp)，三个场景的输出为：
+
+```text
+[1] kSize = 14, array size = 14
+[2] square(5) at runtime = 25
+[3] square(3) as constant = 9, template size = 4
+```
+
+场景 1 把递归求得的 `kSize` 用作 `std::array` 长度，`static_assert(square(4) == 16)` 在编译期检查；场景 2 用运行期变量调用同一个 `square`，此时它就是普通函数，`constexpr` 不意味着运行期调用也免单；场景 3 把 `square(2)` 直接写在 `std::array` 模板实参里，长度在编译期确定为 4，说明常量表达式可以出现在任何需要编译期常量的位置。
 
 ## 进阶用法
 

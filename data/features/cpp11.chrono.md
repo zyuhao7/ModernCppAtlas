@@ -69,7 +69,17 @@ int main() {
 }
 ```
 
-输出 `1500 1`、`1.5`、`60000`、`1` 与 `1`。示例先展示毫秒到秒的显式截断和到 `duration<double>` 的精度保持，再用 `steady_clock` 测量一次短暂休眠，最后演示时间点与时长相加得到截止时刻。完整版本见 [`examples/cpp11/chrono.cpp`](../../examples/cpp11/chrono.cpp)。
+输出 `1500 1`、`1.5`、`60000`、`1` 与 `1`。示例先展示毫秒到秒的显式截断和到 `duration<double>` 的精度保持，再用 `steady_clock` 测量一次短暂休眠，最后演示时间点与时长相加得到截止时刻。完整版本见 [`examples/cpp11/chrono.cpp`](../../examples/cpp11/chrono.cpp)，五个场景的输出为：
+
+```text
+[1] ms = 1500, cast to s = 1, as double s = 1.5
+[2] minute in s = 60, in ms = 60000
+[3] 750ms / 1s = 0.75
+[4] slept at least 2ms = true
+[5] deadline after end = true, remaining s = 0
+```
+
+场景 1 对比两种转换：`duration_cast<seconds>` 截断得到 1，赋给 `duration<double>` 保留 1.5。场景 2 是反向的隐式转换：`minutes` 赋给 `seconds` 不会丢失精度，因此不需要 `duration_cast`，显式转换到毫秒才得到 60000。场景 3 演示时长相除得到无量纲比值；整数计数相除会截断，所以先把计数换成 `double`。场景 4 用 `steady_clock` 测量 2ms 休眠，并断言耗时不少于 2ms。场景 5 把截止时刻与当前时刻比较，再用 `duration_cast` 截断剩余时间。
 
 `count()` 返回底层计数，不带单位；打印或跨接口传递裸数字会丢掉单位信息。需要固定单位时，先用 `duration_cast` 转成目标类型再取 `count()`。
 

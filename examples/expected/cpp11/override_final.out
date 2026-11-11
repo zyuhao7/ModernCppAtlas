@@ -1,1 +1,5 @@
-9
+[1] square area = 9 circle area = 3.14159
+[2] derived id = 2, derived tag = base, base id = 1
+[3] tracked released
+[3] tracked destroyed
+[4] composed square area = 4

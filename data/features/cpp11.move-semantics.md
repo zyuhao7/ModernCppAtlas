@@ -65,7 +65,16 @@ int main() {
 }
 ```
 
-输出 `3 atlas`。`Buffer` 按值接收 `vector`，实参构造时先拷贝或移动一次，随后 `std::move(values)` 把这份临时存储直接交给成员，不再复制元素。完整版本见 [`examples/cpp11/move_semantics.cpp`](../../examples/cpp11/move_semantics.cpp)。
+输出 `3 atlas`。`Buffer` 按值接收 `vector`，实参构造时先拷贝或移动一次，随后 `std::move(values)` 把这份临时存储直接交给成员，不再复制元素。完整版本见 [`examples/cpp11/move_semantics.cpp`](../../examples/cpp11/move_semantics.cpp)，四个场景的输出为：
+
+```text
+[1] buffer size = 3
+[2] same buffer = true, size = 1000000
+[3] move-only token value = 42
+[4] const move copied = 7, moved = 8, copies = 1, moves = 1, moved-from = -1
+```
+
+场景 2 移动一个百万元素的 `vector`，比较移动前后的 `data()` 指针，证明移动只转交缓冲区而不是逐个复制；场景 3 的 `Token` 删除了拷贝构造，只能通过移动进入容器；场景 4 用带计数的 `Counted` 对比 `std::move` 作用在 `const` 与非 `const` 对象上的结果：前者退回拷贝，后者真正移动，本示例的移动构造把源对象的值置为 `-1`。
 
 ## 进阶用法
 

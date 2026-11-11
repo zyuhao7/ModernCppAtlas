@@ -63,7 +63,19 @@ int main() {
 }
 ```
 
-输出 `1 null`。`nullptr` 有独立类型，`consume` 的重载按 `std::nullptr_t` 精确匹配而不是猜测整数。完整版本见 [`examples/cpp11/nullptr.cpp`](../../examples/cpp11/nullptr.cpp)。
+输出 `1 null`。`nullptr` 有独立类型，`consume` 的重载按 `std::nullptr_t` 精确匹配而不是猜测整数。完整版本见 [`examples/cpp11/nullptr.cpp`](../../examples/cpp11/nullptr.cpp)，四个场景的输出为：
+
+```text
+[1] empty = true
+[2] overloads:
+null
+pointer
+zero by literal = null
+[3] deduced type = nullptr_t
+[4] bool context = empty
+```
+
+场景 1 用 `static_assert` 验证 `decltype(nullptr)` 就是 `std::nullptr_t`，并把 `nullptr` 传给模板函数与指针比较；场景 2 对比重载：`nullptr` 精确匹配 `std::nullptr_t` 重载，`static_cast<int*>(nullptr)` 匹配指针重载，而字面量 `0` 同时满足两个重载会报歧义错误——示例改成把它赋给 `int*`，验证整数 0 仍是合法的空指针常量；场景 3 让模板推导 `nullptr`，得到 `std::nullptr_t` 而不是 `int`；场景 4 在布尔上下文里直接用 `!ptr` 判断空值。
 
 ## 进阶用法
 

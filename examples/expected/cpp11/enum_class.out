@@ -1,3 +1,4 @@
-2 green 404
-1 0
-blue 1 3
+[1] color = 2, name = green, status = 404
+[2] sizeof(Color) = 1, sizeof(Status) = 2
+[3] blue + 1 = 4, name = unknown
+[4] same type compare = true

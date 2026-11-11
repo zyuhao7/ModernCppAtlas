@@ -67,7 +67,20 @@ int main() {
 }
 ```
 
-输出 `1 2`、`1` 与 `expired`。`parent` 用 `weak_ptr` 保存，因此 `first` 的计数仍为 1；`first.reset()` 后父节点没有其他强引用，`expired()` 转为真。若改成 `shared_ptr`，两个节点会互相持有，计数永远不归零。完整版本见 [`examples/cpp11/shared_ptr.cpp`](../../examples/cpp11/shared_ptr.cpp)。
+输出 `1 2`、`1` 与 `expired`。`parent` 用 `weak_ptr` 保存，因此 `first` 的计数仍为 1；`first.reset()` 后父节点没有其他强引用，`expired()` 转为真。若改成 `shared_ptr`，两个节点会互相持有，计数永远不归零。完整版本见 [`examples/cpp11/shared_ptr.cpp`](../../examples/cpp11/shared_ptr.cpp)，五个场景的输出为：
+
+```text
+[1] first count = 1, second count = 2
+[2] parent value = 1
+destroy 1
+[3] second count = 1, parent expired = true
+[4] alias value = 20, owner count = 2, same address = true
+[5] locked = 42
+[5] expired after scope = true
+destroy 2
+```
+
+场景 1 演示计数方向：`first->next = second` 让 `second` 有两个强所有者（`second` 自身和 `first->next`），而 `parent` 是 `weak_ptr`，`first` 的计数仍是 1。场景 2 用 `lock()` 取得临时 `shared_ptr` 再解引用。场景 3 调用 `first.reset()`：Node 1 析构打印 `destroy 1`，它持有的 `next` 一并释放，`second` 计数退回 1，`parent` 变为 expired。场景 4 展示别名构造：新 `shared_ptr<int>` 与 `owner` 共享控制块但指向 `owner->right`，地址相同、计数为 2。场景 5 把 `weak_ptr` 指向作用域内的临时对象，作用域结束后 `expired()` 立即为真；最终 Node 2 析构打印 `destroy 2`。
 
 ## 进阶用法
 

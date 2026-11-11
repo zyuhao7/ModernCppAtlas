@@ -1,1 +1,4 @@
-3 atlas
+[1] buffer size = 3
+[2] same buffer = true, size = 1000000
+[3] move-only token value = 42
+[4] const move copied = 7, moved = 8, copies = 1, moves = 1, moved-from = -1

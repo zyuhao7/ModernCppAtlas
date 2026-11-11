@@ -63,7 +63,24 @@ int main() {
 }
 ```
 
-输出 `close 1`、`moved`，退出时再打印 `close 2`：赋值先把 `primary` 原来的连接释放，再接管 `backup` 的对象；`backup` 变为空，同一个对象只释放一次。完整版本见 [`examples/cpp11/unique_ptr.cpp`](../../examples/cpp11/unique_ptr.cpp)。
+输出 `close 1`、`moved`，退出时再打印 `close 2`：赋值先把 `primary` 原来的连接释放，再接管 `backup` 的对象；`backup` 变为空，同一个对象只释放一次。完整版本见 [`examples/cpp11/unique_ptr.cpp`](../../examples/cpp11/unique_ptr.cpp)，五个场景的输出为：
+
+```text
+close 1
+[1] held = yes, backup = no, id = 2
+close 2
+[2] in scope id = 3
+close 3
+[3] after release owner = no, raw id = 4
+close 4
+[4] custom id = 5
+custom close 5
+close 5
+[5] pool size = 1, id = 6
+close 6
+```
+
+场景 2 让对象在嵌套作用域结束时自动释放；场景 3 先 `release()` 交出裸指针，再用 `reset()` 重新接管，证明所有权可以离开并回到 `unique_ptr`；场景 4 用无捕获 lambda 作为删除器，自定义动作先于对象析构执行；场景 5 把 `unique_ptr` 放进 `vector`，容器析构时逐个释放元素。
 
 ## 进阶用法
 

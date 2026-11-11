@@ -1,3 +1,5 @@
-1 1
-0
-2 2
+[1] nothrow move: Buffer = true, Thrower = false
+[2] noexcept(safe_add) = true, noexcept(may_throw) = false
+[3] move_if_noexcept rvalue: Buffer = true, Thrower = false
+[4] relay_safe = true, relay_risky = false
+[5] noexcept move: moves = 2, copies = 0; throwing move: moves = 0, copies = 2

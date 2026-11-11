@@ -1,3 +1,4 @@
-4 10
-60
-3 24
+[1] size = 4, sum = 10
+[2] total = 60
+[3] copy size = 3, shared storage = true
+[4] paren -> paren value = 12, brace -> brace value = 7

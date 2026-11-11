@@ -80,7 +80,17 @@ int main() {
 }
 ```
 
-输出 `42 3`、`1 1 0` 与 `1 1`。两个 `twice` 重载由 `enable_if` 互斥地限制在整型和浮点类型上；自定义的 `is_pointer_to_const` 通过偏特化识别 `const T*`；`decay`、`remove_reference` 和 `conditional` 展示类型变换。完整版本见 [`examples/cpp11/type_traits.cpp`](../../examples/cpp11/type_traits.cpp)。
+输出 `42 3`、`1 1 0` 与 `1 1`。两个 `twice` 重载由 `enable_if` 互斥地限制在整型和浮点类型上；自定义的 `is_pointer_to_const` 通过偏特化识别 `const T*`；`decay`、`remove_reference` 和 `conditional` 展示类型变换。完整版本见 [`examples/cpp11/type_traits.cpp`](../../examples/cpp11/type_traits.cpp)，五个场景的输出为：
+
+```text
+[1] twice(21) = 42, twice(1.5) = 3
+[2] is_integral<int> = true, is_pointer_to_const<const int*> = true, is_pointer_to_const<int*> = false
+[3] decay<const int&> is int = true, decay<int[3]> is int* = true
+[4] remove_reference<const int&> is const int = true
+[5] word_t is 64-bit = true, int convertible to double = true, string convertible to int = false
+```
+
+场景 1 的两个 `twice` 用互斥的 `enable_if` 条件：整型走 `value + value`，浮点走 `value * 2`，调用点由实参类型决定重载，结果是 `42` 与 `3`。场景 2 同时查询内置特征与自定义偏特化：`is_integral<int>` 为真，`is_pointer_to_const<const int*>` 命中 `const T*` 特化，而裸指针 `int*` 落回主模板。场景 3 用 `static_assert` 固定 `decay` 的两条性质：去掉引用与顶层 `const` 后是 `int`，数组 `int[3]` 退化成 `int*`。场景 4 是对照组：`remove_reference<const int&>` 只去引用，结果仍是 `const int`，说明它比 `decay` 更精确。场景 5 展示 `conditional` 按指针宽度选择 `word_t`，并用 `is_convertible` 区分“可以隐式转换”和“不能”：`int` 到 `double` 为真，`std::string` 到 `int` 为假。
 
 `::value` 是 C++11 的取值方式；C++14 起多数特征提供变量模板 `_v`（如 `std::is_same_v<T, U>`），C++14 起变换类特征提供别名 `_t`（如 `std::decay_t<T>`）。
 

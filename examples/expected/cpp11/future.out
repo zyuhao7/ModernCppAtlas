@@ -1,2 +1,6 @@
-valid 10
-42
+[1] valid before get = true, result = 10, valid after get = false
+[2] answer = 42
+[3] product = 42
+[4] caught = task failed
+[5] first = atlas, second = atlas
+[6] timeout = true

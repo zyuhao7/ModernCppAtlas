@@ -58,7 +58,16 @@ int main() {
 }
 ```
 
-输出 `30 5`。`auto it` 的迭代器类型由 `middle` 的返回类型决定，`decltype(values.size())` 精确取得 `size()` 的返回类型。完整版本见 [`examples/cpp11/auto_decltype.cpp`](../../examples/cpp11/auto_decltype.cpp)。
+输出 `30 5`。`auto it` 的迭代器类型由 `middle` 的返回类型决定，`decltype(values.size())` 精确取得 `size()` 的返回类型。完整版本见 [`examples/cpp11/auto_decltype.cpp`](../../examples/cpp11/auto_decltype.cpp)，四个场景的输出为：
+
+```text
+[1] copied = 2, x = 1
+[2] plain = 5, x after alias = 7
+[3] middle = 30
+[4] count = 5, unsigned = true
+```
+
+场景 1 用 `static_assert` 对比 `auto` 与 `auto&`：`auto copied = ref` 丢掉引用和 `const`，得到独立的 `int` 副本，改成 2 不影响 `x`；`auto& bound` 保留 `const int&`。场景 2 演示 `decltype` 的括号差异：`decltype(x)` 是 `int`，`decltype((x))` 是左值表达式得到 `int&`，因此 `alias = 7` 直接改到了 `x`。场景 3 是尾置返回类型的实际用途——返回类型依赖参数，只能写 `-> decltype(values.begin())`。场景 4 用 `decltype(values.size())` 精确复用 `size_t`，`std::is_unsigned` 验证它不是普通 `int`。
 
 ## 进阶用法
 

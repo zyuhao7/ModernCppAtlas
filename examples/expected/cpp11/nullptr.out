@@ -1,1 +1,7 @@
-1 null
+[1] empty = true
+[2] overloads:
+null
+pointer
+zero by literal = null
+[3] deduced type = nullptr_t
+[4] bool context = empty

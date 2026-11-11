@@ -77,7 +77,17 @@ int main() {
 }
 ```
 
-输出 `atlas`、`moved` 与 `atlas`。第一次调用传入左值，`T` 推导为 `std::string&`，参数按引用绑定并拷贝进容器；第二次传入临时对象，`T` 推导为 `std::string`，参数按右值引用绑定并移动进容器，`text` 本身保持不变。完整版本见 [`examples/cpp11/forwarding_references.cpp`](../../examples/cpp11/forwarding_references.cpp)。
+输出 `atlas`、`moved` 与 `atlas`。第一次调用传入左值，`T` 推导为 `std::string&`，参数按引用绑定并拷贝进容器；第二次传入临时对象，`T` 推导为 `std::string`，参数按右值引用绑定并移动进容器，`text` 本身保持不变。完整版本见 [`examples/cpp11/forwarding_references.cpp`](../../examples/cpp11/forwarding_references.cpp)，五个场景的输出为：
+
+```text
+[1] items = atlas moved, source text = atlas
+[2] text = lvalue, temp = rvalue, const_ref = const lvalue
+[3] forwarded moves = 1, unforwarded copies = 1
+[4] text after auto&& write = atlas!
+[5] & && -> & = true, && -> && = true
+```
+
+场景 1 对比两次 `add`：左值实参进容器后源字符串 `text` 仍是 `atlas`，临时对象则被移动。场景 2 用同一个 `category` 模板观察推导结果，左值、右值和 `const` 左值分别得到三种 `T`。场景 3 是关键对照：`sink_forward` 用 `std::forward<T>` 把右值性传下去，结果是 move；`sink_copy` 只写 `value`，具名形参永远是左值，于是退回复制，计数器从行为上证明这一点。场景 4 说明 `auto&&` 也是转发引用，绑定左值时通过它修改会作用到原对象。场景 5 直接验证引用折叠：`T&` 代入 `T&&` 得到 `&`，裸 `T` 代入得到 `&&`。
 
 ## 进阶用法
 

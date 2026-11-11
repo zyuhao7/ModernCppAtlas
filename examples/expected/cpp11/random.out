@@ -1,2 +1,6 @@
-dice: 2 4 4 5 5 5
-cards: 3 1 5 4 2
+[1] dice: 2 4 4 5 5 5
+[2] in [0,1) = true
+[3] coin = tails
+[4] cards: 5 1 2 3 4
+[5] reproducible = true
+[6] seeded result in [1,100] = true
