@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-mutex-base-sink-001",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/sinks/base_sink-inl.h",
+  "lines": "25-29",
+  "feature": "cpp11.mutex",
+  "pattern": "日志 sink 写入用 lock_guard 保护共享状态",
+  "why_typical": "锁对象与临界区同处一个作用域，异常路径也会自动解锁。",
+  "excerpt": "template <typename Mutex>\nvoid SPDLOG_INLINE spdlog::sinks::base_sink<Mutex>::log(const details::log_msg &msg) {\n    std::lock_guard<Mutex> lock(mutex_);\n    sink_it_(msg);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产日志库基类；同一互斥量保护写入、刷新与格式设置。"
+}

@@ -377,7 +377,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M2 · C++11/14 覆盖（200–300 人时）
 
-- 累计 100 条目：40 A + 60 B。（进行中：86 个完整条目，83 A + 3 B，257 条证据）
+- 累计 100 条目：40 A + 60 B。（进行中：92 个完整条目，89 A + 3 B，275 条证据）
 - 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`、`cpp11.variadic-templates`、`cpp11.constexpr`、`cpp11.static-assert`、`cpp11.lambda`、`cpp11.override-final`、`cpp14.variable-templates`、`cpp11.auto-decltype`、`cpp11.nullptr`、`cpp11.default-delete`，均带可编译示例。
 - 第六批加入 `cpp11.unique-ptr`（mold/spdlog/abseil 各 1 条）、`cpp11.shared-ptr`（drogon/spdlog/glaze 各 1 条）与 `cpp11.function`（drogon/spdlog/abseil 各 1 条），均为 A 级，带可运行示例。
 - 第七批加入 `cpp11.array`（spdlog/abseil/mold 各 1 条）、`cpp11.unordered-map`（spdlog/mold/drogon 各 1 条）与 `cpp11.tuple`（abseil/mold/drogon 各 1 条），均为 A 级，带可运行示例。
@@ -390,6 +390,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 - 第十四批加入 `cpp11.delegating-constructors`（abseil/fmt/mold 各 1 条）、`cpp11.ref-qualifiers`（abseil 2 条、drogon 1 条）与 `cpp11.trailing-return-type`（spdlog/fmt/drogon 各 1 条），均为 A 级，带可运行示例。
 - 第十五批加入 `cpp11.opaque-enum-declaration`（Hyprland/nghttp2/nano-node 各 1 条）、`cpp11.inheriting-constructors`（abseil/stdexec/nano-node 各 1 条）与 `cpp11.raw-string-literals`（VROOM/drogon/mold 各 1 条），均为 A 级，带可运行示例。
 - 第十六批加入 `cpp11.uniform-initialization`（abseil/fmt/spdlog 各 1 条）、`cpp11.forwarding-references`（spdlog/drogon/mold 各 1 条）与 `cpp11.call-once`（drogon 2 条、mold 1 条），均为 A 级，带可运行示例。
+- 第十七批加入 `cpp11.mutex`（spdlog/drogon/nano-node 各 1 条）、`cpp11.reference-wrapper`（duckdb/abseil/glaze 各 1 条）与 `cpp11.algorithms`（nano-node/glaze/nlohmann 各 1 条），均为 A 级，带可运行示例。
 - 建立“已废弃/被替代”标注（`std::auto_ptr`、`std::bind` 的现代替代等）。
 - 退出标准：C++11/14 高频特性无空缺；所有 B 级条目至少 2 条证据；站点导航按标准版本可用。
 
