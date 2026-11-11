@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-reference-wrapper-api-return-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/api/api.hpp",
+  "lines": "121-128",
+  "feature": "cpp11.reference-wrapper",
+  "pattern": "反射调用返回左值引用时用 std::ref 包装",
+  "why_typical": "返回类型是可拷贝的值类型，但语义需要指向调用方对象，reference_wrapper 保住引用身份。",
+  "excerpt": "         else if constexpr (std::is_lvalue_reference_v<Ret>) {\n            void* ptr{};\n            const auto success = caller(path, hash, ptr, arguments);\n\n            if (success) {\n               return std::ref(*static_cast<std::decay_t<Ret>*>(ptr));\n            }\n         }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产反射 API；按返回类型是否为左值引用分支。"
+}

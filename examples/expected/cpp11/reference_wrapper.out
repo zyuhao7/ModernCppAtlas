@@ -1,0 +1,5 @@
+[1] first = 10, second = 20
+[2] after by-value thread = 10, after ref thread = 11
+[3] total after bind = 12
+[4] accumulator total = 3
+[5] refs compare by value = true, cref value = 42
