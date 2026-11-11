@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-mutex-rep-weights-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/secure/rep_weights.cpp",
+  "lines": "17-23",
+  "feature": "cpp11.mutex",
+  "pattern": "代表权重缓存与计数器用 lock_guard 同步更新",
+  "why_typical": "多个相关字段必须在同一临界区内一起更新，读侧才能看到一致状态。",
+  "excerpt": "\tput_store (txn, rep, previous_weight, new_weight);\n\n\tstd::lock_guard guard{ mutex };\n\tput_cache (rep, new_weight);\n\n\tweight_committed += amount_add;\n\tweight_unused -= amount_add;",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产账本权重维护；锁在持久化写入之后获取。"
+}

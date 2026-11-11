@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-algorithms-all-of-init-list-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "914-923",
+  "feature": "cpp11.algorithms",
+  "pattern": "initializer_list 构造函数用 std::all_of 判断形状",
+  "why_typical": "一次遍历判断所有元素是否为两元数组，谓词本身复用已有查询接口。",
+  "excerpt": "        // check if each element is an array with two elements whose first\n        // element is a string\n        bool is_an_object = std::all_of(init.begin(), init.end(),\n                                        [](const detail::json_ref<basic_json>& element_ref)\n        {\n            // The cast is to ensure op[size_type] is called, bearing in mind size_type may not be int;\n            // (many string types can be constructed from 0 via its null-pointer guise, so we get a\n            // broken call to op[key_type], the wrong semantics and a 4804 warning on Windows)\n            return element_ref->is_array() && element_ref->size() == 2 && (*element_ref)[static_cast<size_type>(0)].is_string();\n        });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 JSON 库；用于区分初始化列表应解释为对象还是数组。"
+}

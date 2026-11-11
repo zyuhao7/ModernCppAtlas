@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-algorithms-all-of-http-version-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/net/http.hpp",
+  "lines": "369-372",
+  "feature": "cpp11.algorithms",
+  "pattern": "HTTP 版本号两段用 std::all_of 校验全为数字",
+  "why_typical": "两个区间各自检查同一谓词，all_of 省去重复的循环与提前返回。",
+  "excerpt": "      // Check that characters before and after dot are digits\n      const bool valid_version =\n         std::all_of(version.begin(), version.begin() + dot_pos, [](unsigned char ch) { return std::isdigit(ch); }) &&\n         std::all_of(version.begin() + dot_pos + 1, version.end(), [](unsigned char ch) { return std::isdigit(ch); });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产 HTTP 解析；点号前后分别校验。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-algorithms-any-of-env-001",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/lib/env.cpp",
+  "lines": "20-31",
+  "feature": "cpp11.algorithms",
+  "pattern": "环境变量布尔值用 std::any_of 匹配多个写法",
+  "why_typical": "谓词表达“命中任一候选值”，比手写循环更直接地传达意图。",
+  "excerpt": "\tstd::vector<std::string> const on_values{ \"1\", \"true\", \"on\" };\n\tstd::vector<std::string> const off_values{ \"0\", \"false\", \"off\" };\n\n\tif (auto value = get (name))\n\t{\n\t\t// Using case-insensitive comparison\n\t\tif (std::any_of (on_values.begin (), on_values.end (), [&value] (auto const & on) { return boost::iequals (*value, on); }))\n\t\t{\n\t\t\treturn true;\n\t\t}\n\t\tif (std::any_of (off_values.begin (), off_values.end (), [&value] (auto const & off) { return boost::iequals (*value, off); }))\n\t\t{",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产节点配置解析；两个方向各调用一次 any_of。"
+}

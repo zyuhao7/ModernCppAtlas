@@ -1,0 +1,21 @@
+{
+  "id": "ev-duckdb-reference-wrapper-queue-key-001",
+  "repo": "duckdb/duckdb",
+  "commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+  "path": "src/parallel/task_scheduler.cpp",
+  "lines": "146-150",
+  "feature": "cpp11.reference-wrapper",
+  "pattern": "用 reference_wrapper 作为队列映射的键",
+  "why_typical": "自定义哈希与相等比较按对象地址建键，reference_wrapper 让引用可直接作为键。",
+  "excerpt": "void ConcurrentQueue::Enqueue(ProducerToken &token, shared_ptr<Task> task) {\n\tlock_guard<mutex> lock(qlock);\n\ttask->token = token;\n\tq[std::ref(*token.token)].push(std::move(task));\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产任务调度器；按 producer token 的引用归并待执行队列。"
+}

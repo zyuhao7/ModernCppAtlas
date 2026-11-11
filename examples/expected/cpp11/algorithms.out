@@ -1,0 +1,5 @@
+[1] all_even = false, any_large = true, none_negative = true
+[2] all_of(empty) = true, any_of(empty) = false, none_of(empty) = true
+[3] evens = 2 4 6
+[4] first odd = 9 at index = 3
+[5] all_lib = true, has_http = false

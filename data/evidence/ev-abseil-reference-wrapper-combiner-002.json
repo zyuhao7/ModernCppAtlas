@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-reference-wrapper-combiner-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/hash/hash.h",
+  "lines": "432-436",
+  "feature": "cpp11.reference-wrapper",
+  "pattern": "传函数指针时用 std::ref 包装合并器",
+  "why_typical": "回调签名要求传值，reference_wrapper 把已有对象按引用传进去而不复制。",
+  "excerpt": "  template <typename CombinerT>\n  static HashState RunCombineUnordered(HashState state, CombinerT combiner) {\n    auto* run = state.run_combine_unordered_;\n    return run(std::move(state), std::ref(combiner));\n  }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产哈希基础设施；合并器只在同步调用期间存活。"
+}

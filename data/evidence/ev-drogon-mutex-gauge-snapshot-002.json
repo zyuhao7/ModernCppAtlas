@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-mutex-gauge-snapshot-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/monitoring/Gauge.h",
+  "lines": "40-48",
+  "feature": "cpp11.mutex",
+  "pattern": "采集监控指标时持锁复制快照",
+  "why_typical": "读路径也加锁，避免读到更新到一半的指标字段。",
+  "excerpt": "    std::vector<Sample> collect() const override\n    {\n        Sample s;\n        std::lock_guard<std::mutex> lock(mutex_);\n        s.name = name_;\n        s.value = value_;\n        s.timestamp = timestamp_;\n        return {s};\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-10",
+  "is_test": false,
+  "notes": "生产监控指标；锁只覆盖快照拷贝，尽快释放。"
+}
