@@ -68,7 +68,18 @@ int main() {
 }
 ```
 
-`requires(T t) { ... }` 的参数是假设变量，只用于书写检查表达式，不会真的构造对象。`t.value;` 是简单要求，只检查成员访问是否合法；`typename T::value_type;` 是类型要求；`{ t.size() } -> std::convertible_to<std::size_t>;` 是复合要求，同时检查表达式合法且返回类型可转换。
+`requires(T t) { ... }` 的参数是假设变量，只用于书写检查，不会真的构造对象；`t.value;` 是简单要求，`typename T::value_type;` 是类型要求，`{ t.size() } -> std::convertible_to<std::size_t>;` 是复合要求。完整版本见 [`examples/cpp20/requires_expressions.cpp`](../../examples/cpp20/requires_expressions.cpp)，六个场景的输出为：
+
+```text
+[1] Sized<Range> = 1, Sized<int> = 0
+[2] length(Range{}) = 3, length(42) = 0
+[3] HasValue<Entry> = 1, HasValue<Empty> = 0
+[4] Sized<WrongSize> = 0
+[5] static_assert passed = 1
+[6] NoexceptSized<NoThrow> = 1, NoexceptSized<Throwing> = 0
+```
+
+场景 1 把 `Sized` 当作布尔常量查询：`Range` 同时有 `value_type` 与返回 `std::size_t` 的 `size()`，`int` 两者都没有。场景 2 用同一组概念约束两个 `length` 重载，满足约束的版本优先，不满足时退回到返回 0 的版本。场景 3 的 `HasValue` 只写一个成员访问要求，`Entry` 有 `value` 成员而 `Empty` 没有。场景 4 的 `WrongSize` 虽然有 `value_type`，但 `size()` 返回 `void`，复合要求的返回类型检查让它不满足 `Sized`。场景 5 说明概念可以直接用在 `static_assert` 里，检查发生在编译期。场景 6 用 `noexcept` 修饰复合要求，返回类型相同的两个类型因为异常规格不同而被区分开，这是普通 `{ expr } -> Concept` 检查不到的部分。
 
 ## 进阶用法
 
@@ -93,8 +104,6 @@ std::size_t length(const T &) {
 ```
 
 `Sized<T>` 为真时，第一个重载比无约束版本更特殊，重载选择会优先选它；不满足时退回到返回 0 的版本。整个过程只检查表达式能否编译，不会调用 `value.size()`，因此 requires 表达式不能替代运行期前置条件检查。
-
-完整示例见 [`examples/cpp20/requires_expressions.cpp`](../../examples/cpp20/requires_expressions.cpp)。
 
 ## 真实项目证据
 

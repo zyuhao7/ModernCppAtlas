@@ -90,7 +90,18 @@ if (std::lock_guard lock(mu); pending > 0) {
 
 `switch` 的初始化变量在所有 `case` 中可见，但 `case` 标签之间不建立新作用域；在某个 `case` 里声明变量仍然要加花括号，初始化语句不会改变这条规则。
 
-完整示例见 [`examples/cpp17/init_statement.cpp`](../../examples/cpp17/init_statement.cpp)。
+完整版本见 [`examples/cpp17/init_statement.cpp`](../../examples/cpp17/init_statement.cpp)，五个场景的输出为：
+
+```text
+[1] apple = 2
+[2] pear = 5, inserted = 1
+[2] pear again = 5, inserted = 0
+[3] pending = 2
+[4] three
+[5] missing = 1
+```
+
+场景 1 把 `find` 的结果声明在 `if` 条件里，迭代器只在分支内可见。场景 2 用结构化绑定拆开 `try_emplace` 的返回值：首次插入成功输出 `inserted = 1`，第二次同名键不覆盖，值仍是 `5`、`inserted = 0`。场景 3 把 `lock_guard` 与条件放进同一条语句，锁在条件求值前构造、语句结束时释放。场景 4 的 `switch` 初始化变量在所有 `case` 中可见。场景 5 用初始化语句承接“查找失败”的路径，`it` 同样不泄漏到语句之外。
 
 ## 真实项目证据
 

@@ -1,2 +1,4 @@
-atlas
-atlas
+[1] after mutation = atlas!
+[2] moved = atlas
+[3] lvalue, const lvalue, rvalue, const rvalue
+[4] lvalue yields string& = 1, rvalue yields string = 1

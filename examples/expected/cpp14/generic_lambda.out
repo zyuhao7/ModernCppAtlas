@@ -1,3 +1,7 @@
-1 2 3 a bb 
-8 abab
-8 9
+[1] ints = 1 2 3
+[1] words = a bb
+[2] twice(4) = 8, twice(ab) = abab
+[3] x = 8, forward(9) = 9
+[4] pack = 1, 2.5, atlas
+[4] pack size = 3
+[5] copies by value = 1, by const ref = 0

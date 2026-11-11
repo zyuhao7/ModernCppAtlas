@@ -1,2 +1,5 @@
-\d+\.\d+
-{"name":"atlas","size":3}
+[1] raw = \d+\.\d+, equals escaped = 1
+[2] json = {"name":"atlas","size":3}
+[3] custom = {"text":")"}
+[4] newlines = 1, bytes = 17
+[5] built = {"id":42}

@@ -1,2 +1,5 @@
-4000 4000
-10 20 20
+[1] value = 4000, loaded = 4000
+[2] previous = 10, after exchange = 20
+[3] success = 1, value = 30, failed = 0, expected = 30
+[4] copied sees = 25, original = 25
+[5] flags = 1

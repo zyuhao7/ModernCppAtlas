@@ -1,5 +1,10 @@
-alpha 42 moved
-4
-beta 1
+[1] moved = alpha, value = 42, source empty = 1
+[2] digits = 1 2 3, sum = 6
+[3] sessions = 1, front = beta
+[4] engine = disk, derived check = 1
+[5] scope enter
+close two
+close one
+[5] scope exit
 close beta
 close alpha

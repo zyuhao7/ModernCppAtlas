@@ -75,7 +75,16 @@ int main() {
 }
 ```
 
-输出 `0 9 30`。`constexpr auto squares = ...` 要求初始化表达式是常量表达式；立即调用 lambda 在编译期执行循环并返回数组。`scaled` 捕获 `constexpr` 变量并声明为 `constexpr` 闭包，两个 `static_assert` 证明结果可用于常量求值，而不是碰巧在运行期算出来。
+完整版本见 [`examples/cpp17/constexpr_lambda.cpp`](../../examples/cpp17/constexpr_lambda.cpp)，四个场景的输出为：
+
+```text
+[1] squares = 0 1 4 9
+[2] scaled(2) = 20, scaled(3) = 30
+[3] table = 10 11 12 13
+[4] runtime scaled(4) = 40
+```
+
+场景 1 的 `constexpr auto squares = ...` 要求初始化表达式是常量表达式；立即调用 lambda 在编译期执行循环并返回数组，`static_assert` 确认结果可用于常量求值。场景 2 的 `scaled` 捕获 `constexpr` 变量并声明为 `constexpr` 闭包，`static_assert(scaled(2) == 20)` 证明调用发生在编译期。场景 3 用带参数的立即调用 lambda 生成查表数据，常量表只暴露结果。场景 4 用运行期变量调用同一个 `scaled`，说明捕获常量的 lambda 仍然可以在运行期使用。
 
 ## 进阶用法
 
@@ -105,8 +114,6 @@ constexpr auto make_table = [](int base) {
 constexpr auto table = make_table(10);
 static_assert(table[3] == 13);
 ```
-
-完整示例见 [`examples/cpp17/constexpr_lambda.cpp`](../../examples/cpp17/constexpr_lambda.cpp)。
 
 ## 真实项目证据
 

@@ -1,3 +1,6 @@
-2 4
-2 11
-1
+[1] rows = 2, cell = 4, same as vector<vector<int>> = 1
+[2] entries = 2, modern = 11
+[3] find(alice) = hit, at(ALICE) = 90
+[4] twice(21) = 42, enable_if_t<true, int> is int = 1
+[5] remove_cvref_t<const int&> is int = 1
+[6] Fn<int, int>(2, 3) = 5

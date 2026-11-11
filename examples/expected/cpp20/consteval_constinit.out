@@ -1,1 +1,5 @@
-10 16
+[1] square(5) = 25
+[2] global_counter = 10
+[3] token = 16, second = 25
+[4] local = 7
+[5] table size = 4

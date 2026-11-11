@@ -53,7 +53,17 @@ int main() {
 }
 ```
 
-`std::source_location::current()` 在默认实参中求值时，记录的是调用 `log()` 的位置，而不是 `log` 函数体内部的位置。`file_name()`、`line()`、`column()`、`function_name()` 都是只读查询，不需要额外分配。
+完整版本见 [`examples/cpp20/source_location.cpp`](../../examples/cpp20/source_location.cpp)，五个场景的输出为：
+
+```text
+[1] tag = first, at main = 1
+[2] tag = second, forwarded main = 1, body wrapper = 1
+[3] file non-empty = 1, column positive = 1
+[4] line positive = 1, function main = 1
+[5] copied file matches = 1, copied column matches = 1
+```
+
+场景 1 的默认实参在 `main` 里求值，输出确认捕获到的函数名属于 `main` 而不是 `log`。场景 2 对照两种捕获方式：`wrapper` 把默认实参得到的 `loc` 原样传给 `log` 一类的下层函数，仍指向调用者；而在函数体里重新调用 `current()` 会得到 `wrapper` 自己的位置。场景 3 与 4 只打印布尔值，避免把实现相关的路径、行号、列号写进快照，同时验证四个字段都可查询。场景 5 说明 `source_location` 是值类型，拷贝后文件名与列号保持一致，可以安全地按值传递和存储。
 
 ## 进阶用法
 
@@ -72,8 +82,6 @@ void wrapper(std::string_view tag,
 ```
 
 `wrapper` 的默认实参在调用点求值，随后把同一个 `loc` 传给 `trace`；因此 `trace` 输出的是 `wrapper` 调用者的行号，而不是 `wrapper` 函数体里的行号。包装日志接口时应传递位置对象，不要在包装层重新捕获。
-
-完整示例见 [`examples/cpp20/source_location.cpp`](../../examples/cpp20/source_location.cpp)。
 
 ## 真实项目证据
 

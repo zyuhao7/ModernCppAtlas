@@ -78,21 +78,18 @@ void print_all(const Args&... args) {
 | `(pack op ... op init)` | `E1 op (... op (EN op init))` | `init`                                                |
 | `(init op ... op pack)` | `((init op E1) op ...) op EN` | `init`                                                |
 
-完整示例见 [`examples/cpp17/fold_expressions.cpp`](../../examples/cpp17/fold_expressions.cpp)：
+完整版本见 [`examples/cpp17/fold_expressions.cpp`](../../examples/cpp17/fold_expressions.cpp)，六个场景的输出为：
 
 ```text
-sum: 15
-sum empty: 0
-all true: 1
-all true empty: 1
-any true: 1
-any true empty: 0
-joined: 1 2.5 atlas
-total: 60
-count: 3
+[1] sum = 15, empty = 0
+[2] all = 1, all empty = 1, any = 1, any empty = 0
+[3] joined: 1 2.5 atlas
+[4] total = 60
+[5] all integral = 1, mixed integral = 0
+[6] count = 3
 ```
 
-示例同时演示了带初值的求和、`&&`/`||` 折叠、流输出折叠、逗号折叠，以及 `sizeof...` 作为“数参数”的对照。
+场景 1 对照带初值的求折叠与空包：`(args + ... + 0)` 在空包时返回 `0`。场景 2 说明 `&&` 与 `||` 折叠对空包有标准规定的单位元，`all_true()` 得 `true`、`any_true()` 得 `false`。场景 3 用左折叠把 `operator<<` 串成一条输出链，输出顺序就是书写顺序。场景 4 的逗号折叠依次调用回调，副作用按参数顺序发生。场景 5 把 `std::is_integral_v` 与 `&&` 折叠组合成编译期布尔值。场景 6 用 `sizeof...` 作为“数参数”的对照，说明折叠不等于计数。
 
 ## 进阶用法
 

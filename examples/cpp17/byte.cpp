@@ -1,6 +1,7 @@
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <iomanip>
 #include <iostream>
 
 constexpr std::byte flag_bit(int index) { return std::byte{1} << index; }
@@ -29,23 +30,29 @@ int main() {
       std::byte{0x05}, std::byte{0x05}, std::byte{0x00},
   };
 
-  std::cout << std::hex << std::uppercase;
+  std::cout << "[1] header = " << std::hex << std::uppercase
+            << std::setfill('0');
   for (std::size_t i = 0; i < header.size(); ++i) {
-    if (i != 0) std::cout << ' ';
-    std::cout << std::to_integer<unsigned>(header[i]);
+    if (i != 0) {
+      std::cout << ' ';
+    }
+    std::cout << std::setw(2) << std::to_integer<unsigned>(header[i]);
   }
-  std::cout << std::dec << '\n';
+  std::cout << std::dec << std::setfill(' ') << '\n';
 
   const auto version = std::to_integer<unsigned>(header[2]);
   std::byte flags = header[3];
 
-  std::cout << "version: " << version << '\n';
-  std::cout << "compressed: " << has_flag(flags, 0) << '\n';
+  std::cout << "[2] version = " << version << '\n';
+  std::cout << "[3] compressed = " << has_flag(flags, 0)
+            << ", encrypted = " << has_flag(flags, 1) << '\n';
 
   set_flag(flags, 1, true);
   set_flag(flags, 0, false);
-  std::cout << "flags: " << std::to_integer<unsigned>(flags) << '\n';
+  std::cout << "[4] flags = " << std::to_integer<unsigned>(flags)
+            << ", compressed = " << has_flag(flags, 0)
+            << ", encrypted = " << has_flag(flags, 1) << '\n';
 
-  std::cout << "length: " << read_u16(header[4], header[5]) << '\n';
-  std::cout << "size: " << sizeof(std::byte) << '\n';
+  std::cout << "[5] length = " << read_u16(header[4], header[5]) << '\n';
+  std::cout << "[6] sizeof(byte) = " << sizeof(std::byte) << '\n';
 }

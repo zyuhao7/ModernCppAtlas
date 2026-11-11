@@ -1,6 +1,6 @@
-CA FE 1 5 5 0
-version: 1
-compressed: 1
-flags: 6
-length: 1280
-size: 1
+[1] header = CA FE 01 05 05 00
+[2] version = 1
+[3] compressed = 1, encrypted = 0
+[4] flags = 6, compressed = 0, encrypted = 1
+[5] length = 1280
+[6] sizeof(byte) = 1

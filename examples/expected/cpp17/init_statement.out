@@ -1,4 +1,6 @@
-2
-inserted pear=5
-pending 2
-three
+[1] apple = 2
+[2] pear = 5, inserted = 1
+[2] pear again = 5, inserted = 0
+[3] pending = 2
+[4] three
+[5] missing = 1

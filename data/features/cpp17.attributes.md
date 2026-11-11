@@ -88,7 +88,17 @@ int parse_or_default([[maybe_unused]] const char* text) { return 0; }
 
 属性说明符里可以一次写多个属性，例如 `[[nodiscard, maybe_unused]]`；也可以拆成多个说明符。标准属性之外的 `[[gnu::...]]`、`[[clang::...]]` 属于实现扩展，未识别的命名空间允许被忽略，不能把它们当成可移植保证。
 
-完整示例见 [`examples/cpp17/attributes.cpp`](../../examples/cpp17/attributes.cpp)，包含类级 `[[nodiscard]]`、`[[deprecated]]` 与 `[[fallthrough]]` 的组合。
+完整版本见 [`examples/cpp17/attributes.cpp`](../../examples/cpp17/attributes.cpp)，五个场景的输出为：
+
+```text
+[1] compute(3) = 6
+[2] outcome = 7
+[3] classify(0) = 11, classify(1) = 10, classify(2) = 0
+[4] read_level = 5
+[5] attribute not in type = 1
+```
+
+场景 1 的 `compute` 标了 `[[nodiscard]]`，示例仍用 `[[maybe_unused]]` 保留一个未读取的结果，说明两个属性可以组合使用。场景 2 的 `Outcome` 在类上标了 `[[nodiscard]]`，约束所有返回该类型的函数。场景 3 的 `classify(0)` 结果为 11，证明 `[[fallthrough]]` 让 `case 0` 真的贯穿到 `case 1`。场景 4 的 `mode` 参数标了 `[[maybe_unused]]`，接口保留参数但当前实现不读取。场景 5 用 `std::is_same` 确认属性不进入函数类型：`compute` 的地址类型仍是 `int (*)(int)`，属性只影响诊断。
 
 ## 真实项目证据
 

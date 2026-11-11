@@ -57,7 +57,19 @@ int main() {
 }
 ```
 
-输出 `boom`。`fail` 只有抛出这一条路径，标注后编译器不会为“函数返回”生成后续分支，也不会在调用点报“控制流到达末尾”的警告。完整版本见 [`examples/cpp11/attributes.cpp`](../../examples/cpp11/attributes.cpp)。
+输出 `boom`。`fail` 只有抛出这一条路径，标注后编译器不会为“函数返回”生成后续分支，也不会在调用点报“控制流到达末尾”的警告。完整版本见 [`examples/cpp11/attributes.cpp`](../../examples/cpp11/attributes.cpp)，五个场景的输出为：
+
+```text
+[1] caught: boom
+[2] classify(1) = 100, classify(2) = 200
+[2] classify(9) throws: unexpected code
+[3] template caught: relayed
+[4] attribute in function type = 1
+[4] pointer call caught: through pointer
+[5] declaration-only attribute caught: exit 7
+```
+
+场景 1 说明 `[[noreturn]]` 只禁止“正常返回”，异常照常传播，所以调用点仍要写 `try`。场景 2 展示最常见的收益：`classify` 的 `default` 分支调用不返回的 `fail`，函数因此不需要在末尾补一个假的 `return`，编译器也不会报“控制流到达末尾”；合法输入照常返回，非法输入抛出。场景 3 把属性放在模板参数之后、返回类型之前，这是 mold 证据里的标准位置。场景 4 用 `std::is_same` 证明属性不属于函数类型：`decltype(&fail)` 仍是 `void (*)(const char*)`，通过普通函数指针调用时契约照样生效。场景 5 只在首次声明写属性、定义处省略，行为不变——属性属于声明契约，不必在每个定义重复。
 
 ## 进阶用法
 

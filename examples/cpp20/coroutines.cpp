@@ -130,19 +130,32 @@ Task<int> fail() {
   co_return 0;
 }
 
-int main() {
-  std::cout << "range:";
-  auto numbers = range(1, 5);
+void print_range(int first, int last) {
+  auto numbers = range(first, last);
+  bool is_first = true;
   while (numbers.next()) {
-    std::cout << ' ' << numbers.value();
+    if (!is_first) {
+      std::cout << ' ';
+    }
+    std::cout << numbers.value();
+    is_first = false;
   }
   std::cout << '\n';
+}
 
-  std::cout << "task: " << compute(2).run() << '\n';
+int main() {
+  std::cout << "[1] range = ";
+  print_range(1, 5);
+
+  std::cout << "[2] range = ";
+  print_range(10, 13);
+
+  std::cout << "[3] compute(2) = " << compute(2).run() << '\n';
+  std::cout << "[4] compute(0) = " << compute(0).run() << '\n';
 
   try {
     (void)fail().run();
   } catch (const std::exception& error) {
-    std::cout << "caught: " << error.what() << '\n';
+    std::cout << "[5] caught: " << error.what() << '\n';
   }
 }

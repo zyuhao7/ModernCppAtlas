@@ -56,7 +56,17 @@ int main() {
 }
 ```
 
-输出 `fast` 与 `1`。声明固定了枚举的底层类型为 `std::uint8_t`，定义与它一致；`sizeof` 因此可预测。完整版本见 [`examples/cpp11/opaque_enum_declaration.cpp`](../../examples/cpp11/opaque_enum_declaration.cpp)。
+输出 `fast` 与 `1`。声明固定了枚举的底层类型为 `std::uint8_t`，定义与它一致；`sizeof` 因此可预测。完整版本见 [`examples/cpp11/opaque_enum_declaration.cpp`](../../examples/cpp11/opaque_enum_declaration.cpp)，五个场景的输出为：
+
+```text
+[1] pick(true) = fast, pick(false) = safe
+[2] sizeof(Mode) = 1, static_cast<Mode>(1) == safe = 1
+[3] sizeof(Color) = 1, green = 2
+[4] settings level = high, sizeof(Level) = 2
+[5] underlying type is uint8_t = 1
+```
+
+场景 1 的函数在枚举定义之前就能以 `Mode` 为参数和返回值，这正是前置声明要解决的问题。场景 2 说明底层类型固定后，声明处已能确定 `sizeof(Mode) = 1`，也能把整数转回枚举。场景 3 对照无作用域枚举：`Color` 同样可以前置声明，但必须写底层类型，`sizeof` 为 1。场景 4 展示前置声明的典型用途——函数签名和 `Settings` 成员只需要知道枚举类型与大小，定义可以出现在后面；`Level` 的底层类型是 2 字节的 `short`。场景 5 用 `std::underlying_type` 验证声明里写的 `std::uint8_t` 确实成为枚举的底层类型。
 
 ## 进阶用法
 

@@ -69,7 +69,19 @@ int main() {
 }
 ```
 
-输出 `1 2 3 a bb `（末尾有一个空格）、`8 abab` 与 `8 9`。`print`、`twice` 和 `forward` 分别是 `const auto&`、按值 `auto` 与转发引用 `auto&&` 三种参数写法；`forward` 用 `decltype(auto)` 保留引用，所以 `ref += 1` 改到了原变量。完整版本见 [`examples/cpp14/generic_lambda.cpp`](../../examples/cpp14/generic_lambda.cpp)。
+完整版本见 [`examples/cpp14/generic_lambda.cpp`](../../examples/cpp14/generic_lambda.cpp)，五个场景的输出为：
+
+```text
+[1] ints = 1 2 3
+[1] words = a bb
+[2] twice(4) = 8, twice(ab) = abab
+[3] x = 8, forward(9) = 9
+[4] pack = 1, 2.5, atlas
+[4] pack size = 3
+[5] copies by value = 1, by const ref = 0
+```
+
+场景 1 的 `print` 用 `const auto&` 接收任意容器，同一个闭包先遍历 `int` 向量再遍历 `string` 向量。场景 2 的 `twice` 按值推导参数，整数得到 `8`、字符串得到 `abab`，返回类型随实参变化。场景 3 的 `forward` 用转发引用加 `decltype(auto)` 保留值类别，`forward(x)` 返回左值引用，`ref += 1` 直接改到 `x`；`static_assert` 确认 `forward(9)` 的类型是 `int&&`。场景 4 的参数包版本接收 `int`、`double`、`std::string` 三种类型，用逗号分隔打印后由 `sizeof...` 得到元素个数。场景 5 对照两种参数写法：`auto` 参数复制一次，`const auto&` 参数不复制，计数类型把差异变成可打印的数字。
 
 ## 进阶用法
 

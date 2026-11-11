@@ -66,7 +66,17 @@ int main() {
 }
 ```
 
-`Point p{.x = 1, .y = 2}` 按声明顺序设置两个成员；`Segment s{...}` 只写三个字段，嵌套的 `Point` 作为整体传入。未写出的成员会被值初始化，而不是保持不确定值。
+`Point p{.x = 1, .y = 2}` 按声明顺序设置两个成员；`Segment s{...}` 只写三个字段，嵌套的 `Point` 作为整体传入。未写出的成员会被值初始化，而不是保持不确定值。完整版本见 [`examples/cpp20/designated_initializers.cpp`](../../examples/cpp20/designated_initializers.cpp)，五个场景的输出为：
+
+```text
+[1] p = 1 9
+[2] segment = 3 2 1 9 1
+[3] new point = 4 2
+[4] config = 3 atlas 1
+[5] full = 5 6 7 8 0
+```
+
+场景 1 只指定 `.y`，`x` 取默认成员初始化器的 `1`，说明省略字段不会变成不确定值。场景 2 把嵌套的指定初始化 `.from = {.x = 3}` 嵌在外层 `Segment` 里，未写的 `.from.y` 取默认值。场景 3 的 `new` 表达式同样接受指定初始化，堆对象也享受同一规则。场景 4 对比 `Config` 的三个字段：只写 `.debug` 时，其余字段由默认成员初始化器提供。场景 5 全部字段都写出，`bool` 显式给 `false`，输出为 `0`。
 
 ## 进阶用法
 
@@ -85,8 +95,6 @@ auto q = new Point{.x = 4};
 `Segment s` 里 `.from = {.x = 3}` 用一个新的指定初始化列表初始化嵌套聚合，这是允许的；但 `.from.x = 3` 这种嵌套指示符在 C++ 中不允许，必须用花括号把内层包起来。`new Point{.x = 4}` 说明指定初始化也适用于动态分配。
 
 省略 `Point::y` 时，它使用默认成员初始化器 `2`；如果没有默认成员初始化器，则按值初始化得到 `0`。这一点和“保留旧值”不同，修改字段集合时要重新检查所有依赖默认值的路径。
-
-完整示例见 [`examples/cpp20/designated_initializers.cpp`](../../examples/cpp20/designated_initializers.cpp)。
 
 ## 真实项目证据
 

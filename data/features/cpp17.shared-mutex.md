@@ -66,7 +66,17 @@ private:
 };
 ```
 
-读操作只持有共享锁，多个线程可以同时执行 `get`；`set` 获取独占锁后会等待所有读者退出。`mu_` 加 `mutable` 是因为 `get` 是 `const` 成员函数，但仍需锁定互斥量。
+读操作只持有共享锁，多个线程可以同时执行 `get`；`set` 获取独占锁后会等待所有读者退出。`mu_` 加 `mutable` 是因为 `get` 是 `const` 成员函数，但仍需锁定互斥量。完整版本见 [`examples/cpp17/shared_mutex.cpp`](../../examples/cpp17/shared_mutex.cpp)，五个场景的输出为：
+
+```text
+[1] before = none, first = alpha-value, second = alpha-value
+[2] readers = 8, hits = 8, distinct = 1
+[3] existed = 1, updated = alpha-v2
+[4] keys = alpha beta gamma
+[5] missing = none
+```
+
+场景 1 先查未命中，再连续两次 `get_or_create`：第一次在写锁内创建，第二次在共享锁内直接命中，两次返回同一个值。场景 2 用 8 个线程并发读取同一个键，读者只在共享锁下查询，全部命中后主线程汇总计数，输出与调度顺序无关。场景 3 的 `set` 用独占锁替换已有值并报告键是否已存在。场景 4 在共享锁下复制全部键再排序，确认写路径新增的条目对读者可见。场景 5 区分“缺失”与“空值”，返回的是 `optional` 而不是空字符串。
 
 ## 进阶用法
 
@@ -88,8 +98,6 @@ std::string get_or_create(const std::string& key) {
 `try_emplace` 在写锁内二次检查，避免两个线程都未命中后重复创建。锁对象用 CTAD 写成 `std::shared_lock lock(mu_)`，模板参数由构造函数推导。
 
 另一个方向是“读锁内只取快照，锁外处理”。读者在共享锁下复制 `shared_ptr` 或容器，释放锁后再遍历；这样慢操作不会阻塞写者，代价是快照可能短暂落后于最新状态。
-
-完整示例见 [`examples/cpp17/shared_mutex.cpp`](../../examples/cpp17/shared_mutex.cpp)。
 
 ## 真实项目证据
 

@@ -1,1 +1,6 @@
-42 42 1 3
+[1] pair = 1 2.5
+[2] vector size = 3, values = 1 2 3
+[3] box = 42, type is Box<int> = 1
+[4] ptrbox = 42, type is PtrBox<int> = 1
+[5] names deduce const char* = 1, explicit strings = a bb
+[6] tuple size = 3

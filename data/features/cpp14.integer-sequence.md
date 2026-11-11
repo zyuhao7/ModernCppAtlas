@@ -84,7 +84,18 @@ int main() {
 }
 ```
 
-输出 `4 12`、`1 2.5 atlas `（末尾有一个空格）与 `3`。`to_array` 把任意整数序列直接展开成 `std::array`；`for_each_tuple` 用 `make_index_sequence` 生成下标包，再在 `for_each_impl` 中展开成对每个元素的调用。完整版本见 [`examples/cpp14/integer_sequence.cpp`](../../examples/cpp14/integer_sequence.cpp)。
+完整版本见 [`examples/cpp14/integer_sequence.cpp`](../../examples/cpp14/integer_sequence.cpp)，五个场景的输出为：
+
+```text
+[1] values = 0 2 4 6
+[1] size = 4, sum = 12
+[2] squares = 0 1 4 9
+[3] tuple = 1 2.5 atlas
+[4] tuple size = 3, index count = 3
+[5] letters = a b c
+```
+
+场景 1 的 `to_array` 把 `integer_sequence<int, 0, 2, 4, 6>` 展开成 `std::array`，`size` 与 `sum` 都由编译期生成的数据算出。场景 2 用 `make_index_sequence<4>` 生成 `0..3`，再在 `squares` 里展开成平方表，展示“长度已知、内容由下标决定”的用法。场景 3 的 `for_each_tuple` 用 `make_index_sequence` 生成下标包，逐个调用 `std::get`，把异质的 tuple 元素交给同一个泛型回调。场景 4 对照 `tuple_size` 与 `index_sequence_for`：前者是 tuple 的元素数，后者按类型包长度生成同长的下标序列。场景 5 把序列的整数类型换成 `char`，`to_array` 同样可用，编译期直接得到字符表。
 
 ## 进阶用法
 

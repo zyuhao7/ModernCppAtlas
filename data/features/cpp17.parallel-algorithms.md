@@ -66,7 +66,17 @@ int main() {
 }
 ```
 
-输出 `10 1 55` 与 `20 2`。示例用并行 `sort` 降序排列、并行 `transform` 逐元素变换，再用 `reduce` 求和；`reduce` 不保证按左结合顺序累加，因此它的初值和运算符必须满足结合律与交换律，需要固定顺序时仍用 `std::accumulate`。完整版本见 [`examples/cpp17/parallel_algorithms.cpp`](../../examples/cpp17/parallel_algorithms.cpp)。
+完整版本见 [`examples/cpp17/parallel_algorithms.cpp`](../../examples/cpp17/parallel_algorithms.cpp)，5 个场景的输出为：
+
+```text
+[1] sorted front = 10, back = 1
+[2] doubled front = 20, back = 2
+[3] sum = 55
+[4] even count = 5
+[5] ordered sum = 55, policy independent = 1
+```
+
+场景 1 用并行 `sort` 降序排列，只打印首尾元素，结果与线程数无关。场景 2 的并行 `transform` 逐元素翻倍，输出同样只取稳定的首尾位置。场景 3 用 `std::reduce` 求和，初值与运算符满足结合律与交换律，因此不依赖累加顺序。场景 4 的 `count_if` 说明判定类算法也能接受策略，闭包只读入参。场景 5 用 `accumulate` 顺序求和作为对照，两者相等印证“执行策略只改变执行方式，不改变结果”。
 
 `seq` 明确要求顺序执行且不向量化；`par` 允许跨线程并行；`par_unseq` 进一步允许在同一线程内交错、向量化执行。不传策略的旧重载行为等价于 `seq`。
 

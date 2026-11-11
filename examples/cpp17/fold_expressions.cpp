@@ -41,18 +41,23 @@ static_assert(all_integral<int, long, unsigned char>);
 static_assert(!all_integral<int, double>);
 
 int main() {
-  std::cout << "sum: " << sum(1, 2, 3, 4, 5) << '\n';
-  std::cout << "sum empty: " << sum() << '\n';
-  std::cout << "all true: " << all_true(true, 2 < 3, 4 == 4) << '\n';
-  std::cout << "all true empty: " << all_true() << '\n';
-  std::cout << "any true: " << any_true(false, false, 3 < 4) << '\n';
-  std::cout << "any true empty: " << any_true() << '\n';
+  std::cout << "[1] sum = " << sum(1, 2, 3, 4, 5) << ", empty = " << sum()
+            << '\n';
+  std::cout << "[2] all = " << all_true(true, 2 < 3, 4 == 4)
+            << ", all empty = " << all_true()
+            << ", any = " << any_true(false, false, 3 < 4)
+            << ", any empty = " << any_true() << '\n';
 
+  std::cout << "[3] ";
   print_all("joined: ", 1, ' ', 2.5, ' ', "atlas");
 
   int total = 0;
   for_each([&total](int value) { total += value; }, 10, 20, 30);
-  std::cout << "total: " << total << '\n';
+  std::cout << "[4] total = " << total << '\n';
 
-  std::cout << "count: " << count_args(1, std::string("x"), 3.5) << '\n';
+  std::cout << "[5] all integral = "
+            << all_integral<int, long, unsigned char> << ", mixed integral = "
+            << all_integral<int, double> << '\n';
+
+  std::cout << "[6] count = " << count_args(1, std::string("x"), 3.5) << '\n';
 }

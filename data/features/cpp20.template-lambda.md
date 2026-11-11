@@ -61,7 +61,17 @@ int main() {
 }
 ```
 
-`sum` 的两个参数必须推导成同一类型；`count` 用参数包统计实参个数；`first_size` 只接受满足 `Sized` 的类型。示例输出 `7 3 3`，完整版本见 [`examples/cpp20/template_lambda.cpp`](../../examples/cpp20/template_lambda.cpp)。
+完整版本见 [`examples/cpp20/template_lambda.cpp`](../../examples/cpp20/template_lambda.cpp)，五个场景的输出为：
+
+```text
+[1] sum(3, 4) = 7
+[2] count = 3
+[3] sizes = 3 5
+[4] explicit = 42
+[5] total = 6
+```
+
+场景 1 的 `sum` 要求两个参数推导成同一类型，因此 `sum(3, 4)` 合法而混合类型会编译失败。场景 2 的 `count` 用 `sizeof...` 统计参数包，实参类型互不相同也不影响。场景 3 的 `first_size` 带 `Sized` 约束，`std::vector` 与 `std::string` 都满足，不满足的类型在重载决议阶段被排除。场景 4 演示绕过推导：显式模板实参必须通过 `operator()` 调用。场景 5 把参数包与折叠表达式结合，模板 lambda 直接在体内完成累加，不需要另写函数模板。
 
 要绕过推导、显式指定模板实参时，必须写 `operator()`：
 

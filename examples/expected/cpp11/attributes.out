@@ -1,1 +1,7 @@
-boom
+[1] caught: boom
+[2] classify(1) = 100, classify(2) = 200
+[2] classify(9) throws: unexpected code
+[3] template caught: relayed
+[4] attribute in function type = 1
+[4] pointer call caught: through pointer
+[5] declaration-only attribute caught: exit 7

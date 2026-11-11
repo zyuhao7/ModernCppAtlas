@@ -71,7 +71,18 @@ int main() {
 }
 ```
 
-输出 `3 1.2.3`、`3`、`modern-cpp-atlas` 与 `modern cpp|cpp`。`match.size() - 1` 是捕获组数量（不含整体匹配），`sregex_iterator` 逐个产出单词，`regex_replace` 把连续空白折叠成连字符。完整版本见 [`examples/cpp11/regex.cpp`](../../examples/cpp11/regex.cpp)。
+输出 `3 1.2.3`、`3`、`modern-cpp-atlas` 与 `modern cpp|cpp`。`match.size() - 1` 是捕获组数量（不含整体匹配），`sregex_iterator` 逐个产出单词，`regex_replace` 把连续空白折叠成连字符。完整版本见 [`examples/cpp11/regex.cpp`](../../examples/cpp11/regex.cpp)，六个场景的输出为：
+
+```text
+[1] groups = 3, version = 1.2.3
+[2] match = 0, search = 1, found = 2.0.1
+[3] words = 3
+[4] joined = modern-cpp-atlas
+[5] icase hits = 3
+[6] swapped = atlas modern
+```
+
+场景 1 用带锚点的模式做整体匹配，三个捕获组拼回版本号。场景 2 是 `regex_match` 与 `regex_search` 的分工：带前后文的字符串无法整体匹配，但搜索能在中间找到 `2.0.1`。场景 3 用迭代器数出三个单词，比反复调用 `regex_search` 更直接。场景 4 把任意长度的空白替换成单个连字符。场景 5 用 `std::regex::icase` 忽略大小写，三种拼写都被计入。场景 6 的替换串引用捕获组，`$2 $1` 交换了两个单词的位置。
 
 ## 进阶用法
 

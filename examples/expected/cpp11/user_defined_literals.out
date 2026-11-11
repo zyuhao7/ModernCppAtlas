@@ -1,2 +1,4 @@
-12.5
-"atlas"
+[1] 12_km = 12, 12.5_km = 12.5, type is Kilometers = 1
+[2] "atlas"_length = 5
+[3] json = {"ok":true}
+[4] quoted = "atlas"

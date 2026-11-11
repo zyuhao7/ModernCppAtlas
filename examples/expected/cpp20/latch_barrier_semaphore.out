@@ -1,1 +1,5 @@
-42 2 4
+[1] latch value = 42
+[2] latch waiters = 3, total = 3
+[3] barrier arrivals = 4
+[4] semaphore permits = 2, finished = 4
+[5] signaled value = 5

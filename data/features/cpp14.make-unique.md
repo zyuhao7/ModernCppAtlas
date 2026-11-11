@@ -74,7 +74,22 @@ int main() {
 }
 ```
 
-输出 `alpha 42 moved`、`4`、`beta 1`，析构时再输出 `close beta` 与 `close alpha`。示例覆盖所有权移动、数组重载和容器持有；`session` 被移走后为空，只有 `moved` 负责释放原对象。完整版本见 [`examples/cpp14/make_unique.cpp`](../../examples/cpp14/make_unique.cpp)。
+完整版本见 [`examples/cpp14/make_unique.cpp`](../../examples/cpp14/make_unique.cpp)，五个场景的输出为：
+
+```text
+[1] moved = alpha, value = 42, source empty = 1
+[2] digits = 1 2 3, sum = 6
+[3] sessions = 1, front = beta
+[4] engine = disk, derived check = 1
+[5] scope enter
+close two
+close one
+[5] scope exit
+close beta
+close alpha
+```
+
+场景 1 把 `session` 移进 `moved` 之后，源指针变为空，只有目标负责释放；`make_unique<int>(42)` 同时展示非类类型的构造。场景 2 用数组重载创建三个值初始化的 `int`，下标访问与普通数组一致。场景 3 把 `unique_ptr` 放进 `std::vector`，容器持有唯一所有权。场景 4 的工厂函数返回 `std::unique_ptr<Engine>`，实际对象是 `DiskEngine`，`dynamic_cast` 确认动态类型。场景 5 用块作用域观察析构顺序：两个 `Session` 逆序销毁，随后 `main` 结束时容器与 `moved` 再依次释放，输出顺序固定。
 
 数组也有对应重载：`std::make_unique<int[]>(n)` 创建 `n` 个元素并值初始化，返回 `std::unique_ptr<int[]>`。
 

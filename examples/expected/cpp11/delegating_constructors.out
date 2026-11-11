@@ -1,2 +1,5 @@
-start info
-start debug
+[1] level = info, copies = 0
+[2] copy level = info, copies = 1
+[3] retries = 3, name = default
+[4] timeout = 15
+[5] caught: bad port, delegated bodies = 0

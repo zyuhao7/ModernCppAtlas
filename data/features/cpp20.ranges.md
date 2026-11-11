@@ -56,17 +56,18 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp20/ranges.cpp`](../../examples/cpp20/ranges.cpp)：
+完整版本见 [`examples/cpp20/ranges.cpp`](../../examples/cpp20/ranges.cpp)，六个场景的输出为：
 
 ```text
-10 30 50
-5 4
-7 14 21
-test build deploy
-deploy build
+[1] scaled odds = 10 30 50
+[2] last two = 5 4
+[3] multiples of 7 = 7 14 21
+[4] tasks by priority = test build deploy
+[5] top priorities = deploy build
+[6] odd count = 3, first odd = 1
 ```
 
-`std::ranges::sort` 直接接收容器；`views::filter` 与 `views::transform` 只构造视图，直到范围 `for` 迭代时才逐个计算。
+场景 1 先用 `ranges::sort` 排好 `{5, 1, 4, 2, 3}`，再用 `views::filter` 取奇数、`views::transform` 乘 10，两个视图都是惰性的，直到打印时才逐个计算。场景 2 组合 `views::reverse` 与 `views::take(2)` 得到末尾两个元素，不复制容器。场景 3 用无界起点加 `views::take(3)` 从 `views::iota` 中截取前三个 7 的倍数，说明无限范围必须配短路视图。场景 4 用 `ranges::sort(tasks, {}, &Task::priority)` 的投影按成员排序，省掉临时比较器。场景 5 把反向、截取与成员投影串在一条链上，只取名称。场景 6 用 `ranges::count_if` 与 `ranges::find_if` 直接接收容器，返回值仍是普通迭代器，展示算法接口不再需要一对 `begin` / `end`。
 
 ## 进阶用法
 

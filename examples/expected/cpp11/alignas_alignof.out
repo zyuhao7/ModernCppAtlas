@@ -1,2 +1,6 @@
-16 16
-1
+[1] alignof(Vec4) = 16, sizeof(Vec4) = 16
+[2] alignof(Padded) = 16, sizeof(Padded) = 16
+[3] alignof(CacheLine) = 64, stride = 64, both aligned = 1
+[4] buffer % 64 = 0, buffer[3] = 4
+[5] align_report<CacheLine>::value = 64, static_assert passed = 1
+[6] counter = 7, counter % 32 = 0

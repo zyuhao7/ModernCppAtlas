@@ -1,5 +1,6 @@
-42
-42
-integer:42
-floating:3.500000
-integer:42
+[1] value = 42, pointer = 42
+[2] int = integer:42
+[2] double = floating:3.500000
+[2] pointer = integer:42
+[3] integral count = 2
+[4] opaque passthrough = 1

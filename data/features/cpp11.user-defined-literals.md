@@ -64,7 +64,16 @@ int main() {
 }
 ```
 
-输出 `12.5` 与 `"atlas"`。`12.5_km` 直接得到 `Kilometers`，`"atlas"_quoted` 在编译期已知长度，构造结果时不需要 `strlen`。完整版本见 [`examples/cpp11/user_defined_literals.cpp`](../../examples/cpp11/user_defined_literals.cpp)。
+输出 `12.5` 与 `"atlas"`。`12.5_km` 直接得到 `Kilometers`，`"atlas"_quoted` 在编译期已知长度，构造结果时不需要 `strlen`。完整版本见 [`examples/cpp11/user_defined_literals.cpp`](../../examples/cpp11/user_defined_literals.cpp)，四个场景的输出为：
+
+```text
+[1] 12_km = 12, 12.5_km = 12.5, type is Kilometers = 1
+[2] "atlas"_length = 5
+[3] json = {"ok":true}
+[4] quoted = "atlas"
+```
+
+场景 1 同时提供 `unsigned long long` 与 `long double` 两个重载，整数与浮点字面量分别命中，`decltype` 确认结果类型就是 `Kilometers`。场景 2 的字符串重载直接拿到指针与长度，`_length` 返回 5，不需要运行时求长。场景 3 给原始字符串加 `_json` 后缀，JSON 文本在词法阶段就变成 `Json` 类型。场景 4 把运算符声明在 `atlas` 命名空间里，再用 `using` 引入到全局作用域。
 
 ## 进阶用法
 

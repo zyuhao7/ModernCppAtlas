@@ -57,7 +57,17 @@ int main() {
 }
 ```
 
-输出 `3.14159 3.14159`。`pi<double>` 与 `pi<float>` 是两个独立实例，各自按目标类型完成舍入；`is_small<T>` 直接作为 `static_assert` 的条件。完整版本见 [`examples/cpp14/variable_templates.cpp`](../../examples/cpp14/variable_templates.cpp)。
+完整版本见 [`examples/cpp14/variable_templates.cpp`](../../examples/cpp14/variable_templates.cpp)，五个场景的输出为：
+
+```text
+[1] pi<double> = 3.14159, pi<float> = 3.14159
+[2] is_small<char> = 1, is_small<double> = 0
+[3] is_string<int> = 0, is_string<std::string> = 1
+[4] square<3> = 9, square<4> = 16
+[5] counter<int> = 42, counter<double> = 1.5
+```
+
+场景 1 的 `pi<double>` 与 `pi<float>` 是两个独立实例，各自按目标类型舍入，`static_assert` 确认 `float` 实例等于 `double` 实例转成 `float` 后的值。场景 2 的 `is_small<T>` 直接作为 `static_assert` 的条件，也可以像普通常量一样参与输出。场景 3 展示显式特化：主模板对所有类型给 `false`，`std::string` 特化给 `true`。场景 4 说明变量模板同样接受非类型模板参数，`square<3>` 在编译期算出 `9`。场景 5 的 `counter<T>` 不是 `constexpr`，每个类型拥有独立实例，可以像普通变量一样累加。
 
 ## 进阶用法
 

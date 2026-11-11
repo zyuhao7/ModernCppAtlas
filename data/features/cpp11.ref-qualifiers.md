@@ -62,7 +62,16 @@ int main() {
 }
 ```
 
-输出两行 `atlas`。`message.text()` 命中 `&` 重载并返回引用；`Message{}.text()` 命中 `&&` 重载，直接把成员移动出来。完整版本见 [`examples/cpp11/ref_qualifiers.cpp`](../../examples/cpp11/ref_qualifiers.cpp)。
+输出两行 `atlas`。`message.text()` 命中 `&` 重载并返回引用；`Message{}.text()` 命中 `&&` 重载，直接把成员移动出来。完整版本见 [`examples/cpp11/ref_qualifiers.cpp`](../../examples/cpp11/ref_qualifiers.cpp)，四个场景的输出为：
+
+```text
+[1] after mutation = atlas!
+[2] moved = atlas
+[3] lvalue, const lvalue, rvalue, const rvalue
+[4] lvalue yields string& = 1, rvalue yields string = 1
+```
+
+场景 1 证明左值重载返回的是成员引用：通过引用追加 `!` 后，原对象的内容也随之改变。场景 2 在临时对象上调用，`&&` 重载把成员移动出来，不需要复制。场景 3 的 `Probe` 写全了 `&`、`const&`、`&&`、`const&&` 四个重载，四种调用分别打出自己的标签，说明重载决议同时考虑值类别与 `const`。场景 4 用 `decltype` 验证返回类型确实随值类别变化：左值得到 `std::string&`，右值得到按值返回的 `std::string`。
 
 ## 进阶用法
 

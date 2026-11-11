@@ -61,20 +61,19 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp20/span.cpp`](../../examples/cpp20/span.cpp)：
+完整版本见 [`examples/cpp20/span.cpp`](../../examples/cpp20/span.cpp)，六个场景的输出为：
 
 ```text
-6
-9
-13
-6
-2 3
-4
-60 70
-12
+[1] sums = 6 9 13
+[2] fixed sum = 6
+[3] subspan = 2 3
+[3] first = 4
+[4] scaled = 60 70
+[5] bytes = 12
+[6] empty size = 0
 ```
 
-三种容器都隐式转成同一个视图类型；函数不需要模板，也不需要为每种容器写重载。
+场景 1 用同一个 `sum(std::span<const int>)` 接收 C 数组、`std::array` 与 `std::vector`，三种容器隐式转换，函数不需要模板。场景 2 的静态长度版本把 `N` 写进类型，调用点必须提供长度匹配的视图。场景 3 演示 `subspan` 与 `first`：返回新视图而不复制数据，`2 3` 来自原数组的后两个元素。场景 4 用可写的 `std::span<int>` 原地放大元素，说明 `span` 不拥有数据但能改变数据。场景 5 的 `std::as_bytes` 在保持原长度的前提下把元素宽度换成字节，三个 `int` 得到 12 字节。场景 6 的默认构造视图长度为 0，是唯一不需要底层存储的合法状态。
 
 ## 进阶用法
 

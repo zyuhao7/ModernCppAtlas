@@ -59,7 +59,17 @@ int main() {
 }
 ```
 
-输出 `5` 与 `3.5`。返回类型由 `a + b` 的实际类型决定，整数调用得到 `int`，浮点调用得到 `double`。完整版本见 [`examples/cpp11/trailing_return_type.cpp`](../../examples/cpp11/trailing_return_type.cpp)。
+输出 `5` 与 `3.5`。返回类型由 `a + b` 的实际类型决定，整数调用得到 `int`，浮点调用得到 `double`。完整版本见 [`examples/cpp11/trailing_return_type.cpp`](../../examples/cpp11/trailing_return_type.cpp)，五个场景的输出为：
+
+```text
+[1] add(2, 3) = 5, add(1.5, 2.0) = 3.5, int result = 1, double result = 1
+[2] text = atlas!, type is string = 1
+[3] values[1] = 20, returns int& = 1
+[4] half(9) = 4, noexcept = 1
+[5] add(1, 2.5) = 3.5, type is double = 1
+```
+
+场景 1 与 5 用 `std::is_same` 确认返回类型确实随参数变化：整数加法得到 `int`，混合类型得到 `double`。场景 2 把同样的写法用于 `std::string`，`decltype` 推导出字符串拼接的结果类型。场景 3 说明 `decltype` 会保留引用：`element` 返回 `int&`，通过它修改的就是容器里的元素。场景 4 验证 `noexcept` 写在参数列表之后、`->` 之前，`noexcept(half(9))` 为真。
 
 ## 进阶用法
 
@@ -73,7 +83,7 @@ int main() {
 
 **C++14 起函数体可省略 `decltype`。** C++14 允许 `decltype(auto)` 和普通 `auto` 返回，但需要把类型写进签名、或返回类型依赖参数的场景，尾置形式仍然必要。
 
-**`noexcept` 在尾置返回之后。** 完整顺序是 `auto f(...) -> T noexcept`；写反会解析错误，这是尾置写法的常见笔误。
+**`noexcept` 在尾置返回之前。** 完整顺序是 `auto f(...) noexcept -> T`；把 `noexcept` 写到 `-> T` 之后会解析错误，这是尾置写法的常见笔误。
 
 ## 真实项目证据
 

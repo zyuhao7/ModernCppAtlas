@@ -55,7 +55,18 @@ int main() {
 }
 ```
 
-输出 `16 16` 与 `1`。`Vec4` 的自然对齐被提升到 16 字节，大小仍是四个 `float`；栈上的 `buffer` 按 32 字节对齐，取模结果为 1。完整版本见 [`examples/cpp11/alignas_alignof.cpp`](../../examples/cpp11/alignas_alignof.cpp)。
+输出 `16 16` 与 `1`。完整版本见 [`examples/cpp11/alignas_alignof.cpp`](../../examples/cpp11/alignas_alignof.cpp)，六个场景的输出为：
+
+```text
+[1] alignof(Vec4) = 16, sizeof(Vec4) = 16
+[2] alignof(Padded) = 16, sizeof(Padded) = 16
+[3] alignof(CacheLine) = 64, stride = 64, both aligned = 1
+[4] buffer % 64 = 0, buffer[3] = 4
+[5] align_report<CacheLine>::value = 64, static_assert passed = 1
+[6] counter = 7, counter % 32 = 0
+```
+
+场景 1 把 `Vec4` 的对齐提升到 16 字节，大小仍是四个 `float` 的 16 字节，两者恰好相等。场景 2 是关键对照：`Padded` 只有一个 `char`，但 `alignas(16)` 让 `sizeof` 必须是对齐的整数倍，于是从 1 字节膨胀到 16 字节。场景 3 的 `CacheLine` 按 64 字节对齐，数组跨度也是 64，两个元素的地址都落在缓存行起点，热点之间不会共享缓存行。场景 4 证明多条 `alignas` 取最严格者：`alignas(8)` 被 `alignas(64)` 覆盖，整个数组按 64 字节对齐，元素内容不受影响。场景 5 说明 `alignof` 是编译期常量，可以进入模板参数和 `static_assert`。场景 6 把同样的要求用在局部变量上。
 
 ## 进阶用法
 

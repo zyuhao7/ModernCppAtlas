@@ -65,7 +65,17 @@ int main() {
 }
 ```
 
-输出 `empty` 与 `full`。`buffer ? ... : ...` 是上下文转换，显式运算符在这里可用；写成 `bool flag = buffer;` 则无法通过编译。完整版本见 [`examples/cpp11/explicit_conversion_operators.cpp`](../../examples/cpp11/explicit_conversion_operators.cpp)。
+输出 `empty` 与 `full`。`buffer ? ... : ...` 是上下文转换，显式运算符在这里可用；写成 `bool flag = buffer;` 则无法通过编译。完整版本见 [`examples/cpp11/explicit_conversion_operators.cpp`](../../examples/cpp11/explicit_conversion_operators.cpp)，五个场景的输出为：
+
+```text
+[1] empty -> false, full -> true
+[2] !empty = 1, full && true = 1
+[3] is_convertible<Buffer, bool> = 0, is_constructible<bool, Buffer> = 1, static_cast<bool>(full) = 1
+[4] static_cast<double>(money) = 12.5, is_convertible<Money, double> = 0
+[5] text = /tmp/atlas, is_convertible<Path, std::string> = 0
+```
+
+场景 1 与 2 列出上下文转换位置：条件运算符、`!`、`&&` 都能调用 `explicit operator bool`，空缓冲区与满缓冲区得到不同结果。场景 3 用类型萃取把边界说清楚：`std::is_convertible<Buffer, bool>` 为 0，说明隐式转换不可用；`std::is_constructible<bool, Buffer>` 为 1，说明直接初始化允许调用显式运算符，`static_cast<bool>(full)` 因此得到 1。场景 4 与 5 证明 `explicit` 不限于 bool：`Money` 的 `double` 转换和 `Path` 的 `std::string` 转换都只在显式调用时发生，两个 `is_convertible` 都是 0。
 
 ## 进阶用法
 

@@ -73,7 +73,22 @@ int main() {
 }
 ```
 
-输出 `int:7` 与 `str:atlas`。派生类没有手写任何构造函数，两个基类重载都被继承。完整版本见 [`examples/cpp11/inheriting_constructors.cpp`](../../examples/cpp11/inheriting_constructors.cpp)。
+输出 `int:7` 与 `str:atlas`。派生类没有手写任何构造函数，两个基类重载都被继承。完整版本见 [`examples/cpp11/inheriting_constructors.cpp`](../../examples/cpp11/inheriting_constructors.cpp)，输出为：
+
+```text
+base int:7
+base str:atlas
+[1] first.value = 7, second.label = atlas
+[2] extra after inherited ctor = 5
+[3] copied value = 7, extra = 5
+base int:0
+tagged default body
+base int:3
+[4] default value = 0, inherited value = 3
+[5] constructible from int = 1, from string = 1
+```
+
+场景 1 验证两个基类构造函数重载都被 `using Base::Base;` 引入，`Derived(7)` 与 `Derived(std::string("atlas"))` 各自选择正确的基类重载。场景 2 说明继承构造函数只负责基类部分，派生类自己的成员仍按类内初始化器初始化为 5。场景 3 证明隐式拷贝构造不受影响：复制 `Derived` 仍走编译器生成的拷贝路径。场景 4 的 `Tagged` 同时保留自己的默认构造函数和继承来的构造函数，两条路径都能构造对象。场景 5 用 `std::is_constructible` 从类型层面确认继承结果。前几行的 `base int:` 与 `base str:` 是基类构造函数自己的输出。
 
 ## 进阶用法
 

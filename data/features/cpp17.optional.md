@@ -61,19 +61,18 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/optional.cpp`](../../examples/cpp17/optional.cpp)：
+完整版本见 [`examples/cpp17/optional.cpp`](../../examples/cpp17/optional.cpp)，6 个场景的输出为：
 
 ```text
-127.0.0.1
-8080
--1
-30
-present: 1, enabled: 0
-atlas
-none
+[1] host = 127.0.0.1
+[2] port = 8080
+[3] invalid parse = -1
+[4] missing key = 30
+[5] present = 1, value = 0
+[6] emplace = atlas, after reset = none
 ```
 
-示例把 `optional` 用在配置读取上：查找可能缺失的键、解析可能失败的数字、用 `value_or` 提供默认值，并单独演示 `optional<bool>` 的“有值”与“值为真”不是一回事。
+场景 1 直接在 `value_or` 上给默认值，缺失的键得到 `<unset>`。场景 2 把“查找 + 解析”串起来，两层 `optional` 用 `value_or("")` 衔接。场景 3 展示解析失败返回 `nullopt`，默认值 `-1` 让失败在输出中可见。场景 4 是键不存在的情况，默认值区分了“未配置”与“配置为空”。场景 5 是常见误用点：`optional<bool>` 里装着 `false`，`has_value()` 为 1 而值为 0，状态与值不是一回事。场景 6 演示 `emplace` 写入、`reset` 清空后 `value_or` 接管。
 
 ## 进阶用法
 

@@ -53,21 +53,24 @@ int main() {
 }
 ```
 
-完整示例见 [`examples/cpp17/any.cpp`](../../examples/cpp17/any.cpp)：
+完整版本见 [`examples/cpp17/any.cpp`](../../examples/cpp17/any.cpp)，六个场景的输出为：
 
 ```text
-count: int 42
-name: string atlas
-item: user amy 3
-item: int 7
-item: string x
-after reset: empty
-amy
-pointer cast 7
-bad_any_cast
+[1] count = int 42
+[2] name = string atlas
+[2] reference cast = atlas
+[3] item 0 = user amy 3
+[3] item 1 = int 7
+[3] item 2 = string x
+[4] has_value = 0
+[4] cast = bad_any_cast
+[5] pointer cast = 7
+[5] wrong pointer cast = 1
+[6] stored type is const char* = 1
+[6] cast to string = 1
 ```
 
-示例把 `int`、`std::string` 与自定义结构体放进同一个 `std::vector<std::any>`，用 `type()` 分派、用引用版 `any_cast` 读取大对象，并演示指针版转换与类型不符时的异常。
+场景 1、2 用 `type()` 逐项比较 `typeid`，再按类型选值版或引用版 `any_cast` 读取。场景 3 把 `User`、`int`、`std::string` 塞进同一个 `std::vector<std::any>`，同一个 `print` 依次正确分派。场景 4 演示 `reset()` 之后 `has_value()` 为假，值版转换抛 `bad_any_cast`。场景 5 用指针版转换：类型匹配返回有效指针，类型不符返回 `nullptr`，不抛异常。场景 6 说明 `std::any text = "atlas"` 存的是 `const char*`，用 `any_cast<std::string>` 读取会失败，必须显式存 `std::string`。
 
 ## 进阶用法
 

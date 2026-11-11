@@ -53,16 +53,19 @@ int main() {
 }
 ```
 
-路径分解是纯词法操作，不访问磁盘；后半段用临时目录演示创建、遍历与属性查询。完整示例见 [`examples/cpp17/filesystem.cpp`](../../examples/cpp17/filesystem.cpp)：
+路径分解是纯词法操作，不访问磁盘；后半段用临时目录演示创建、遍历与属性查询。完整版本见 [`examples/cpp17/filesystem.cpp`](../../examples/cpp17/filesystem.cpp)，五个场景的输出为：
 
 ```text
-/var/log/app
-server .log
-/var/log/app/backup.log
-entries: archive config.ini server.log
-size: 5
-relative: logs/server.log
+[1] parent = /var/log/app, stem = server, extension = .log
+[1] replaced = /var/log/app/backup.log
+[2] entries = archive config.ini server.log
+[2] archive = 1
+[3] size = 5, relative = logs/server.log
+[4] server regular = 1, logs directory = 1, missing = 0
+[5] normalized = a/c
 ```
+
+场景 1 只用 `path` 的成员做纯词法分解与替换文件名，不触碰磁盘；两行共用编号，说明它们属于同一主题。场景 2 在临时目录下建三层结构并写入两个文件，`directory_iterator` 的结果先排序再输出，避免依赖未指定的遍历顺序。场景 3 用 `file_size` 与 `relative` 查询真实属性，输出的是相对路径而不是绝对临时路径。场景 4 用三个布尔值区分常规文件、目录与不存在路径，`exists` 返回 `false` 时不抛异常。场景 5 的 `lexically_normal` 只折叠 `..`，同样不访问文件系统。
 
 ## 进阶用法
 
