@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-bitops-countr-zero-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/input-sections.cc",
+  "lines": "9-13",
+  "feature": "cpp20.bit-operations",
+  "pattern": "用 std::countr_zero 把 2 的幂对齐值直接换算成移位位数",
+  "why_typical": "链接器输入的对齐值总是 2 的幂，尾随零个数就是所需移位量；一个标准函数替代了循环计数或内建函数，同时保留了对 0 的显式处理。",
+  "excerpt": "static i64 to_p2align(u64 alignment) {\n  if (alignment == 0)\n    return 0;\n  return std::countr_zero(alignment);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；0 对齐无法取尾随零，函数先单独返回 0，其余情况直接映射到移位量。"
+}

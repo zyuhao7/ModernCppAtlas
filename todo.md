@@ -377,7 +377,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M2 · C++11/14 覆盖（200–300 人时）
 
-- 累计 100 条目：40 A + 60 B。（进行中：95 个完整条目，92 A + 3 B，284 条证据）
+- 累计 100 条目：40 A + 60 B。（进行中：95 个完整条目，90 A + 5 B，284 条证据）
 - 已完成：`cpp11.move-semantics`、`cpp14.generic-lambda`、`cpp11.range-for`、`cpp14.make-unique`、`cpp11.enum-class`、`cpp11.variadic-templates`、`cpp11.constexpr`、`cpp11.static-assert`、`cpp11.lambda`、`cpp11.override-final`、`cpp14.variable-templates`、`cpp11.auto-decltype`、`cpp11.nullptr`、`cpp11.default-delete`，均带可编译示例。
 - 第六批加入 `cpp11.unique-ptr`（mold/spdlog/abseil 各 1 条）、`cpp11.shared-ptr`（drogon/spdlog/glaze 各 1 条）与 `cpp11.function`（drogon/spdlog/abseil 各 1 条），均为 A 级，带可运行示例。
 - 第七批加入 `cpp11.array`（spdlog/abseil/mold 各 1 条）、`cpp11.unordered-map`（spdlog/mold/drogon 各 1 条）与 `cpp11.tuple`（abseil/mold/drogon 各 1 条），均为 A 级，带可运行示例。
@@ -397,9 +397,10 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M3 · C++17/20 扩张（新增 350–450 人时）
 
-- 累计 200 条目：60 A + 110 B + 30 C。
+- 累计 200 条目：60 A + 110 B + 30 C。（进行中：98 个完整条目，93 A + 5 B，293 条证据）
 - 20 篇进阶长文：concepts、ranges、coroutines、modules、`std::format`、`std::span` 等。
 - 12 张库联动卡片。
+- 第十九批加入 `cpp17.clamp`（drogon/Hyprland/glaze 各 1 条）、`cpp14.init-capture`（glaze/Hyprland/stdexec 各 1 条）与 `cpp20.bit-operations`（mold/stdexec/nghttp2 各 1 条），均为 A 级，带可运行示例。
 - 退出标准：月度证据刷新跑通一次；20 个最常用特性有完整进阶用法。
 
 ### M4 · C++23/26（新增 150–250 人时）

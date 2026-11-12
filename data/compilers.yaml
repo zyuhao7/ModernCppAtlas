@@ -570,3 +570,21 @@ features:
     msvc: "18.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-12"
+  cpp17.clamp:
+    gcc: "7"
+    clang: "3.9"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-12"
+  cpp14.init-capture:
+    gcc: "4.9"
+    clang: "3.4"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-11-12"
+  cpp20.bit-operations:
+    gcc: "9"
+    clang: "9"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-12"

@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-init-capture-async-watch-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/file/file_watch.hpp",
+  "lines": "34-34",
+  "feature": "cpp14.init-capture",
+  "pattern": "std::async 启动文件监视时用初始化捕获按地址捕获存活标志并移入回调",
+  "why_typical": "异步任务的生命周期超出调用栈，回调必须被移动进闭包，存活标志只能按地址捕获；初始化捕获让两种不同捕获方式写在同一个列表里，无需先构造辅助结构。",
+  "excerpt": "      h->future = std::async([alive = &h->alive, path, callback = std::move(callback)] {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；初始化捕获同时完成移动与取地址，闭包由 std::async 接管。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-bitops-countl-zero-003",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/util.h",
+  "lines": "734-737",
+  "feature": "cpp20.bit-operations",
+  "pattern": "估算十进制位数时用 std::countl_zero 取得最高有效位位置",
+  "why_typical": "位数上界来自二进制位宽与最高有效位位置，countl_zero 把这两步合在一次模板调用里；相比逐次除法或浮点 log10，结果确定且不依赖数学库。",
+  "excerpt": "template <std::unsigned_integral T> constexpr size_t count_digit(T x) {\n  auto y = static_cast<size_t>(19 * (std::numeric_limits<T>::digits - 1 -\n                                     std::countl_zero(static_cast<T>(x | 1))) >>\n                               6);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；x | 1 处理 0，再用 countl_zero 得到最高有效位，最后查表修正。"
+}

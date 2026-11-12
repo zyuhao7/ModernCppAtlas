@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-init-capture-executor-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/asio/completion_token.hpp",
+  "lines": "476-478",
+  "feature": "cpp14.init-capture",
+  "pattern": "执行器包装器用初始化捕获把自身引用与可调用对象绑定进 lambda",
+  "why_typical": "包装器不能复制整个操作状态，只能按引用捕获 self，同时把局部的 f 移动进闭包；初始化捕获让 `&self = self_` 与 `f = std::move(f)` 并排出现，意图比嵌套 std::bind 更清楚。",
+  "excerpt": "      constexpr auto wrap_(F f) const noexcept(std::is_nothrow_move_constructible_v<F>)\n      {\n        return [&self = self_, f = std::move(f)]() mutable noexcept",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；引用捕获避免复制操作状态，移动捕获保留传入可调用对象的所有权。"
+}
