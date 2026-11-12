@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-init-capture-readable-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/render/SurfaceBufferUse.cpp",
+  "lines": "38-39",
+  "feature": "cpp14.init-capture",
+  "pattern": "事件循环回调用初始化捕获接管文件描述符与缓冲区列表",
+  "why_typical": "doOnReadable 回调在函数返回后才执行，缓冲区列表和回调对象都必须转移进闭包；初始化捕获把两个 std::move 直接写进捕获列表，避免额外包装对象或悬空引用。",
+  "excerpt": "void Render::releaseSurfaceBuffersOnReadable(Hyprutils::OS::CFileDescriptor fd, std::vector<SSurfaceBufferUse> uses, std::function<void()> callback) {\n    g_pEventLoopManager->doOnReadable(std::move(fd), [buffers = std::move(uses), callback = std::move(callback)]() mutable {",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；参数按值传入后整体移入回调，mutable 允许回调消费捕获的闭包状态。"
+}

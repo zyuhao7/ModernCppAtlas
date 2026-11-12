@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-clamp-absolute-coords-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/pointer/PointerManager.cpp",
+  "lines": "936-939",
+  "feature": "cpp17.clamp",
+  "pattern": "把绝对指针坐标限制在归一化区间 [0, 1]",
+  "why_typical": "输入设备可能报告越界或异常坐标；先排除 NaN，再用 clamp 保证进入后续显示器布局计算的值落在归一化范围内，边界逻辑集中且不会漏掉任一坐标轴。",
+  "excerpt": "    if (!std::isnan(abs.x))\n        abs.x = std::clamp(abs.x, 0.0, 1.0);\n    if (!std::isnan(abs.y))\n        abs.y = std::clamp(abs.y, 0.0, 1.0);",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；NaN 需要单独判断，clamp 只负责上下界，二者职责分离。"
+}

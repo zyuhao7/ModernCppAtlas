@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-clamp-http-date-001",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/Utilities.cc",
+  "lines": "1115-1116",
+  "feature": "cpp17.clamp",
+  "pattern": "格式化 HTTP 日期后把写入长度夹到缓冲区合法下标范围",
+  "why_typical": "formatHttpDate 返回实际写入的字节数，后续 resize 前必须保证下标不越过缓冲区；clamp 同时钉住 0 与 size()-1 两个边界，比手写 if/else 更直接地表达“只允许合法范围”。",
+  "excerpt": "    n = std::clamp(n, 0, static_cast<int>(lastTimeString.size() - 1));\n    lastTimeString.resize(static_cast<size_t>(n));",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；clamp 的结果立即用于 resize，约束值直接成为容器长度。"
+}

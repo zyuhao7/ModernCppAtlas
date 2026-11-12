@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-bitops-popcount-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__any.hpp",
+  "lines": "735-735",
+  "feature": "cpp20.bit-operations",
+  "pattern": "编译期用 std::popcount 断言缓冲区对齐是 2 的幂",
+  "why_typical": "popcount 在 C++20 是 constexpr，可直接放进 static_assert；小于等于 1 个置位位等价于 2 的幂（0 被排除），比手写 `(x & (x - 1)) == 0` 更易读。",
+  "excerpt": "    static_assert(std::popcount(_BufferAlignment) == 1, \"BufferAlignment must be a power of two\");",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产头文件中的编译期约束；模板参数 _BufferAlignment 必须是 2 的幂。"
+}

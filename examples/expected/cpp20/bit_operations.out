@@ -1,0 +1,6 @@
+[1] popcount = 4
+[2] trailing = 4, leading = 27
+[3] trailing ones = 3, leading ones = 0
+[4] rotl = 2880, round trip = 1
+[5] alignment = 4096, shift = 12, recovered = 4096
+[6] width = 10, highest = 9

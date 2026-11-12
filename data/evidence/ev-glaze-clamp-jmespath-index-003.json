@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-clamp-jmespath-index-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/json/jmespath.hpp",
+  "lines": "704-707",
+  "feature": "cpp17.clamp",
+  "pattern": "JMESPath 切片把负索引换算后夹到与方向相关的合法区间",
+  "why_typical": "切片的上下界取决于步长方向，负索引还要先加 size；wrap_index 用 clamp 统一收口，调用点只关心“换个下标”而不重复边界判断。",
+  "excerpt": "            auto wrap_index = [&](int32_t idx) {\n               if (idx < 0) idx += size;\n               return std::clamp(idx, lower, upper);\n            };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；lower/upper 由 negative_step 决定，clamp 让方向语义在单一位置实现。"
+}
