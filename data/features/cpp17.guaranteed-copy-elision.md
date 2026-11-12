@@ -61,6 +61,18 @@ int main() {
 
 输出 `7`。`Immovable` 删除了拷贝与移动构造，`Immovable item = make();` 仍然合法：`make()` 的返回值是 prvalue，直接初始化 `item` 的存储。同样规则适用于成员初始化、函数实参和 `return Immovable{};`。
 
+完整版本见 [`examples/cpp17/guaranteed_copy_elision.cpp`](../../examples/cpp17/guaranteed_copy_elision.cpp)，五个场景的输出为：
+
+```text
+[1] direct init: constructed = 1, destroyed = 0, value = 7
+[2] member init: constructed = 1, destroyed = 0
+[3] argument init: constructed = 1, destroyed = 1
+[4] relayed prvalue: constructed = 1, value = 7
+[5] copyable = 0, movable = 0, trivially copyable = 0, default constructible = 1
+```
+
+场景 1 的 `Probe` 删除拷贝与移动构造，构造函数计数器只加 1 且析构在离开作用域时发生，说明对象直接在 `item` 的存储上构造。场景 2 把同样的初始化写进成员默认初始化器，计数同样为 1。场景 3 用 prvalue 初始化函数形参，构造一次、在函数返回后析构一次。场景 4 连续两层 `return` 都返回 prvalue，中间不产生临时对象。场景 5 确认复制消除不改变类型属性：`Probe` 仍是不可拷贝、不可移动、非 trivially copyable 的类型。
+
 ## 进阶用法
 
 需要区分两类情况。返回**具名局部变量**属于 NRVO（命名返回值优化），C++17 仍只允许而不强制，且要求类型可移动或可拷贝；返回**临时对象**才是保证的复制消除。

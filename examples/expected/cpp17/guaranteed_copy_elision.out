@@ -1,0 +1,5 @@
+[1] direct init: constructed = 1, destroyed = 0, value = 7
+[2] member init: constructed = 1, destroyed = 0
+[3] argument init: constructed = 1, destroyed = 1
+[4] relayed prvalue: constructed = 1, value = 7
+[5] copyable = 0, movable = 0, trivially copyable = 0, default constructible = 1

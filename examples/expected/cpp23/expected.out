@@ -1,0 +1,8 @@
+[1] 8080 -> port 8080
+[1] abc -> error: port must be numeric
+[1] 70000 -> error: port out of range
+[2] value() threw, error = port must be numeric
+[3] value_or(80) = 80, value_or(80) on success = 9000
+[4] doubled(21) = 42, doubled(bad) has value = 0, error = port must be numeric
+[5] default(abc) = 8080, default(1234) = 1234
+[6] check(80) ok = 0, check(8080) ok = 1, error = privileged port
