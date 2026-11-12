@@ -60,7 +60,17 @@ int main() {
 }
 ```
 
-输出 `true`：`request_stop()` 之后线程尚未被 join，`joinable()` 仍为真；离开作用域时 `jthread` 的析构函数完成 join。完整示例没有对应的 `examples/` 文件，因为仓库的单文件流程只编译不运行并发代码。
+输出 `true`：`request_stop()` 之后线程尚未被 join，`joinable()` 仍为真；离开作用域时 `jthread` 的析构函数完成 join。完整版本见 [`examples/cpp20/jthread_stop_token.cpp`](../../examples/cpp20/jthread_stop_token.cpp)，五个场景的输出为：
+
+```text
+[1] token delivered = 1, stop possible = 1
+[2] first request = 1, second request = 0, requested = 1
+[3] joinable after request = 1
+[4] callback ran on = caller, request_stop = 1
+[5] joined at scope exit = yes
+```
+
+场景 1 的 lambda 首参是 `std::stop_token`，`jthread` 自动传入自己的令牌，`stop_possible()` 为真说明令牌关联着停止源。场景 2 验证 `request_stop()` 的返回值语义：第一次请求返回 `true`，重复请求返回 `false`，`stop_requested()` 保持为真。场景 3 用 `condition_variable_any` 的 `wait` 重载，停止请求到达时等待直接返回，不需要额外 `notify_all()`。场景 4 的 `stop_callback` 在调用 `request_stop()` 的线程上同步执行，因此观察到的是调用方线程号。场景 5 让作用域结束时自动请求停止并 `join`，主线程确认工作线程确实运行过，输出不依赖调度时序。
 
 `condition_variable_any` 提供接收 `stop_token` 的 `wait` 重载，等待期间收到停止请求会直接返回，不需要额外的唤醒标志；普通的 `std::condition_variable` 没有这个重载。
 
