@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-string-conversions-ipc-int-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/ipc/s1/Commands.cpp",
+  "lines": "1998-2003",
+  "feature": "cpp11.string-conversions",
+  "pattern": "解析 IPC 参数时用 std::stoi 并捕获转换异常",
+  "why_typical": "IPC 命令把字体大小作为文本传入，stoi 直接把子串变成 int；调用前先用 isNumber 过滤明显非数字输入，再用 try/catch 覆盖溢出等 stoi 仍可能抛出的情况，返回统一的错误字符串。",
+  "excerpt": "        if (!isNumber(FONTSIZE, true))\n            return \"invalid fontsize kwarg\";\n\n        try {\n            fontsize = std::stoi(FONTSIZE);\n        } catch (std::exception& e) { return \"invalid fontsize karg\"; }",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；异常只用于边界校验，转换成功后的值进入后续渲染流程。"
+}

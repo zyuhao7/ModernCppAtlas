@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-error-code-filesystem-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/subprocess-unix.cc",
+  "lines": "66-72",
+  "feature": "cpp11.error-code",
+  "pattern": "文件系统探测通过输出参数接收 std::error_code，失败信息不进入返回值",
+  "why_typical": "find_dso 依次尝试多个候选路径，is_regular_file 的 noexcept 重载把错误写入 ec；调用方用“返回值为真且 ec 为空”区分找到文件和其他失败，再把最终失败升级为致命诊断。",
+  "excerpt": "template <typename E>\nstatic std::string find_dso(Context<E> &ctx, std::filesystem::path self) {\n  // Look for mold-wrapper.so from the same directory as the executable is.\n  std::filesystem::path path = self.parent_path() / \"mold-wrapper.so\";\n  std::error_code ec;\n  if (std::filesystem::is_regular_file(path, ec) && !ec)\n    return path;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；同一个 ec 在多次探测间复用，成功路径不需要异常，最终失败由 Fatal 统一报告。"
+}

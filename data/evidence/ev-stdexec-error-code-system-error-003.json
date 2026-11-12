@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-error-code-system-error-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__task.hpp",
+  "lines": "242-246",
+  "feature": "cpp11.error-code",
+  "pattern": "把 std::error_code 适配成需要抛出的 std::system_error",
+  "why_typical": "任务完成通知携带多种错误表示，统一分派器对 error_code 分支构造 system_error 再交给 STDEXEC_THROW；这样异步错误在抛出点仍保留错误码类别和消息。",
+  "excerpt": "      [[noreturn]]\n      void operator()([[maybe_unused]] std::error_code __ec) const\n      {\n        STDEXEC_THROW(std::system_error(__ec));\n      }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；error_code 是错误通道的通用载荷，system_error 只是在必须抛异常时对其再包装。"
+}

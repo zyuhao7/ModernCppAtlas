@@ -1,0 +1,21 @@
+{
+  "id": "ev-duckdb-string-conversions-checkpoint-stoll-003",
+  "repo": "duckdb/duckdb",
+  "commit": "069cc9f9b5be802405797faecc284961b07c70ef",
+  "path": "src/storage/checkpoint_manager.cpp",
+  "lines": "272-274",
+  "feature": "cpp11.string-conversions",
+  "pattern": "从存储元数据字符串解析块号用 std::stoll",
+  "why_typical": "检查点校验把调试字符串里逗号分隔的块 ID 逐个转成 64 位整数，stoll 与容器的 block_id 类型一致，避免手写解析循环。",
+  "excerpt": "\t\t\t\t\tfor (auto &split : splits) {\n\t\t\t\t\t\tauto overflow_block_id = std::stoll(split);\n\t\t\t\t\t\tverify_block_usage_count[overflow_block_id]++;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；输入来自本进程生成的元数据，转换失败按内部不一致处理。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-string-conversions-line-label-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/linker-script.cc",
+  "lines": "40-40",
+  "feature": "cpp11.string-conversions",
+  "pattern": "诊断信息用 std::to_string 把行号拼进字符串标签",
+  "why_typical": "链接脚本报错需要输出“文件:行号”前缀，to_string 让整数行号直接参与字符串拼接，不必引入 ostringstream 或临时缓冲区。",
+  "excerpt": "  std::string label = mf->name + \":\" + std::to_string(lineno) + \": \";",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；转换结果只用于人类可读的诊断输出。"
+}

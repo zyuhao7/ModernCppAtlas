@@ -1,0 +1,6 @@
+[1] 42 -7 9000000000 3.500000
+[2] parsed = 42, consumed = 2
+[3] hex = 255
+[4] invalid_argument caught
+[5] out_of_range caught
+[6] ratio = 3.14159, used = 7
