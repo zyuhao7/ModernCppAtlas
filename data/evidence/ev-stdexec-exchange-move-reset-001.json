@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-exchange-move-reset-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/stop_token.hpp",
+  "lines": "166-167",
+  "feature": "cpp14.exchange",
+  "pattern": "移动构造用 std::exchange 取出成员旧值并把源对象置空",
+  "why_typical": "stop_token 的移动构造要把内部指针交给新对象，同时把源重置为可析构的默认状态；exchange 把读取旧值和写入新值合成一次表达式，语义比先保存再赋值更直接。",
+  "excerpt": "    constexpr inplace_stop_token(inplace_stop_token&& __other) noexcept\n      : __source_(std::exchange(__other.__source_, {}))",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；移动后源对象的 __source_ 变成空指针，避免两个 token 引用同一个停止状态。"
+}

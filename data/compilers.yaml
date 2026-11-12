@@ -552,3 +552,21 @@ features:
     msvc: "17.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-10"
+  cpp14.exchange:
+    gcc: "5"
+    clang: "3.4"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-11-12"
+  cpp11.error-code:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-12"
+  cpp11.string-conversions:
+    gcc: "4.5"
+    clang: "3.0"
+    msvc: "18.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-12"

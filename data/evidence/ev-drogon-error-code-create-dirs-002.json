@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-error-code-create-dirs-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/src/HttpAppFrameworkImpl.cc",
+  "lines": "1178-1186",
+  "feature": "cpp11.error-code",
+  "pattern": "目录创建失败时读取输出型 std::error_code 并记录诊断后终止",
+  "why_typical": "create_directories 的 error_code 重载返回 false 表示目录已存在或失败，光看返回值无法区分；代码再检查 fsErr 是否被置位，只有真正的错误才记录日志并 abort。",
+  "excerpt": "                auto fsLogPath =\n                    std::filesystem::path(utils::toNativePath(logPath_));\n                std::error_code fsErr;\n                if (!std::filesystem::create_directories(fsLogPath, fsErr) &&\n                    fsErr)\n                {\n                    LOG_ERROR << \"could not create log file path\";\n                    abort();\n                }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；服务启动阶段不允许异常逃逸，error_code 让失败检查保持顺序执行。"
+}

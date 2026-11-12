@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-exchange-flag-reset-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/yaml/common.hpp",
+  "lines": "1136-1137",
+  "feature": "cpp14.exchange",
+  "pattern": "扫描器推进前用 std::exchange 读取并清零两个布尔状态位",
+  "why_typical": "解析器需要保留“上一个字符是否为空白”和“是否位于节点开头”的旧值，同时为当前字符重置状态；exchange 让读取旧值和清零写在一条语句里，分支可以直接复用两个 const 局部变量。",
+  "excerpt": "         const bool after_whitespace = std::exchange(prev_was_whitespace, false);\n         const bool node_start = std::exchange(at_node_start, false);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；状态位在消费后立即清零，后续分支按需重新置位，避免跨字符泄漏。"
+}

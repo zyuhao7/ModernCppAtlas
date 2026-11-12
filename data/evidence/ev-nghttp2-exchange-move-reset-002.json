@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-exchange-move-reset-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_config.cc",
+  "lines": "5021-5023",
+  "feature": "cpp14.exchange",
+  "pattern": "移动构造函数把两个由析构函数释放的裸指针交换成 nullptr",
+  "why_typical": "QUICKeyingMaterial 的析构函数会对非空指针调用 EVP_CIPHER_CTX_free；移动构造用 exchange 把所有权转移给新对象，同时保证源对象的析构不会重复释放。",
+  "excerpt": "QUICKeyingMaterial::QUICKeyingMaterial(QUICKeyingMaterial &&other) noexcept\n  : cid_encryption_ctx{std::exchange(other.cid_encryption_ctx, nullptr)},\n    cid_decryption_ctx{std::exchange(other.cid_decryption_ctx, nullptr)},",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；移动源的两个上下文指针被置空，析构函数随后看到空指针直接跳过。"
+}

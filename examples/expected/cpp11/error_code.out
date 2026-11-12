@@ -1,0 +1,6 @@
+[1] ok = 0, missing = 2, message = No such file or directory, category = generic
+[2] opened = 0, failed = 1, message = No such file or directory
+[3] code message = No such file or directory, matches = 1
+[4] empty = parse: empty input, overflow = value overflow
+[5] same value = 1, equal = 0
+[6] parse(5) ok = 1, parse(-1) message = value overflow
