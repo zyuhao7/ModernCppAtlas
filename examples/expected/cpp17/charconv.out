@@ -1,0 +1,6 @@
+[1] 12345
+[2] ff
+[3] parsed = 255, consumed = 1
+[4] value = 42, stopped at 'a'
+[5] error = true
+[6] 3.14159265358979

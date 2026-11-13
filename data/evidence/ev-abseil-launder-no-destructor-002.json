@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-launder-no-destructor-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/no_destructor.h",
+  "lines": "157-168",
+  "feature": "cpp17.launder",
+  "pattern": "从字节存储取对象指针前用 std::launder 重新获取",
+  "why_typical": "no_destructor 在原始存储里构造一次并永不销毁，取用时用 launder 保证每个返回的指针都合法地指向同一个存活对象，符合语言对再构造对象的规定。",
+  "excerpt": "  class PlacementImpl {\n   public:\n    template <typename... Args>\n    explicit PlacementImpl(Args&&... args) {\n      new (&space_) T(std::forward<Args>(args)...);\n    }\n    const T* absl_nonnull get() const {\n      return std::launder(reinterpret_cast<const T*>(&space_));\n    }\n    T* absl_nonnull get() {\n      return std::launder(reinterpret_cast<T*>(&space_));\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；单例式惰性构造，launder 是取回对象地址的标准方式。"
+}

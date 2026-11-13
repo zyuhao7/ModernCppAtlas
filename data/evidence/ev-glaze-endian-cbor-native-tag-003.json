@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-endian-cbor-native-tag-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/cbor/header.hpp",
+  "lines": "256-270",
+  "feature": "cpp20.endian",
+  "pattern": "用 consteval 函数按 std::endian::native 在编译期选择 CBOR 的小端/大端标签",
+  "why_typical": "CBOR 对每个整型都有 le/be 两种标签，正确的一种由主机端序决定；放进 consteval 后标签在编译期算出，常量表达式里可用。",
+  "excerpt": "      template <class T>\n      [[nodiscard]] consteval uint64_t native_tag() noexcept\n      {\n         constexpr bool is_le = (std::endian::native == std::endian::little);\n\n         // Unsigned integers\n         if constexpr (std::same_as<T, uint8_t>) {\n            return semantic_tag::ta_uint8; // 64 - single byte, endianness irrelevant\n         }\n         else if constexpr (std::same_as<T, uint16_t>) {\n            return is_le ? semantic_tag::ta_uint16_le : semantic_tag::ta_uint16_be; // 69 or 65\n         }\n         else if constexpr (std::same_as<T, uint32_t>) {\n            return is_le ? semantic_tag::ta_uint32_le : semantic_tag::ta_uint32_be; // 70 or 66\n         }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；consteval 函数把端序判断固化到编译期常量。"
+}

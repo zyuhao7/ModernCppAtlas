@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-charconv-log-float-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_log.h",
+  "lines": "175-185",
+  "feature": "cpp17.charconv",
+  "pattern": "用 std::to_chars 以固定格式和精度把浮点数写入日志缓冲区",
+  "why_typical": "日志热路径要避免分配和区域设置相关行为，to_chars 直接写进调用方提供的缓冲区，固定 9 位小数保证输出稳定，pointer 前进即可接续拼接。",
+  "excerpt": "    auto left = wleft();\n    auto first = reinterpret_cast<char *>(last_);\n\n    auto rv =\n      std::to_chars(first, first + left, n, std::chars_format::fixed, 9);\n    if (rv.ec != std::errc{}) {\n      full_ = true;\n      return *this;\n    }\n\n    last_ = reinterpret_cast<uint8_t *>(rv.ptr);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；日志拼接器用 to_chars 把浮点写进已有缓冲区，返回的 ptr 更新写位置。"
+}

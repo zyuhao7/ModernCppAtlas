@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-charconv-workspace-offset-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/state/workspace/Resolver.cpp",
+  "lines": "54-66",
+  "feature": "cpp17.charconv",
+  "pattern": "用 std::from_chars 解析工作区偏移，并用返回的 ptr 判断是否整串消费",
+  "why_typical": "解析的是命令行传入的偏移量，要求“整串必须是数字”且不抛异常；from_chars 返回的 end 指针正好用来验证没有残留字符，配合 errc 形成无异常的解析路径。",
+  "excerpt": "static std::optional<int64_t> workspaceOffset(std::string_view value) {\n    if (value.starts_with('+'))\n        value.remove_prefix(1);\n    if (value.empty())\n        return std::nullopt;\n\n    int64_t result          = 0;\n    const auto [END, ERROR] = std::from_chars(value.data(), value.data() + value.size(), result);\n    if (ERROR != std::errc{} || END != value.data() + value.size() || result < -sc<int64_t>(UINT32_MAX) || result > UINT32_MAX)\n        return std::nullopt;\n\n    return result;\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；END == 末尾 同时校验了整串解析成功，避免 accept 部分数字。"
+}

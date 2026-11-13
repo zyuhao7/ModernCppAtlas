@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-endian-siphash-read64-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "lib/siphash.h",
+  "lines": "86-92",
+  "feature": "cpp20.endian",
+  "pattern": "用 std::endian::native 判断主机字节序，必要时把读入的 64 位值翻转",
+  "why_typical": "哈希算法要求固定的字节序，读入内存后在大端机上必须翻转；std::endian 让这个判断成为编译期常量，不需要平台宏或运行期探测。",
+  "excerpt": "  uint64_t read64(void *loc) {\n    uint64_t val;\n    memcpy(&val, loc, 8);\n    if (std::endian::native == std::endian::big)\n      val = bswap(val);\n    return val;\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；siphash 的输入字节序固定，主机为大端时才需要翻转。"
+}
