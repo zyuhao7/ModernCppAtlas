@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-to-array-terminators-003",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_client_handler.cc",
+  "lines": "1306-1306",
+  "feature": "cpp20.to-array",
+  "pattern": "用 std::to_array 构造字符查找集，交给范围查找函数使用",
+  "why_typical": "一行内把终止字符列表变成有 begin()/end() 的容器，省去裸数组长度参数；这是 std::to_array 替换 C 数组的典型小额收益。",
+  "excerpt": "  auto chrs = std::to_array({'\\n', '\\0'});",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；结果随后用于按字符集定位 PROXY 协议行中的换行与结束符。"
+}

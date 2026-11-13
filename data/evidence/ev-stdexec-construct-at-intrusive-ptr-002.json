@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-construct-at-intrusive-ptr-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__intrusive_ptr.hpp",
+  "lines": "103-111",
+  "feature": "cpp20.construct-at",
+  "pattern": "控制块在引用计数初始化之后用 std::construct_at 延迟构造被管理对象",
+  "why_typical": "构造顺序有语义：共享值必须在原子计数置位之后构造，否则对象构造函数里的自引用会读到未初始化计数。std::construct_at 让这一顺序显式且可 constexpr。",
+  "excerpt": "      template <class... _Us>\n      constexpr explicit __control_block(_Us&&... __us)\n        noexcept(__nothrow_constructible_from<_Ty, _Us...>)\n        : __ref_count_(__ref_count_increment)\n      {\n        // Construct the value *after* the initialization of the atomic in case the constructor of\n        // _Ty calls __intrusive_from_this() (which increments the ref count):\n        std::construct_at(std::addressof(__value), static_cast<_Us&&>(__us)...);\n      }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；构造函数体而非成员初始化列表使用 construct_at，是为了控制与原子成员的构造顺序。"
+}

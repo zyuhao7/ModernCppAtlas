@@ -1,0 +1,6 @@
+[1] point = 3,4
+[2] constexpr = 42
+[3] strings = hello zzz
+[4] slot = 7,8
+[5] scalar = 42
+[6] moved = 1,2

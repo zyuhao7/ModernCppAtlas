@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-numbers-angle-degrees-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/render/OpenGL.cpp",
+  "lines": "2075-2075",
+  "feature": "cpp20.numbers",
+  "pattern": "把渐变角度在度与弧度之间换算，反复使用 std::numbers::pi",
+  "why_typical": "渲染代码里角度以度存储、着色器 uniform 需要弧度；std::numbers::pi 让常量有类型、有定义，不必再自定义 #define 或 sizeof 表达式。",
+  "excerpt": "    shader->setUniformFloat(SHADER_ANGLE, sc<int>(grad.m_angle / (std::numbers::pi / 180.0)) % 360 * (std::numbers::pi / 180.0));",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；同一行用两次 pi 做度到弧度换算，是图形代码的典型写法。"
+}

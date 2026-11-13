@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-numbers-log10e-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/helpers/cm/ColorManagement.cpp",
+  "lines": "403-413",
+  "feature": "cpp20.numbers",
+  "pattern": "对数域颜色变换用 std::numbers::ln10 换算底数",
+  "why_typical": "颜色分级在 log 域做增益，指数与对数互逆；使用带类型的 ln10 常量避免手写 2.302585 遗漏精度或写错量级。",
+  "excerpt": "static RGBAColor tfLog(RGBAColor color, float mult) {\n    for (uint i = 0; i <= 2; i++) {\n        color.v[i] = color.v[i] <= 0 ? 0.0 : exp((color.v[i] - 1.0) * mult * std::numbers::ln10);\n    }\n    return color;\n}\n\nstatic RGBAColor tfInvLog(RGBAColor color, float mult, float min) {\n    for (uint i = 0; i <= 2; i++) {\n        color.v[i] = color.v[i] <= min ? 0.0 : 1.0 + log(color.v[i]) / std::numbers::ln10 / mult;\n    }",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；正变换用 exp、逆变换用 log，两个方向共用同一个 ln10 常量。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-to-array-bind-flags-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/ipc/s1/Commands.cpp",
+  "lines": "1167-1173",
+  "feature": "cpp20.to-array",
+  "pattern": "用 std::to_array 把枚举到字符串的映射表初始化为 constexpr 数组",
+  "why_typical": "映射表内容是编译期已知的字面量，std::to_array 从花括号列表直接推出 std::array 并保留 constexpr，比手写 std::array<T,N>{...} 少写一次元素个数。",
+  "excerpt": "    static constexpr auto FLAGS = std::to_array<std::pair<Keybinds::eBindFlags, std::string_view>>({\n        {Keybinds::BIND_FLAG_LOCKED, \"locked\"},\n        {Keybinds::BIND_FLAG_RELEASE, \"release\"},\n        {Keybinds::BIND_FLAG_REPEAT, \"repeat\"},\n        {Keybinds::BIND_FLAG_LONG_PRESS, \"long_press\"},\n        {Keybinds::BIND_FLAG_NON_CONSUMING, \"non_consuming\"},\n        {Keybinds::BIND_FLAG_AUTO_CONSUMING, \"auto_consuming\"},",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；显式指定元素类型是因为列表中有枚举，推导无法自行统一。"
+}
