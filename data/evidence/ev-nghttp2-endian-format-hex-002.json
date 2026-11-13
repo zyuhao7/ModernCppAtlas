@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-endian-format-hex-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/util.h",
+  "lines": "456-469",
+  "feature": "cpp20.endian",
+  "pattern": "用 if constexpr (std::endian::native == std::endian::little) 分支，决定十六进制打印的字节遍历方向",
+  "why_typical": "十六进制输出的字节顺序取决于主机端序，用 if constexpr 让分支在编译期被丢弃，两种端序各只保留一条循环路径。",
+  "excerpt": "  if constexpr (sizeof(n) == 1) {\n    return format_hex_uint8(n, result);\n  }\n\n  if constexpr (std::endian::native == std::endian::little) {\n    auto end = reinterpret_cast<uint8_t *>(&n);\n    auto p = end + sizeof(n);\n\n    for (; p != end; --p) {\n      result = format_hex_uint8(*(p - 1), result);\n    }\n  } else {\n    auto p = reinterpret_cast<uint8_t *>(&n);\n    auto end = p + sizeof(n);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；constexpr 函数内用 if constexpr 按端序选择遍历方向。"
+}

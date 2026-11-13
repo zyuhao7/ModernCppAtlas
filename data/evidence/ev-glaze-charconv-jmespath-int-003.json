@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-charconv-jmespath-int-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/json/jmespath.hpp",
+  "lines": "297-308",
+  "feature": "cpp17.charconv",
+  "pattern": "用 std::from_chars 解析 JMESPath 下标并借返回的 errc 判定成败",
+  "why_typical": "解析器要求 constexpr 且不抛异常，from_chars 满足两者：失败只改返回的 error_code，成功即把关进作用域立即返回值，适合放在 constexpr 的 JSON 查询子语言里。",
+  "excerpt": "      inline constexpr std::optional<int> parse_int(std::string_view s)\n      {\n         if (s.empty()) {\n            return std::nullopt;\n         }\n         int value;\n         auto result = std::from_chars(s.data(), s.data() + s.size(), value);\n         if (result.ec == std::errc()) {\n            return value;\n         }\n         return std::nullopt;\n      }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；constexpr 解析函数，errc 为空即视为解析成功。"
+}

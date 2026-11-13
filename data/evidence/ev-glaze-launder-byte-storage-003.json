@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-launder-byte-storage-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/inplace_vector.hpp",
+  "lines": "37-44",
+  "feature": "cpp17.launder",
+  "pattern": "constexpr 存储辅助类用 std::launder 把字节数组转成元素指针",
+  "why_typical": "元素存在对齐的 unsigned char 数组里，data_ptr 用 launder 才能在常量求值和运行期都得到合法指针；constexpr 与 launder 的兼容是就地容器实现的关键。",
+  "excerpt": "      template <class T, size_t N>\n      struct byte_storage\n      {\n         alignas(T) unsigned char storage[sizeof(T) * N];\n         size_t size_ = 0;\n         constexpr T* data_ptr() noexcept { return std::launder(reinterpret_cast<T*>(storage)); }\n         constexpr const T* data_ptr() const noexcept { return std::launder(reinterpret_cast<const T*>(storage)); }\n         constexpr size_t storage_size() const noexcept { return size_; }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；constexpr 的存储辅助类，launder 在常量求值下也用得到。"
+}

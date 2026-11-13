@@ -606,3 +606,21 @@ features:
     msvc: "19.28"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-12"
+  cpp20.endian:
+    gcc: "8"
+    clang: "7"
+    msvc: "19.22"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-13"
+  cpp17.launder:
+    gcc: "7"
+    clang: "6"
+    msvc: "19.14"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-13"
+  cpp17.charconv:
+    gcc: "8"
+    clang: "7"
+    msvc: "19.14"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-13"

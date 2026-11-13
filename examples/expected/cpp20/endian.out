@@ -1,0 +1,6 @@
+[1] native is little or big = true
+[2] little != big = true
+[3] big-endian = 1 2 3 4
+[4] little-endian = 4 3 2 1
+[5] sizeof(uint8_t) = 1
+[6] decoded = 0x1020304

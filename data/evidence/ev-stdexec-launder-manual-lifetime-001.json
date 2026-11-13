@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-launder-manual-lifetime-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__manual_lifetime.hpp",
+  "lines": "46-54",
+  "feature": "cpp17.launder",
+  "pattern": "placement new 构造后用 std::launder 取得可用指针并返回引用",
+  "why_typical": "在原始缓冲区上就地构造对象时，placement new 返回的指针与新对象之间需要 launder 才能消除旧对象的 provenance，返回引用前必须经过它。",
+  "excerpt": "    template <class... _Args>\n    constexpr auto __construct(_Args&&... __args)\n      noexcept(STDEXEC::__nothrow_constructible_from<_Ty, _Args...>) -> _Ty&\n    {\n      // Use placement new instead of std::construct_at to support aggregate initialization with\n      // brace elision.\n      return *std::launder(::new (static_cast<void*>(__buffer_))\n                             _Ty{static_cast<_Args&&>(__args)...});\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-13",
+  "is_test": false,
+  "notes": "生产路径；手动生命周期容器在裸缓冲区上构造，launder 让返回的引用指向新对象。"
+}
