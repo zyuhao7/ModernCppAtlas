@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-to-array-signal-set-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_signal.cc",
+  "lines": "119-123",
+  "feature": "cpp20.to-array",
+  "pattern": "用 std::to_array 定义要忽略的信号集合，类型自动推导",
+  "why_typical": "信号列表是少量编译期常量，std::to_array 无需显式写元素类型即可得到 constexpr std::array，适合直接传给按范围遍历的辅助函数。",
+  "excerpt": "constexpr auto main_proc_ign_signals = std::to_array({SIGPIPE});\n\nconstexpr auto worker_proc_ign_signals =\n  std::to_array({REOPEN_LOG_SIGNAL, EXEC_BINARY_SIGNAL,\n                 GRACEFUL_SHUTDOWN_SIGNAL, RELOAD_SIGNAL, SIGPIPE});",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；省略显式模板参数，元素类型由宏展开后的 int 常量推导。"
+}

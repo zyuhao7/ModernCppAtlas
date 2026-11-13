@@ -588,3 +588,21 @@ features:
     msvc: "19.28"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-12"
+  cpp20.numbers:
+    gcc: "10"
+    clang: "11"
+    msvc: "19.25"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-12"
+  cpp20.to-array:
+    gcc: "10"
+    clang: "10"
+    msvc: "19.25"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-12"
+  cpp20.construct-at:
+    gcc: "10"
+    clang: "10"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-12"

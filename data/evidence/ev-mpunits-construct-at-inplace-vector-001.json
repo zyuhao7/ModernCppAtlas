@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-construct-at-inplace-vector-001",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/ext/inplace_vector.h",
+  "lines": "108-115",
+  "feature": "cpp20.construct-at",
+  "pattern": "容器在构造函数标记为 constexpr，用 std::construct_at 就地构造元素",
+  "why_typical": "inplace_vector 要能在常量表达式中使用，std::construct_at 是 constexpr 的原地构造入口，替代 placement new 让整条 emplace 路径可用于静态初始化。",
+  "excerpt": "  template<typename... Args>\n    requires(std::constructible_from<T, Args...>)\n  constexpr T& unchecked_emplace_back(Args&&... args)\n  {\n    std::construct_at(end(), std::forward<Args>(args)...);\n    ++size_;\n    return back();\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；函数标注 constexpr，是 std::construct_at 相比 placement new 的核心优势场景。"
+}

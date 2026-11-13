@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-construct-at-inplace-vector-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/inplace_vector.hpp",
+  "lines": "261-262",
+  "feature": "cpp20.construct-at",
+  "pattern": "就地容器在原始存储尾部用 std::construct_at 追加元素并更新大小",
+  "why_typical": "容器自己管理未初始化缓冲区，append 必须在裸存储上构造；std::construct_at 明确表达“在已有地址上构造对象”，并连带让 constexpr 路径可用。",
+  "excerpt": "            std::construct_at(this->data_ptr() + storage_size(), std::forward<Args>(args)...);\n            set_storage_size(storage_size() + 1);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；Json 序列化库的固定容量 span 容器，构造后再递增逻辑大小。"
+}

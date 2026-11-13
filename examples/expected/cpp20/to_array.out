@@ -1,0 +1,6 @@
+[1] size = 5, front = 1, back = 5
+[2] names = red blue
+[3] first = red, last = green
+[4] is std::array = 1
+[5] updated = 4.5
+[6] copy size = 5, sum = 6

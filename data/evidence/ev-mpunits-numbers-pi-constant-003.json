@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-numbers-pi-constant-003",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/framework/unit_magnitude.h",
+  "lines": "89-96",
+  "feature": "cpp20.numbers",
+  "pattern": "单位库把 std::numbers::pi_v<long double> 作为编译期 magnitude 常量",
+  "why_typical": "mp-units 在类型层表示量纲，pi 必须是被类型携带的常量；pi_v 提供模板化精度，编译器分支还专门绕过旧 Clang 的限制。",
+  "excerpt": "#if defined MP_UNITS_COMP_CLANG && MP_UNITS_COMP_CLANG < 18\ninline constexpr struct pi final : mag_constant<symbol_text{u8\"π\" /* U+03C0 GREEK SMALL LETTER PI */, \"pi\"}> {\n  static constexpr auto _value_ = std::numbers::pi_v<long double>;\n#else\ninline constexpr struct pi final :\n    mag_constant<symbol_text{u8\"π\" /* U+03C0 GREEK SMALL LETTER PI */, \"pi\"}, std::numbers::pi_v<long double> > {\n#endif\n} pi;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-12",
+  "is_test": false,
+  "notes": "生产路径；pi_v 作为 NTTP 参与类型定义，说明常量必须 constexpr 且可推导精度。"
+}
