@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-void-t-custom-meta-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/core/custom_meta.hpp",
+  "lines": "23-32",
+  "feature": "cpp17.void-t",
+  "pattern": "用 std::void_t 检测自定义 meta 的 value 调用是否可用，并据返回类型决定是否走定制路径",
+  "why_typical": "检测与取类型合一：void_t 只在调用表达式良构时启用偏特化，偏特化里再用 decltype 拿到返回类型。",
+  "excerpt": "      template <class T, class = void>\n      struct has_custom_meta_impl : std::false_type\n      {};\n\n      template <class T>\n      struct has_custom_meta_impl<T, std::void_t<decltype(glz::meta<T>::value(std::declval<T&>()))>>\n      {\n         using result_type = decltype(glz::meta<T>::value(std::declval<T&>()));\n         static constexpr bool value = is_specialization_v<result_type, custom_t>;\n      };",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；序列化库在编译期判断用户是否提供 custom_t 元信息。"
+}

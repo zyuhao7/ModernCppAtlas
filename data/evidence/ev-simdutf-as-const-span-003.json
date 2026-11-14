@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-as-const-span-003",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "tests/span_tests.cpp",
+  "lines": "17-23",
+  "feature": "cpp17.as-const",
+  "pattern": "用 std::as_const 把容器转成 const 左值，再构造 std::span 验证只读视图",
+  "why_typical": "span 的构造依赖实参的 const 性，as_const 明确给出 const 左值，覆盖容器、视图与移动三种调用形态。",
+  "excerpt": "TEST(autodect_can_use_containers_and_views) {\n  std::vector<char> data{1, 2, 3, 4, 5};\n  auto r1a = simdutf::autodetect_encoding(data);\n  auto r1b = simdutf::autodetect_encoding(std::span{data});\n  auto r1c = simdutf::autodetect_encoding(std::span{std::as_const(data)});\n  auto r1d = simdutf::autodetect_encoding(std::as_const(data));\n  auto r1e = simdutf::autodetect_encoding(std::move(data));",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": true,
+  "notes": "测试路径；同一容器分别以可变、const 视图与移动方式传入，as_const 覆盖只读左值分支。"
+}

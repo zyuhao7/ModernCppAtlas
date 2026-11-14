@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-is-constant-evaluated-fastfloat-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/util/fast_float.hpp",
+  "lines": "364-370",
+  "feature": "cpp20.is-constant-evaluated",
+  "pattern": "constexpr 辅助函数用 std::is_constant_evaluated 判断当前是否在常量求值中",
+  "why_typical": "浮点解析在编译期与运行期需要不同实现，先用一行判断分开两条路径，再让调用方复用同一个函数名。",
+  "excerpt": "fastfloat_really_inline constexpr bool cpp20_and_in_constexpr() {\n#if GLZ_FASTFLOAT_HAS_IS_CONSTANT_EVALUATED\n  return std::is_constant_evaluated();\n#else\n  return false;\n#endif\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；fast_float 在常量求值时切到可移植的慢路径。"
+}

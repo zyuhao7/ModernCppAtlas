@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-is-constant-evaluated-wrapper-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/meta/type_traits.h",
+  "lines": "529-537",
+  "feature": "cpp20.is-constant-evaluated",
+  "pattern": "用 std::is_constant_evaluated 实现库内兼容封装，旧标准退回内建函数",
+  "why_typical": "库不能假定用户一定用 C++20，标准函数存在时优先走标准路径，否则用编译器内建保持同样语义。",
+  "excerpt": "#if defined(ABSL_HAVE_CONSTANT_EVALUATED)\nconstexpr bool is_constant_evaluated() noexcept {\n#ifdef __cpp_lib_is_constant_evaluated\n  return std::is_constant_evaluated();\n#elif ABSL_HAVE_BUILTIN(__builtin_is_constant_evaluated)\n  return __builtin_is_constant_evaluated();\n#endif\n}\n#endif  // ABSL_HAVE_CONSTANT_EVALUATED",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；以特性测试宏选择标准函数或编译器内建，保证跨标准版本一致。"
+}

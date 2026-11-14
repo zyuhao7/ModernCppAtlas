@@ -1,0 +1,21 @@
+{
+  "id": "ev-drogon-void-t-awaitable-002",
+  "repo": "drogonframework/drogon",
+  "commit": "3aae769cc405cf5abb9d477675c6430924f02c7c",
+  "path": "lib/inc/drogon/utils/coroutine.h",
+  "lines": "74-85",
+  "feature": "cpp17.void-t",
+  "pattern": "用 std::void_t 包裹 getAwaiter 调用表达式，检测类型是否可被 co_await",
+  "why_typical": "表达式检测需要把多个依赖表达式收进同一次替换，void_t 让偏特化只在 getAwaiter 调用良构时才成立。",
+  "excerpt": "template <typename T, typename = std::void_t<>>\nstruct is_awaitable : std::false_type\n{\n};\n\ntemplate <typename T>\nstruct is_awaitable<\n    T,\n    std::void_t<decltype(internal::getAwaiter(std::declval<T>()))>>\n    : std::true_type\n{\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；协程库检测 awaiter，void_t 把表达式良构性转成偏特化条件。"
+}
