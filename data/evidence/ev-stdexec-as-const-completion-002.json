@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-as-const-completion-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/fork_join.hpp",
+  "lines": "74-77",
+  "feature": "cpp17.as-const",
+  "pattern": "把结果容器用 std::as_const 以 const 引用传给完成回调，避免在启动路径上复制",
+  "why_typical": "启动操作状态只需要只读结果，as_const 让调用自动匹配 const 版本，不产生容器副本也不允许意外修改。",
+  "excerpt": "        STDEXEC_ATTRIBUTE(host, device) void start() noexcept\n        {\n          std::as_const(*_results_).__complete(_rcvr_);\n        }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；完成信号只读取结果容器，用 as_const 选定 const 成员函数。"
+}

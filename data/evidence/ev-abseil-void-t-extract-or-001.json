@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-void-t-extract-or-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/memory/memory.h",
+  "lines": "240-253",
+  "feature": "cpp17.void-t",
+  "pattern": "用 std::void_t 偏特化检测类型是否具备某个成员类型，缺失时回退到默认类型",
+  "why_typical": "void_t 把“表达式是否良构”折叠成 void，主模板给默认值、偏特化接管检测成功的情形，是最标准的检测惯用法。",
+  "excerpt": "// ExtractOr<E, O, D>::type evaluates to E<O> if possible. Otherwise, D.\ntemplate <template <typename> class Extract, typename Obj, typename Default,\n          typename>\nstruct ExtractOr {\n  using type = Default;\n};\n\ntemplate <template <typename> class Extract, typename Obj, typename Default>\nstruct ExtractOr<Extract, Obj, Default, std::void_t<Extract<Obj>>> {\n  using type = Extract<Obj>;\n};\n\ntemplate <template <typename> class Extract, typename Obj, typename Default>\nusing ExtractOrT = typename ExtractOr<Extract, Obj, Default, void>::type;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；分配器特征检测，偏特化在 Extract<Obj> 良构时选中。"
+}

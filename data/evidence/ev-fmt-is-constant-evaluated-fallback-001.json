@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-is-constant-evaluated-fallback-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/base.h",
+  "lines": "370-384",
+  "feature": "cpp20.is-constant-evaluated",
+  "pattern": "封装 std::is_constant_evaluated 并为基础内建命令与旧标准库提供回退",
+  "why_typical": "库要同时支持多个编译器版本，用特性宏选择内建或标准函数，最后回退到调用方给的默认值。",
+  "excerpt": "constexpr auto is_constant_evaluated(bool default_value = false) noexcept\n    -> bool {\n// Workaround for incompatibility between clang 14 and libstdc++ consteval-based\n// std::is_constant_evaluated: https://github.com/fmtlib/fmt/issues/3247.\n#if FMT_CPLUSPLUS >= 202002L && FMT_GLIBCXX_RELEASE >= 12 && \\\n    (FMT_CLANG_VERSION >= 1400 && FMT_CLANG_VERSION < 1500)\n  ignore_unused(default_value);\n  return __builtin_is_constant_evaluated();\n#elif defined(__cpp_lib_is_constant_evaluated)\n  ignore_unused(default_value);\n  return std::is_constant_evaluated();\n#else\n  return default_value;\n#endif\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；格式化库在常量求值时走不同分支，并兼容 clang/libstdc++ 的已知问题。"
+}

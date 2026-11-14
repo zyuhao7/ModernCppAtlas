@@ -1,0 +1,6 @@
+[1] vector has value_type = true
+[2] int has value_type = false
+[3] string has size() = true
+[4] int has size() = false
+[5] vector has reserve() = true
+[6] vector is iterable = true

@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-as-const-overload-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/desktop/view/window/Window.cpp",
+  "lines": "1938-1940",
+  "feature": "cpp17.as-const",
+  "pattern": "非 const 成员函数用 std::as_const 把 *this 转成 const 引用，再调用同名 const 重载",
+  "why_typical": "实现只需在 const 重载里写一次，非 const 版本通过 as_const 委派，既避免复制又不用手写 const_cast。",
+  "excerpt": "SP<Layout::ITarget> CWindow::layoutTarget() {\n    return std::as_const(*this).layoutTarget();\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-14",
+  "is_test": false,
+  "notes": "生产路径；非 const 重载通过 as_const 复用 const 重载，避免重复逻辑。"
+}

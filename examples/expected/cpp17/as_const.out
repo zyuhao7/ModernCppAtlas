@@ -1,0 +1,6 @@
+[1] as_const is const int& = true
+[2] overload: non-const = 1, const = 2
+[3] same address = true
+[4] size non-const = 10, const = 20
+[5] sum = 6, size = 3
+[6] string is const = true
