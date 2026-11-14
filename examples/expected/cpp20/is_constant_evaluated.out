@@ -1,0 +1,6 @@
+[1] compile-time = 20
+[2] runtime = 11
+[3] constexpr initializer = true
+[4] runtime call = false
+[5] compile-time path = 1
+[6] runtime path = 2

@@ -624,3 +624,21 @@ features:
     msvc: "19.14"
     source: https://en.cppreference.com/w/cpp/compiler_support/17
     checked_at: "2026-11-13"
+  cpp17.as-const:
+    gcc: "7.1"
+    clang: "3.8"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-14"
+  cpp17.void-t:
+    gcc: "6.1"
+    clang: "3.6"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-14"
+  cpp20.is-constant-evaluated:
+    gcc: "9"
+    clang: "9"
+    msvc: "19.25"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-14"

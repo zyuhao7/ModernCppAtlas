@@ -397,12 +397,13 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M3 · C++17/20 扩张（新增 350–450 人时）
 
-- 累计 200 条目：60 A + 110 B + 30 C。（进行中：104 个完整条目，99 A + 5 B，311 条证据）
+- 累计 200 条目：60 A + 110 B + 30 C。（进行中：107 个完整条目，102 A + 5 B，320 条证据）
 - 20 篇进阶长文：concepts、ranges、coroutines、modules、`std::format`、`std::span` 等。
 - 12 张库联动卡片。
 - 第十九批加入 `cpp17.clamp`（drogon/Hyprland/glaze 各 1 条）、`cpp14.init-capture`（glaze/Hyprland/stdexec 各 1 条）与 `cpp20.bit-operations`（mold/stdexec/nghttp2 各 1 条），均为 A 级，带可运行示例。
 - 第二十批加入 `cpp20.numbers`（Hyprland 2 条、mp-units 1 条）、`cpp20.to-array`（Hyprland 1 条、nghttp2 2 条）与 `cpp20.construct-at`（mp-units/stdexec/glaze 各 1 条），均为 A 级，带可运行示例。
 - 第二十一批加入 `cpp20.endian`（mold/nghttp2/glaze 各 1 条）、`cpp17.launder`（stdexec/abseil/glaze 各 1 条）与 `cpp17.charconv`（Hyprland/nghttp2/glaze 各 1 条），均为 A 级，带可运行示例。
+- 第二十二批加入 `cpp17.as-const`（Hyprland/stdexec/simdutf 各 1 条）、`cpp17.void-t`（abseil/drogon/glaze 各 1 条）与 `cpp20.is-constant-evaluated`（fmt/abseil/glaze 各 1 条），均为 A 级，带可运行示例。
 - 退出标准：月度证据刷新跑通一次；20 个最常用特性有完整进阶用法。
 
 ### M4 · C++23/26（新增 150–250 人时）
