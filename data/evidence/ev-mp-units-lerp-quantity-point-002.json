@@ -1,0 +1,21 @@
+{
+  "id": "ev-mp-units-lerp-quantity-point-002",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/math.h",
+  "lines": "471-485",
+  "feature": "cpp20.lerp",
+  "pattern": "带单位的 quantity_point 重载 lerp，内部 using std::lerp 后对数值分量插值",
+  "why_typical": "自定义数值类型可复用标准 lerp；先把值换算到共同单位，再交给 std::lerp 完成插值。",
+  "excerpt": "template<auto R1, auto Origin, typename Rep1, auto R2, typename Rep2, typename Factor>\n  requires requires(Rep1 a, Rep2 b, Factor t) {\n    get_common_reference(R1, R2);\n    requires requires { lerp(a, b, t); } || requires { std::lerp(a, b, t); };\n  }\n[[nodiscard]] constexpr QuantityPointOf<get_quantity_spec(get_common_reference(R1, R2))> auto lerp(\n  const quantity_point<R1, Origin, Rep1>& a, const quantity_point<R2, Origin, Rep2>& b, const Factor& t) noexcept\n{\n  constexpr auto ref = get_common_reference(R1, R2);\n  constexpr auto unit = get_unit(ref);\n  using std::lerp;\n  return Origin + quantity{lerp(a.quantity_ref_from(Origin).numerical_value_in(unit),\n                                b.quantity_ref_from(Origin).numerical_value_in(unit), t),\n                           ref};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；量纲感知的 lerp 重载，在共同参考单位下委托 std::lerp 处理数值。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-lerp-oklab-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/animation/AnimationManager.cpp",
+  "lines": "65-75",
+  "feature": "cpp20.lerp",
+  "pattern": "在 OkLab 色彩空间逐分量调用 std::lerp，再做颜色与透明度的插值",
+  "why_typical": "统一用标准 lerp 处理每个分量，插值逻辑简洁且不会因手写 a+t(b-a) 引入精度偏差。",
+  "excerpt": "    const auto&                L1 = av.begun().asOkLab();\n    const auto&                L2 = av.goal().asOkLab();\n\n    const Hyprgraphics::CColor lerped = Hyprgraphics::CColor::SOkLab{\n        .l = std::lerp(L1.l, L2.l, POINTY),\n        .a = std::lerp(L1.a, L2.a, POINTY),\n        .b = std::lerp(L1.b, L2.b, POINTY),\n    };\n\n    av.value() = {lerped, std::lerp(av.begun().a, av.goal().a, POINTY)};\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；动画颜色与 alpha 的插值，逐分量使用 std::lerp。"
+}

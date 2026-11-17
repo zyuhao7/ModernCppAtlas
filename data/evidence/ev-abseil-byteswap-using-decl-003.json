@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-byteswap-using-decl-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/numeric/bits.h",
+  "lines": "217-226",
+  "feature": "cpp23.byteswap",
+  "pattern": "在库命名空间内用 using std::byteswap 暴露标准实现，旧标准库走本地回退",
+  "why_typical": "调用方只看到统一的 absl::byteswap，特性测试宏决定背后是标准实现还是自实现。",
+  "excerpt": "#if defined(__cpp_lib_byteswap) && __cpp_lib_byteswap >= 202110L\n\n// https://en.cppreference.com/w/cpp/numeric/byteswap\n//\n// Reverses the bytes in the given integer value `x`.\n//\n// `absl::byteswap` participates in overload resolution only if `T` satisfies\n// integral, i.e., `T` is an integer type. The program is ill-formed if `T` has\n// padding bits.\nusing std::byteswap;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；跨标准兼容层，标准可用时直接引入，否则在下方提供等价实现。"
+}

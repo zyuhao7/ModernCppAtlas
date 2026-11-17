@@ -1,0 +1,6 @@
+[1] dx east = 1
+[2] dx west = -1
+[3] name north = north
+[4] name south = south
+[5] std::unreachable available = true
+[6] sum of dx = 0

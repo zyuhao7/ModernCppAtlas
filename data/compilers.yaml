@@ -642,3 +642,21 @@ features:
     msvc: "19.25"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-14"
+  cpp23.byteswap:
+    gcc: "12"
+    clang: "14"
+    msvc: "19.31"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-15"
+  cpp23.unreachable:
+    gcc: "12"
+    clang: "15"
+    msvc: "19.32"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-15"
+  cpp20.lerp:
+    gcc: "9"
+    clang: "9"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-15"

@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-unreachable-macro-fallback-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/optimization.h",
+  "lines": "212-221",
+  "feature": "cpp23.unreachable",
+  "pattern": "以特性测试宏选择 std::unreachable，缺失时逐级回退到编译器内建与空语句",
+  "why_typical": "库要兼容多代标准库，把标准不可达与 __builtin_unreachable、__assume 等实现串成一条降级链。",
+  "excerpt": "#if defined(__cpp_lib_unreachable) && __cpp_lib_unreachable >= 202202L\n#define ABSL_INTERNAL_UNREACHABLE_IMPL() std::unreachable()\n#elif defined(__GNUC__) || ABSL_HAVE_BUILTIN(__builtin_unreachable)\n#define ABSL_INTERNAL_UNREACHABLE_IMPL() __builtin_unreachable()\n#elif ABSL_HAVE_BUILTIN(__builtin_assume)\n#define ABSL_INTERNAL_UNREACHABLE_IMPL() __builtin_assume(false)\n#elif defined(_MSC_VER)\n#define ABSL_INTERNAL_UNREACHABLE_IMPL() __assume(false)\n#else\n#define ABSL_INTERNAL_UNREACHABLE_IMPL() ((void)0)",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；底层不可达宏的跨标准/跨编译器降级链，供 ABSL_UNREACHABLE 使用。"
+}

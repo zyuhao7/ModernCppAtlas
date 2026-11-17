@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-byteswap-bson-le-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/bson/write.hpp",
+  "lines": "67-75",
+  "feature": "cpp23.byteswap",
+  "pattern": "写小端线格式前用 if constexpr 判断主机端序，必要时对无符号版本调用 std::byteswap",
+  "why_typical": "只在主机是大端时交换，先转无符号类型再交换，避免有符号值的表示与移位问题。",
+  "excerpt": "      template <std::integral T, class B>\n      GLZ_ALWAYS_INLINE void dump_le(T value, B& b, size_t& ix) noexcept\n      {\n         if constexpr (std::endian::native == std::endian::big) {\n            value = static_cast<T>(std::byteswap(static_cast<std::make_unsigned_t<T>>(value)));\n         }\n         std::memcpy(&b[ix], &value, sizeof(T));\n         ix += sizeof(T);\n      }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；BSON 小端写入，端序分支在编译期消除，交换只对整数类型启用。"
+}
