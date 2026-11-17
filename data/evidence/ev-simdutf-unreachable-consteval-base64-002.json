@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-unreachable-consteval-base64-002",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "include/simdutf/implementation.h",
+  "lines": "7759-7771",
+  "feature": "cpp23.unreachable",
+  "pattern": "consteval 函数里用特性测试宏判断 std::unreachable 是否可用，旧标准库回退到 throw",
+  "why_typical": "编译期解码遇到非法输入本就是硬错误，能标注不可达时优先标注，不支持时用抛异常兜底。",
+  "excerpt": "template <std::size_t InputLen>\nconsteval auto base64_decode_literal(const char *str) {\n  base64_decode_result<InputLen> result{};\n  auto r = scalar::base64::base64_to_binary_details_impl(\n      str, InputLen, result.buffer.data(), base64_default, loose);\n  if (r.error != error_code::SUCCESS) {\n  #if __cpp_lib_unreachable >= 202202L\n    std::unreachable(); // invalid base64 input in _base64 literal\n  #else\n    // workaround for older stdlib\n    throw \"invalid base64 input in _base64 literal\";\n  #endif\n  }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；_base64 字面量的编译期解码，标准支持时以 std::unreachable 表达非法输入。"
+}

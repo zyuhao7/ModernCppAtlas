@@ -1,0 +1,21 @@
+{
+  "id": "ev-gw2radial-lerp-ui-sprite-003",
+  "repo": "Friendly0Fire/GW2Radial",
+  "commit": "3178575f74dc68718b1608faeda5f93947f6a563",
+  "path": "src/Wheel.cpp",
+  "lines": "700-706",
+  "feature": "cpp20.lerp",
+  "pattern": "UI 动画过渡时用 std::lerp 同时对精灵尺寸与位置做插值",
+  "why_typical": "同一插值参数驱动多个数值，std::lerp 让尺寸与坐标过渡保持一致，无需手写线性公式。",
+  "excerpt": "            if (dt < 0.3333f && !inFadeOut)\n            {\n                float sizeInterpolant = SmoothStep(dt * 3);\n                spriteSize            = std::lerp(spriteSize * 3, spriteSize, sizeInterpolant);\n                topLeftCorner.x       = std::lerp(0.5f * screenSize.x, topLeftCorner.x, 0.25f + sizeInterpolant * 0.75f);\n                topLeftCorner.y       = std::lerp(0.5f * screenSize.y, topLeftCorner.y, 0.25f + sizeInterpolant * 0.75f);\n            }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；轮盘菜单的缩放与位移过渡，多处共同使用 std::lerp。"
+}

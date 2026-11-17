@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-unreachable-switch-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/desktop/view/types/GeometricMovableAnimated.cpp",
+  "lines": "8-15",
+  "feature": "cpp23.unreachable",
+  "pattern": "对枚举全覆盖的 switch 之后直接调用 std::unreachable，向编译器声明控制流无法走到这里",
+  "why_typical": "枚举分支已穷尽，函数仍需返回值；标注不可达既避免伪警告，也让编译器安心做优化。",
+  "excerpt": "Vector2D CGeometricMovableAnimated::position(eGeometricValueType t) const {\n    switch (t) {\n        case IGeometric::GEOMETRIC_GOAL: return m_realPosition->goal();\n        case IGeometric::GEOMETRIC_CURRENT: return m_realPosition->value();\n    }\n\n    std::unreachable();\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；几何动画的取值分发，switch 覆盖全部枚举值后以 std::unreachable 收尾。"
+}

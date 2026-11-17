@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-byteswap-byte-swap-001",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/detail/input/binary_reader.hpp",
+  "lines": "2820-2834",
+  "feature": "cpp23.byteswap",
+  "pattern": "用特性测试宏与 if constexpr 在支持时调用 std::byteswap，否则回退到逐字节交换",
+  "why_typical": "新标准库函数需要向后兼容，宏判断加类型判断让字节交换只对单字节以外的整数启用。",
+  "excerpt": "    template<class NumberType>\n    static void byte_swap(NumberType& number)\n    {\n        constexpr std::size_t sz = sizeof(number);\n#ifdef __cpp_lib_byteswap\n        if constexpr (sz == 1)\n        {\n            return;\n        }\n        if constexpr(std::is_integral_v<NumberType>)\n        {\n            number = std::byteswap(number);\n            return;\n        }\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-15",
+  "is_test": false,
+  "notes": "生产路径；二进制反序列化按标准库能力选择交换实现，旧标准库继续走下方逐字节循环。"
+}
