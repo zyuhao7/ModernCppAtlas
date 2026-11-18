@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-erase-if-lifecycle-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/state/workspace/LifecyclePolicy.cpp",
+  "lines": "59-60",
+  "feature": "cpp20.erase-if",
+  "pattern": "工作区返回列表用 erase_if 按工作区标识与显示器地址同时匹配删除元素",
+  "why_typical": "谓词同时比较 pair 的两个字段，erase_if 一次遍历完成过滤，无需手写下标或迭代器删除。",
+  "excerpt": "        if (RETURNING)\n            std::erase_if(m_returnMonitors, [&](const auto& entry) { return entry.first == workspace.identity && entry.second == monitor.address; });",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；窗口管理器的工作区生命周期管理，容器为 vector<pair<...>>。"
+}

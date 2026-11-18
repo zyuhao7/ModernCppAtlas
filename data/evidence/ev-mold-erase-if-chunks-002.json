@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-erase-if-chunks-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/passes.cc",
+  "lines": "1661-1663",
+  "feature": "cpp20.erase-if",
+  "pattern": "链接时用 erase_if 从 chunk 列表中剔除不占文件空间的节",
+  "why_typical": "谓词检查段类型，多行 lambda 读起来像过滤条件，删除后直接沿用剩余的 vector。",
+  "excerpt": "  std::erase_if(chunks, [](Chunk<E> *chunk) {\n    return chunk->shdr.sh_type == SHT_NOBITS;\n  });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；ELF 链接器的输出段整理。"
+}

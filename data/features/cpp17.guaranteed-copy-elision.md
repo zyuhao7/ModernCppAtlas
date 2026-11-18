@@ -6,12 +6,12 @@ kind: language
 category: [对象模型, 性能]
 difficulty: 4
 status: final
-tier: B
+tier: A
 compilers: {gcc: "7", clang: "4", msvc: "19.13"}
 tags: [copy elision, RVO, NRVO, prvalue, 不可移动类型]
 alternatives: [显式 std::move, placement new 与手动生命周期, 输出参数, 指针返回]
 proposal: P0135R1
-last_verified: "2026-10-27"
+last_verified: "2026-11-18"
 claims:
   - id: c1
     statement: "在 requires 表达式中用 prvalue 直接初始化不可移动类型，把复制消除当作可检测的约束"
