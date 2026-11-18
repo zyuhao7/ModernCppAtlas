@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-resize-overwrite-buffer-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/core/buffer_traits.hpp",
+  "lines": "61-70",
+  "feature": "cpp23.resize-and-overwrite",
+  "pattern": "用 requires 检测缓冲区是否支持 resize_and_overwrite，支持时直接预留写入空间",
+  "why_typical": "序列化缓冲区需要未初始化空间，resize_and_overwrite 避免先用零填充再覆盖。",
+  "excerpt": "   template <class B>\n   GLZ_ALWAYS_INLINE void resize_unfilled(B& b, const size_t n)\n   {\n      if constexpr (requires { b.resize_and_overwrite(n, [](auto*, size_t written) { return written; }); }) {\n         b.resize_and_overwrite(n, [](auto*, size_t written) noexcept { return written; });\n      }\n      else {\n         b.resize(n);\n      }\n   }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；序列化缓冲区预留，按能力检测选择 resize_and_overwrite 或 resize。"
+}

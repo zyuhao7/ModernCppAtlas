@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-try-emplace-patch-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/json/patch.hpp",
+  "lines": "844-848",
+  "feature": "cpp17.map-try-emplace",
+  "pattern": "JSON merge patch 用 try_emplace 取得或创建对象，再递归合并，避免两次查找",
+  "why_typical": "try_emplace 返回迭代器，键不存在时插入、存在时直接复用，注释点明避免双重查找。",
+  "excerpt": "               else if (value.is_object()) {\n                  // Recursively merge objects\n                  // Use try_emplace to avoid double lookup\n                  auto [it, inserted] = target_obj.try_emplace(key, GenericType{});\n                  auto ec = apply_merge_patch_impl(it->second, value, depth + 1);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；JSON merge patch 的递归合并。"
+}

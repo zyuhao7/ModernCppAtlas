@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-if-consteval-murmur-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/util/murmur.hpp",
+  "lines": "18-27",
+  "feature": "cpp23.if-consteval",
+  "pattern": "常量求值时逐字节组装整数，运行期改用 memcpy，用 if consteval 切换",
+  "why_typical": "memcpy 不能在常量求值中使用，if consteval 让同一函数同时满足编译期与运行期。",
+  "excerpt": "      uint32_t res{};\n      if consteval {\n         // Compile-time: build value byte-by-byte in little-endian order\n         for (size_t i = 0; i < 4; ++i) {\n            res |= static_cast<uint32_t>(bytes[i]) << (8 * i);\n         }\n      }\n      else {\n         // Note: memcpy is way faster with compiletime known length\n         std::memcpy(&res, bytes, 4);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；MurmurHash 的字节读取，编译期与运行期分支不同。"
+}

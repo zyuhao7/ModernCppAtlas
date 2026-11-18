@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-if-consteval-macro-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__utility.hpp",
+  "lines": "360-372",
+  "feature": "cpp23.if-consteval",
+  "pattern": "用特性测试宏 STDEXEC_IF_CONSTEVAL 包装 if consteval，在不可达路径上区分常量求值",
+  "why_typical": "库需要兼容不支持 if consteval 的编译器，用宏在 if consteval 与回退写法之间切换。",
+  "excerpt": "  template <class _Return = void>\n  [[noreturn]]\n  constexpr _Return __die(char const * __fmt, ...) noexcept\n  {\n    STDEXEC_IF_CONSTEVAL\n    {\n      // The following `if constexpr` is needed to keep compilers from complaining that\n      // neither branch of the `if consteval` (above) is a constant expression.\n      if constexpr (!__mnever<_Return>)\n      {\n        __std::unreachable();\n      }\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；STDEXEC_IF_CONSTEVAL 在 __config.hpp 中定义为 if consteval，旧编译器回退。"
+}

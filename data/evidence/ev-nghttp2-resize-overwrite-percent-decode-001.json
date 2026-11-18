@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-resize-overwrite-percent-decode-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/util.h",
+  "lines": "281-291",
+  "feature": "cpp23.resize-and-overwrite",
+  "pattern": "percent 解码前按输入长度一次性 resize_and_overwrite，回调直接写入并返回实际长度",
+  "why_typical": "解码输出长度可预估，resize_and_overwrite 避免先填充再覆盖，也避免额外分配。",
+  "excerpt": "template <std::forward_iterator I>\nconstexpr std::string percent_decode(I first, I last) {\n  std::string result;\n\n  result.resize_and_overwrite(\n    as_unsigned(std::ranges::distance(first, last)),\n    [first = std::move(first), last = std::move(last)](auto p,\n                                                       auto len) mutable {\n      return std::ranges::distance(\n        p, percent_decode(std::move(first), std::move(last), p));\n    });",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；URL percent 解码，输出缓冲直接写入。"
+}

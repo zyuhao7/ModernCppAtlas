@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-try-emplace-eventbus-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/event/EventBus.cpp",
+  "lines": "23-26",
+  "feature": "cpp17.map-try-emplace",
+  "pattern": "注册插件事件时用 try_emplace 的布尔结果判断名称是否重复",
+  "why_typical": "try_emplace 返回 pair<iterator, bool>，插入失败即为重复注册，无需先 find 再 insert。",
+  "excerpt": "std::expected<void, std::string> CEventBus::addPluginEvent(SP<CCustomEvent> event) {\n    if (!m_events.plugin.try_emplace(event->m_name, event).second) {\n        return std::unexpected(std::format(\"failed to register event {}: event already registered.\", event->m_name));\n    }",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；事件总线插件注册，用返回值区分重复。"
+}
