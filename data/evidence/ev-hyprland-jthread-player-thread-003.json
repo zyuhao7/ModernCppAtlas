@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-jthread-player-thread-003",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/bell/impl/RotatingPlayerThread.cpp",
+  "lines": "5-11",
+  "feature": "cpp20.jthread-stop-token",
+  "pattern": "构造函数用 std::jthread 启动成员线程，析构函数显式调用 stop() 后由 jthread 完成 join",
+  "why_typical": "jthread 作为类成员承担自动 join，析构路径集中处理停止与回收，避免 std::thread 析构时终止进程。",
+  "excerpt": "CRotatingPlayerThread::CRotatingPlayerThread(std::function<void(const std::string&)>&& player) : m_player(std::move(player)) {\n    m_thread = std::jthread([this] { run(); });\n}\n\nCRotatingPlayerThread::~CRotatingPlayerThread() {\n    stop();\n}",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；桌面通知播放线程，jthread 成员配合显式 stop 保证退出。"
+}

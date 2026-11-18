@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-chrono-calendar-ymd-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/core/chrono.hpp",
+  "lines": "377-381",
+  "feature": "cpp20.chrono-calendar",
+  "pattern": "把 time_point floor 到 days 后构造 year_month_day，再取出 year/month/day 三个字段",
+  "why_typical": "序列化 ISO 时间时复用标准日历类型取年月日，不需要自己把 epoch 天数换算成日期。",
+  "excerpt": "         const auto dp = floor<days>(value);\n         const year_month_day ymd{dp};\n         const int yr = static_cast<int>(ymd.year());\n         const auto mo = static_cast<unsigned>(ymd.month());\n         const auto dy = static_cast<unsigned>(ymd.day());",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；JSON 序列化的 ISO 8601 时间输出。"
+}
