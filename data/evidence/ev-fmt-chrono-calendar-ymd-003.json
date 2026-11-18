@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-chrono-calendar-ymd-003",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/chrono.h",
+  "lines": "2021-2028",
+  "feature": "cpp20.chrono-calendar",
+  "pattern": "formatter<year_month_day> 把 year_month_day 的 year/month/day 映射到 std::tm 字段",
+  "why_typical": "格式化库直接消费标准日历类型，说明 year_month_day 已成为跨库传递年月日的通用载体。",
+  "excerpt": "  template <typename FormatContext>\n  auto format(year_month_day val, FormatContext& ctx) const\n      -> decltype(ctx.out()) {\n    auto time = std::tm();\n    time.tm_year = static_cast<int>(val.year()) - 1900;\n    time.tm_mon = static_cast<int>(static_cast<unsigned>(val.month())) - 1;\n    time.tm_mday = static_cast<int>(static_cast<unsigned>(val.day()));\n    if (use_tm_formatter_) return formatter<std::tm, Char>::format(time, ctx);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "格式化库生产路径；year_month_day 的 formatter 特化。"
+}

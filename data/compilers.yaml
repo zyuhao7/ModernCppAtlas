@@ -660,3 +660,9 @@ features:
     msvc: "19.28"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-15"
+  cpp20.chrono-calendar:
+    gcc: "11"
+    clang: "19"
+    msvc: "19.29"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-18"

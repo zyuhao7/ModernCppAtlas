@@ -1,0 +1,21 @@
+{
+  "id": "ev-potree-print-num-points-003",
+  "repo": "potree/PotreeConverter",
+  "commit": "c2cb61843bf2b901e8e257874b1a6dcf67792fb2",
+  "path": "Converter/src/indexer.cpp",
+  "lines": "1626-1630",
+  "feature": "cpp23.print",
+  "pattern": "并行索引循环中用 std::println 的 {:L} 格式输出带千位分隔符的累计点数",
+  "why_typical": "处理大量点时直接打印进度，{:L} 交给标准格式化处理本地化数字分组，避免手工拼接。",
+  "excerpt": "\t\tlock_guard<mutex> lock(mtx_nodes);\n\t\t\n\t\tstatic i64 totalNumPoints = 0;\n\t\ttotalNumPoints += numPoints;\n\t\tprintln(\"processed points: {:L}\", totalNumPoints);",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；点云转换进度输出，使用 std::println 的数字分组格式。"
+}

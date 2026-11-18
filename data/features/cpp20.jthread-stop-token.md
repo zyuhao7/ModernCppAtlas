@@ -6,12 +6,12 @@ kind: library
 category: [并发]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "10", clang: "20", msvc: "19.28"}
 tags: [jthread, stop_token, 线程, 取消, 并发]
 alternatives: [std::thread 加原子标志, std::async, 线程池, 平台线程 API]
 proposal: P0660R10
-last_verified: "2026-10-26"
+last_verified: "2026-11-18"
 claims:
   - id: c1
     statement: "用 std::jthread 启动后台 COM 线程，并在 lambda 里轮询 stop_token"
@@ -19,6 +19,9 @@ claims:
   - id: c2
     statement: "把 std::jthread 保存在类成员中，由显式 reset 触发停止与 join"
     evidence: [ev-gw2radial-jthread-member-002]
+  - id: c3
+    statement: "构造函数用 std::jthread 启动成员线程，析构函数显式调用 stop 后再由 jthread 完成 join"
+    evidence: [ev-hyprland-jthread-player-thread-003]
 review:
   author: "zyuhao7"
   level: manual
@@ -86,12 +89,13 @@ int main() {
 
 ## 真实项目证据
 
-| 项目      | 位置                                                                                                                                        | 用法                                                                               | 为什么典型                                     |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------------------------------------------- |
-| GW2Radial | [`src/Core.cpp#L121-L133`](https://github.com/Friendly0Fire/GW2Radial/blob/3178575f74dc68718b1608faeda5f93947f6a563/src/Core.cpp#L121-L133) | `make_unique<std::jthread>`，lambda 接收 `stop_token`，循环检查 `stop_requested()` | 后台线程的创建、取消条件与自动 join 集中在一处 |
-| GW2Radial | [`include/Core.h#L93`](https://github.com/Friendly0Fire/GW2Radial/blob/3178575f74dc68718b1608faeda5f93947f6a563/include/Core.h#L93)         | `std::unique_ptr<std::jthread> comThread_;` 作为类成员                             | 用指针控制销毁时机，避免线程晚于依赖对象结束   |
+| 项目      | 位置                                                                                                                                                                              | 用法                                                                               | 为什么典型                                      |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
+| GW2Radial | [`src/Core.cpp#L121-L133`](https://github.com/Friendly0Fire/GW2Radial/blob/3178575f74dc68718b1608faeda5f93947f6a563/src/Core.cpp#L121-L133)                                       | `make_unique<std::jthread>`，lambda 接收 `stop_token`，循环检查 `stop_requested()` | 后台线程的创建、取消条件与自动 join 集中在一处  |
+| GW2Radial | [`include/Core.h#L93`](https://github.com/Friendly0Fire/GW2Radial/blob/3178575f74dc68718b1608faeda5f93947f6a563/include/Core.h#L93)                                               | `std::unique_ptr<std::jthread> comThread_;` 作为类成员                             | 用指针控制销毁时机，避免线程晚于依赖对象结束    |
+| Hyprland  | [`src/bell/impl/RotatingPlayerThread.cpp#L5-L11`](https://github.com/hyprwm/Hyprland/blob/0aa6745f705f2c4b0a5004eb019ef76e5bbdb426/src/bell/impl/RotatingPlayerThread.cpp#L5-L11) | 构造函数赋值 `std::jthread` 成员，析构函数调用 `stop()` 后由 `jthread` 完成 join   | 成员线程的生命周期与析构路径绑定，避免遗漏 join |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。项目在 `InnerShutdown()` 中显式 `comThread_.reset()`，先请求停止并 join，再清理其他成员；这比依赖成员析构顺序更明确。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。GW2Radial 在 `InnerShutdown()` 中显式 `comThread_.reset()`，先请求停止并 join，再清理其他成员；Hyprland 则在析构函数里先置退出标志、唤醒条件变量，再 `join`，两条路径都比依赖成员析构顺序更明确。
 
 ## 陷阱与边界
 
@@ -108,6 +112,14 @@ int main() {
 **Clang 支持较晚。** cppreference 将 Clang 17 标为部分支持、Clang 20 标为完整支持；以 Clang 为目标的项目要先用最小示例验证 `stop_token` 相关库设施。
 
 **不能强制终止。** 需要硬取消时只能依赖平台 API 或进程隔离；`jthread` 的模型刻意不提供强制终止。
+
+## 库联动
+
+- **`std::stop_source`**：持有停止状态；`jthread` 通过 `get_stop_source()` 暴露内部的源，可与外部线程共享同一取消信号。
+- **`std::stop_token`**：观察停止状态，支持 `stop_requested()` 查询与 `stop_possible()` 判断。
+- **`std::stop_callback`**：在停止请求发生时同步执行回调，适合唤醒阻塞中的线程或清理资源。
+- **`std::condition_variable_any`**：提供接收 `stop_token` 的 `wait` 重载，停止请求可直接中断等待。
+- **`std::thread`**：没有自动 join 与标准取消协议；`jthread` 在它之上补齐这两点。
 
 ## 横向对比
 

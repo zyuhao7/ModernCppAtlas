@@ -6,12 +6,26 @@ kind: library
 category: [格式化, I/O]
 difficulty: 2
 status: final
-tier: B
+tier: A
 compilers: {gcc: "14", clang: "18", msvc: "19.37"}
 tags: [格式化, 类型安全, 标准输出]
 alternatives: [std::cout, printf, std::format, fmt::print]
 proposal: P2093R14
-last_verified: "2026-10-29"
+last_verified: "2026-11-18"
+claims:
+  - id: c1
+    statement: "把 HTTP/2 名称值对格式化输出到 FILE*，使用 println 的文件重载"
+    evidence: [ev-nghttp2-print-name-value-001]
+  - id: c2
+    statement: "日志包装函数在非安静模式下调用 std::println 输出参数"
+    evidence: [ev-hyprland-print-log-002]
+  - id: c3
+    statement: "并行索引循环中用 std::println 的 {:L} 格式输出带千位分隔符的累计点数"
+    evidence: [ev-potree-print-num-points-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题
@@ -68,14 +82,27 @@ hello, world!
 
 上面的示例带特性检测：GCC 13 的 libstdc++ 还没有 `<print>`，会用 `std::cout` 分支保持可编译；GCC 14、Clang 18 及更新版本会走 `std::println` 分支。
 
+## 进阶用法
+
+**写到指定 `FILE*`。** nghttp2 的 `print_nv` 接收一个 `FILE*` 参数，把 HTTP/2 名称值对连同 ANSI 颜色转义一起格式化到该输出流。`std::println(FILE*, fmt, args...)` 省去先构造 `std::string` 再 `fwrite` 的步骤，格式串集中在一处，转义序列不会和参数拼接混在一起。
+
+**包装成轻量日志出口。** Hyprland 的 `log` 先判断 `quiet`，非安静模式下调用 `std::println("{}", str)`。`println` 直接写标准输出，不需要 `iostream` 的流对象；包装函数保持无状态，调用方不必区分 `cout` 与 `printf` 两套路径。
+
+**使用标准格式说明。** `std::print` 复用 `std::format` 的语法。potree 的索引循环用 `println("processed points: {:L}", totalNumPoints)` 输出累计点数，`L` 让标准格式化按本地规则插入千位分隔符，手写拼接很难正确处理分组与负号。
+
+**格式串在编译期检查。** 字符串字面量作为格式串时，占位符数量、类型与格式说明都会在编译期校验；格式串放进变量后需要改用 `std::vprint_unicode` 一类的运行期接口，且不再有同样的检查。
+
+**`print` 与 `println` 不隐含 flush。** 二者写入底层 `FILE*`，缓冲策略与 `printf` 一致；需要立刻可见时显式 `std::fflush`，不要依赖换行自动刷新。
+
 ## 真实项目证据
 
-| 项目            | 位置                                                                                                                                            | 用法                                                      | 为什么典型                                                  |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------- |
-| nghttp2/nghttp2 | [`src/app_helper.cc#L149-L153`](https://github.com/nghttp2/nghttp2/blob/85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2/src/app_helper.cc#L149-L153)   | 把 HTTP/2 名称值对格式化输出到 `FILE*`，配合 ANSI 转义    | 使用 `println` 的文件重载，避免先构造字符串；格式串集中可读 |
-| hyprwm/Hyprland | [`hyprctl/src/main.cpp#L56-L61`](https://github.com/hyprwm/Hyprland/blob/0aa6745f705f2c4b0a5004eb019ef76e5bbdb426/hyprctl/src/main.cpp#L56-L61) | 日志包装函数在安静模式下直接返回，否则调用 `std::println` | 把 `println` 当作轻量日志出口，调用方不再手工拼接字符串     |
+| 项目                   | 位置                                                                                                                                                                     | 用法                                                      | 为什么典型                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ----------------------------------------------------------- |
+| nghttp2/nghttp2        | [`src/app_helper.cc#L149-L153`](https://github.com/nghttp2/nghttp2/blob/85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2/src/app_helper.cc#L149-L153)                            | 把 HTTP/2 名称值对格式化输出到 `FILE*`，配合 ANSI 转义    | 使用 `println` 的文件重载，避免先构造字符串；格式串集中可读 |
+| hyprwm/Hyprland        | [`hyprctl/src/main.cpp#L56-L61`](https://github.com/hyprwm/Hyprland/blob/0aa6745f705f2c4b0a5004eb019ef76e5bbdb426/hyprctl/src/main.cpp#L56-L61)                          | 日志包装函数在安静模式下直接返回，否则调用 `std::println` | 把 `println` 当作轻量日志出口，调用方不再手工拼接字符串     |
+| potree/PotreeConverter | [`Converter/src/indexer.cpp#L1626-L1630`](https://github.com/potree/PotreeConverter/blob/c2cb61843bf2b901e8e257874b1a6dcf67792fb2/Converter/src/indexer.cpp#L1626-L1630) | 并行索引循环用 `{:L}` 输出带千位分隔符的累计点数          | 数字分组的格式说明交给标准库处理，进度输出无需手工拼接      |
 
-两条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。覆盖文件重载、日志包装与数值格式说明三种用法。
 
 ## 陷阱与边界
 
@@ -86,6 +113,14 @@ hello, world!
 - **`FILE*` 重载不接管句柄生命周期。** 传入的 `FILE*` 必须保持有效；写失败的处理方式由调用方决定，不要假设 `println` 会重试。
 - **自定义类型需要 `std::formatter`。** `std::print` 复用 `std::format` 的格式化规则；没有特化 `std::formatter` 的类型不能直接输出。
 - **编译器支持晚于语言标准。** GCC 13 和旧版 libstdc++ 没有 `<print>`；GCC 14、Clang 18（libc++/libstdc++ 满足要求时）、MSVC 19.37 起可用。
+
+## 库联动
+
+- **`std::format`**：`std::print` 复用同一套格式语法与编译期检查；需要先得到字符串时用 `std::format`。
+- **`std::vprint_unicode` / `std::vprint_nonunicode`**：运行期格式串的底层接口，适合格式串来自变量的场景。
+- **`std::formatter`**：自定义类型通过特化 `formatter` 接入统一的 `{}` 输出。
+- **`FILE*` 与 `std::fflush`**：`print`/`println` 写入底层 C 流，缓冲与刷新沿用 `FILE*` 语义。
+- **`fmt::print`**：C++20 及以前可用的同源实现；接口与格式语法接近，便于迁移。
 
 ## 横向对比
 

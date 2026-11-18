@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-chrono-calendar-iso8601-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/util.cc",
+  "lines": "208-222",
+  "feature": "cpp20.chrono-calendar",
+  "pattern": "用 zoned_time 取本地时间后，floor 到 days 再构造 year_month_day 拆分年月日",
+  "why_typical": "把时间点转换为日历字段的标准流程：先落到天，再由 year_month_day 读取 year/month/day，避免手写闰年与月份天数计算。",
+  "excerpt": "std::string_view format_iso8601(char *out,\n                                std::chrono::system_clock::time_point tp,\n                                const std::chrono::time_zone *tz) {\n  auto t = std::chrono::floor<std::chrono::milliseconds>(tp);\n  auto zt = std::chrono::zoned_time{tz, t};\n  auto lt = zt.get_local_time();\n  auto days = std::chrono::floor<std::chrono::days>(lt);\n  auto ymd = std::chrono::year_month_day{days};\n\n  auto p = out;\n\n  p = cpydig4(as_unsigned(static_cast<int>(ymd.year())), p);\n  *p++ = '-';\n  p = cpydig2(static_cast<uint32_t>(ymd.month()), p);\n  *p++ = '-';",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；ISO 8601 时间格式化，日历字段来自 year_month_day。"
+}
