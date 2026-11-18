@@ -6,12 +6,26 @@ kind: library
 category: [错误处理, 类型安全]
 difficulty: 3
 status: final
-tier: B
+tier: A
 compilers: {gcc: "12", clang: "16", msvc: "19.33"}
 tags: [错误传播, 单子操作, 无异常]
 alternatives: [std::optional, std::variant, 错误码, 异常, tl::expected, absl::StatusOr]
 proposal: P0323R12
-last_verified: "2026-10-29"
+last_verified: "2026-11-18"
+claims:
+  - id: c1
+    statement: "把用户输入解析成枚举值，失败时返回 std::unexpected，错误类型是项目内小枚举"
+    evidence: [ev-nghttp2-expected-severity-001]
+  - id: c2
+    statement: "解析十六进制颜色分量，失败时把原始输入带进错误字符串"
+    evidence: [ev-hyprland-expected-parse-hex-002]
+  - id: c3
+    statement: "URL 解析失败时返回 std::unexpected<std::error_code>，用标准错误码承载原因"
+    evidence: [ev-glaze-expected-parse-url-003]
+review:
+  author: "zyuhao7"
+  level: manual
+  reviewers: ["zyuhao7"]
 ---
 
 ## 解决什么问题
@@ -83,6 +97,20 @@ error: port out of range
 
 `result` 可以隐式转成 `bool`，为真表示持有值；`*result` 和 `result->` 访问成功值，`error()` 访问错误值。`value()` 也能取成功值，但在错误状态下会抛出 `std::bad_expected_access<E>`。只报告成功或失败、没有成功值的操作使用 `std::expected<void, E>`。
 
+## 进阶用法
+
+**按接口边界选择错误类型。** nghttp2 用项目内枚举表示“名称无效”，错误值只是一个整数；glaze 直接用 `std::error_code`，让调用方沿用系统错误体系；Hyprland 把原始输入拼进 `std::string`，便于定位配置问题。错误类型会进入函数签名和 ABI，跨库接口优先用小枚举或 `std::error_code`，诊断信息放在日志层。
+
+**用单子操作串联解析。** `and_then` 在前一步成功时继续调用返回 `expected` 的函数，失败则短路；`transform` 只映射成功值，`transform_error` 只映射错误值，`or_else` 可以替换失败路径。整条解析链保持“遇错即停、错误原样传递”，不必层层写 `if (!x) return ...`。
+
+**`expected<void, E>` 表达纯校验。** 没有成功值、只关心成功或失败的函数用它作为返回类型，例如检查端口是否落在特权区间；调用方判 `bool` 即可，不需要为成功分支构造占位值。
+
+**就地构造与移动。** `expected` 的构造函数把成功值或错误值直接构造在内部存储，返回 `std::unexpected` 时同样不产生额外临时对象；大对象作为 `E` 时要评估存储布局与移动成本。
+
+**与 `value_or` 的取舍。** `value_or` 在失败时返回默认值，适合“缺失即可接受”的场景；需要保留错误原因或记录日志时，必须先判断 `has_value()` 再取 `error()`。
+
+**注意编译器的设施门控。** 早期的 libstdc++ 在 `__cpp_concepts` 不足时会隐藏 `expected`；库代码应检测 `__cpp_lib_expected`，为旧工具链保留等价回退，而不是直接假定可用。
+
 ## 真实项目证据
 
 | 项目               | 位置                                                                                                                                                                                              | 用法                                                             | 为什么典型                                                       |
@@ -102,6 +130,15 @@ error: port out of range
 - **单子操作不会自动转换错误类型。** `and_then`、`or_else`、`transform`、`transform_error` 在失败时短路，但回调必须返回兼容的 `expected` 或 `unexpected`；跨错误类型的映射要显式写出来。
 - **错误类型决定 ABI 与开销。** 用 `std::string` 或大对象作为 `E` 会把分配和对象布局带进接口；跨库边界优先用小枚举或 `std::error_code`。
 - **它不消除异常。** 构造 `T`/`E`、调用 `value()` 仍可能抛出；`expected` 只是把可预期的失败放进返回值，不替代所有异常安全设计。
+
+## 库联动
+
+- **`std::unexpected`**：错误值的包装类型，构造函数把 `E` 直接放进 `expected` 的失败分支。
+- **`std::error_code` / `std::errc`**：轻量错误类型，glaze 用它们让 `expected` 与系统错误体系对接，避免自定义异常类。
+- **`std::optional`**：只表达“有无值”，不携带失败原因；需要诊断信息时用 `expected`。
+- **`std::variant`**：通用的和类型，但成功与失败没有专门的语义和单子操作。
+- **`std::exception_ptr`**：异常传播通道；`expected` 与它互补，分别承载可预期失败与异常。
+- **`std::format`**：Hyprland 在构造错误信息时用它拼接原始输入，错误内容更易读。
 
 ## 横向对比
 

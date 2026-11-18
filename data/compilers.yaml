@@ -684,3 +684,9 @@ features:
     msvc: "19.31"
     source: https://en.cppreference.com/w/cpp/compiler_support/23
     checked_at: "2026-11-18"
+  cpp20.erase-if:
+    gcc: "9"
+    clang: "8"
+    msvc: "19.25"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-18"

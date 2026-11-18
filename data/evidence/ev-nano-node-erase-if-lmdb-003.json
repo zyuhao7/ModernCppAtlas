@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-node-erase-if-lmdb-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/store/lmdb/backend_lmdb.cpp",
+  "lines": "196-198",
+  "feature": "cpp20.erase-if",
+  "pattern": "关闭 LMDB 表时用 erase_if 从 unordered_map 中删除对应句柄记录",
+  "why_typical": "关联容器没有下标可删，erase_if 以谓词定位键值对，避免显式 find 后 erase。",
+  "excerpt": "\tstd::erase_if (table_handles, [dbi] (auto const & pair) {\n\t\treturn pair.second == dbi;\n\t});",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；加密货币节点的 LMDB 存储后端，容器为 unordered_map。"
+}
