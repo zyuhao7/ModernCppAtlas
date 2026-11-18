@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-resize-overwrite-strcat-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/strings/str_cat.cc",
+  "lines": "88-95",
+  "feature": "cpp23.resize-and-overwrite",
+  "pattern": "字符串拼接前按总长度 resize，再用 StringResizeAndOverwrite 让回调直接填写缓冲",
+  "why_typical": "abseil 为 C++23 的 resize_and_overwrite 提供兼容包装，生产代码统一走这一入口。",
+  "excerpt": "  absl::StringResizeAndOverwrite(result, static_cast<size_t>(result_size),\n                                 [&a, &b](char* const begin, size_t buf_size) {\n                                   char* out = begin;\n                                   out = Append(out, a);\n                                   out = Append(out, b);\n                                   assert(out == begin + buf_size);\n                                   return buf_size;\n                                 });",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；StrCat 的字符串拼接，包装在 absl/strings/resize_and_overwrite.h。"
+}

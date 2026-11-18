@@ -1,0 +1,5 @@
+[1] compile-time branch = 41
+[2] runtime branch = 42
+[3] constexpr sum = 10
+[4] runtime sum = 110
+[5] __cpp_if_consteval = 202106

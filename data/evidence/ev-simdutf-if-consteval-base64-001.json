@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-if-consteval-base64-001",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "include/simdutf/base64_implementation.h",
+  "lines": "79-87",
+  "feature": "cpp23.if-consteval",
+  "pattern": "编译期走标量解码实现，运行期走 SIMD 实现，用 if consteval 区分两条路径",
+  "why_typical": "编译期不能执行运行时分派，if consteval 让同一函数在常量求值时选择可移植实现。",
+  "excerpt": "#if SIMDUTF_CPLUSPLUS23\n  if consteval {\n    r = scalar::base64::base64_to_binary_details_impl(\n        input + input_position, safe_input, output + output_position, options,\n        done_with_partial\n            ? last_chunk_handling_options\n            : simdutf::last_chunk_handling_options::only_full_chunks);\n  } else\n#endif",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；base64 解码在常量求值时走标量分支。"
+}

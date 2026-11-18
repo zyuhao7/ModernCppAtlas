@@ -397,7 +397,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M3 · C++17/20 扩张（新增 350–450 人时）
 
-- 累计 200 条目：60 A + 110 B + 30 C。（进行中：111 个完整条目，108 A + 3 B，334 条证据）
+- 累计 200 条目：60 A + 110 B + 30 C。（进行中：114 个完整条目，111 A + 3 B，343 条证据）
 - 20 篇进阶长文：concepts、ranges、coroutines、modules、`std::format`、`std::span` 等。
 - 12 张库联动卡片。
 - 第十九批加入 `cpp17.clamp`（drogon/Hyprland/glaze 各 1 条）、`cpp14.init-capture`（glaze/Hyprland/stdexec 各 1 条）与 `cpp20.bit-operations`（mold/stdexec/nghttp2 各 1 条），均为 A 级，带可运行示例。
@@ -406,6 +406,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 - 第二十二批加入 `cpp17.as-const`（Hyprland/stdexec/simdutf 各 1 条）、`cpp17.void-t`（abseil/drogon/glaze 各 1 条）与 `cpp20.is-constant-evaluated`（fmt/abseil/glaze 各 1 条），均为 A 级，带可运行示例。
 - 第二十三批加入 `cpp23.byteswap`（nlohmann/glaze/abseil 各 1 条）、`cpp23.unreachable`（Hyprland/simdutf/abseil 各 1 条）与 `cpp20.lerp`（Hyprland/mp-units/GW2Radial 各 1 条），均为 A 级，带可运行示例。
 - 第二十四批加入 `cpp20.chrono-calendar`（nghttp2/glaze/fmt 各 1 条），并把 `cpp23.print`（新增 potree 1 条）与 `cpp20.jthread-stop-token`（新增 Hyprland 1 条）补齐为 A 级。
+- 第二十五批加入 `cpp23.if-consteval`（simdutf/glaze/stdexec 各 1 条）、`cpp23.resize-and-overwrite`（nghttp2/abseil/glaze 各 1 条）与 `cpp17.map-try-emplace`（vroom/Hyprland/glaze 各 1 条），均为 A 级，带可运行示例。
 - 退出标准：月度证据刷新跑通一次；20 个最常用特性有完整进阶用法。
 
 ### M4 · C++23/26（新增 150–250 人时）

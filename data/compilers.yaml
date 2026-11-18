@@ -666,3 +666,21 @@ features:
     msvc: "19.29"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-18"
+  cpp17.map-try-emplace:
+    gcc: "6.1"
+    clang: "3.7"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-18"
+  cpp23.if-consteval:
+    gcc: "12"
+    clang: "14"
+    msvc: "19.44"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-18"
+  cpp23.resize-and-overwrite:
+    gcc: "12"
+    clang: "14"
+    msvc: "19.31"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-18"

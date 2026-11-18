@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-try-emplace-location-001",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/structures/vroom/input/input.cpp",
+  "lines": "151-156",
+  "feature": "cpp17.map-try-emplace",
+  "pattern": "建立位置到索引的映射时用 try_emplace，键已存在则不构造新值",
+  "why_typical": "位置去重场景，try_emplace 让键存在时完全跳过映射值的构造。",
+  "excerpt": "      // Append new location and store corresponding index.\n      auto new_index = _locations.size();\n      job.location.set_index(new_index);\n      _locations.push_back(job.location);\n      _locations_to_index.try_emplace(job.location, new_index);\n    }",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；路径规划输入的位置映射，避免重复键构造值。"
+}
