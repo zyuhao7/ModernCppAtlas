@@ -34,6 +34,8 @@ C++20 之前，检查字符串前缀要写 `s.compare(0, prefix.size(), prefix) 
 
 C++20 补了一组小而常用的设施：`starts_with` / `ends_with`、`std::erase` / `std::erase_if`、`std::ssize`。它们不是新容器，也不改变数据结构，只是把高频且易错的写法标准化。`contains` 要分清对象：关联容器的 `contains` 是 C++20；`std::string` 与 `std::string_view` 的 `contains` 到 C++23 才进入标准。
 
+本页把几项设施放在一起讲，页首的编译器版本是整组设施都可用的最低版本。单项支持更早：`starts_with` / `ends_with` 从 GCC 9、Clang 6、MSVC 19.21 起可用，见「string::starts_with / ends_with」页；`std::erase_if` 见「std::erase_if」页。
+
 ## 基础用法
 
 <!-- compile -->

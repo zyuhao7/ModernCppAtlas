@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-size-data-bson-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/bson/bson_to_json.hpp",
+  "lines": "357-358",
+  "feature": "cpp17.size-data-empty",
+  "pattern": "解析 BSON 输入时用 std::data 与 std::size 取得缓冲区首指针和元素个数",
+  "why_typical": "非成员接口对 vector、array、span 与裸数组一视同仁，读取端不需要关心容器的迭代器类型。",
+  "excerpt": "      const char* it = reinterpret_cast<const char*>(std::data(input));\n      const char* const end = it + std::size(input);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；BSON 反序列化按字节读取输入，std::data/std::size 同时给出首地址与长度。"
+}

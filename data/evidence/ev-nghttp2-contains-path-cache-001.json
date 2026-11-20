@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-contains-path-cache-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/nghttp.cc",
+  "lines": "1301-1301",
+  "feature": "cpp20.associative-contains",
+  "pattern": "用 unordered_set::contains 判断请求路径是否已经缓存",
+  "why_typical": "判断键是否存在不需要取迭代器，contains 比 find != end 更直接，读起来就是一次成员测试。",
+  "excerpt": "  if (path_cache.contains(uri)) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；path_cache 声明为 std::unordered_set<std::string>（src/nghttp.h:275）。"
+}

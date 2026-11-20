@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-contains-unassigned-003",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/problems/vrptw/operators/priority_replace.cpp",
+  "lines": "67-67",
+  "feature": "cpp20.associative-contains",
+  "pattern": "在优化算子的前置条件断言中用 unordered_set::contains 校验元素未分配",
+  "why_typical": "断言只表达“键在集合中”，contains 让前置条件比 find 加迭代器比较更短。",
+  "excerpt": "  assert(_unassigned.contains(_u));",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；_unassigned 声明为 std::unordered_set<Index>&（priority_replace.h:29）。"
+}

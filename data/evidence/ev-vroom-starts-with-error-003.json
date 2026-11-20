@@ -1,0 +1,21 @@
+{
+  "id": "ev-vroom-starts-with-error-003",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/routing/osrm_routed_wrapper.cpp",
+  "lines": "72-74",
+  "feature": "cpp20.string-starts-ends-with",
+  "pattern": "把路由服务的固定错误前缀存进局部 std::string，再用 starts_with 匹配运行期返回的错误消息",
+  "why_typical": "运行期错误消息与固定前缀比较；std::string 前缀通过 string_view 重载传入，比较过程不构造临时 string。",
+  "excerpt": "    if (const std::string snapping_error_base =\n          \"Could not find a matching segment for coordinate \";\n        code == \"NoSegment\" && message.starts_with(snapping_error_base)) {",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；OSRM 路由后端把特定错误前缀转成可读诊断。"
+}
