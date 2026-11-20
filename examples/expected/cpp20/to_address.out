@@ -1,0 +1,5 @@
+[1] owned value = 42
+[2] second value = 20
+[3] null stays null = 1
+[4] wrapped address matches = 1
+[5] tail = 20 30

@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-to-address-string-view-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/template.h",
+  "lines": "379-386",
+  "feature": "cpp20.to-address",
+  "pattern": "从连续迭代器取得字符串视图的起始地址",
+  "why_typical": "借用原数据构造视图，起始位置与范围长度分别取得。",
+  "excerpt": "// Returns std::string_view over a given range [|first|, |last|).\ntemplate <std::contiguous_iterator I>\nrequires(sizeof(std::iter_value_t<I>) == sizeof(std::string_view::value_type))\n[[nodiscard]] std::string_view as_string_view(I first, I last) {\n  return std::string_view{\n    reinterpret_cast<std::string_view::const_pointer>(std::to_address(first)),\n    static_cast<size_t>(std::ranges::distance(first, last))};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

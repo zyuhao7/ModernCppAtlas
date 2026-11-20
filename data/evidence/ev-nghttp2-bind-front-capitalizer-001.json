@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-bind-front-capitalizer-001",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/http2.cc",
+  "lines": "299-310",
+  "feature": "cpp20.bind-front",
+  "pattern": "为头字段格式化回调预绑定输入字符串视图",
+  "why_typical": "缓冲区追加接口稍后提供输出位置，回调只需预先保存输入。",
+  "excerpt": "void capitalize(DefaultMemchunks *buf, std::string_view s) {\n  assert(!s.empty());\n\n  constexpr size_t max_namelen = 32;\n\n  if (s.size() > max_namelen) {\n    capitalize_long(buf, s);\n    return;\n  }\n\n  buf->append(s.size(), std::bind_front(Capitalizer{}, s));\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

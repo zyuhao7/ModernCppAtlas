@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-to-address-assign-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/inplace_vector.hpp",
+  "lines": "587-593",
+  "feature": "cpp20.to-address",
+  "pattern": "在容器赋值的连续输入快路径取得字节复制源地址",
+  "why_typical": "地址提取与可平凡复制类型及连续迭代器的检查配合使用。",
+  "excerpt": "         if constexpr (std::is_trivially_copyable_v<T> && std::contiguous_iterator<InputIterator>) {\n            // Fast path for contiguous trivially copyable types\n            auto count = std::distance(first, last);\n            if (count > 0) {\n               std::memcpy(this->storage, std::to_address(first), count * sizeof(T));\n               this->set_storage_size(static_cast<size_type>(count));\n            }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

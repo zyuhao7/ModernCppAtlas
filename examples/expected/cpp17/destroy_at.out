@@ -1,0 +1,4 @@
+[1] first destruction = 1
+[2] after slot reuse = 2
+[3] after destroying two live slots = 4
+[4] after scope exit = 5

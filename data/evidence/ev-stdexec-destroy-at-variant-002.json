@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-destroy-at-variant-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__variant.hpp",
+  "lines": "153-161",
+  "feature": "cpp17.destroy-at",
+  "pattern": "按活动索引只销毁 variant 当前持有的类型",
+  "why_typical": "索引决定存储中哪一种对象处于存活状态，空状态无需析构。",
+  "excerpt": "      constexpr void __destroy() noexcept\n      {\n        auto        __index = std::exchange(__index_, __variant_npos);\n        void *const __ptr   = __data();\n        if (__variant_npos != __index)\n        {\n          ((_Is == __index ? std::destroy_at(static_cast<_Ts *>(__ptr)) : void(0)), ...);\n        }\n      }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}
