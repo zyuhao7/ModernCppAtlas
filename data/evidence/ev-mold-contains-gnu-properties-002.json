@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-contains-gnu-properties-002",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/output-chunks.cc",
+  "lines": "2783-2783",
+  "feature": "cpp20.associative-contains",
+  "pattern": "在有序 map 的谓词里用 contains 判断 GNU property 键是否存在",
+  "why_typical": "gnu_properties 是 std::map<u32, u32>，有序与无序容器共享 contains 接口，谓词只关心存在性。",
+  "excerpt": "      return file->gnu_properties.contains(key);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；gnu_properties 声明为 std::map<u32, u32>（src/mold.h:1385）。"
+}

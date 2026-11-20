@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-starts-with-reply-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "hyprctl/src/main.cpp",
+  "lines": "280-280",
+  "feature": "cpp20.string-starts-ends-with",
+  "pattern": "同时用 starts_with 与 ends_with 识别 Lua REPL 的不完整行错误消息",
+  "why_typical": "前后缀检查来自同一组 API，替代两次 find 或 substr 比较，条件表达式一行读完。",
+  "excerpt": "    if (isRepl && reply.starts_with(\"error: \" xstr(LUA_ERRSYNTAX) \" \") && reply.ends_with(LUA_EOFMARK))",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；hyprctl 交互式 REPL 的错误分类。"
+}

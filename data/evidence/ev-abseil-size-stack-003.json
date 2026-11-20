@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-size-stack-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/synchronization/internal/graphcycles.cc",
+  "lines": "701-702",
+  "feature": "cpp17.size-data-empty",
+  "pattern": "把 C 数组成员交给回溯函数时用 std::size 计算元素个数再转成 int",
+  "why_typical": "图算法内部对固定大小数组求长度，std::size 比手写 sizeof 表达式更不易写错，返回值类型明确为 size_t。",
+  "excerpt": "  n->nstack =\n      (*get_stack_trace)(n->stack, static_cast<int>(std::size(n->stack)));",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；absl 同步设施的图环路检测，stack 是固定大小的 C 数组。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mold-starts-with-magic-001",
+  "repo": "rui314/mold",
+  "commit": "27162691b71a3bc84ac4c9b4b9d7c214fad317d3",
+  "path": "src/filetype.cc",
+  "lines": "77-77",
+  "feature": "cpp20.string-starts-ends-with",
+  "pattern": "用 string_view::starts_with 判断输入是否以 ELF 魔数开头",
+  "why_typical": "文件类型识别是热路径，starts_with 直接表达前缀比较，比 compare(0, n, ...) == 0 或 substr 更清晰且不分配。",
+  "excerpt": "  if (data.starts_with(\"\\177ELF\")) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；链接器按魔数判断目标文件格式。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-size-array-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/debug/crash/CrashReporter.cpp",
+  "lines": "42-42",
+  "feature": "cpp17.size-data-empty",
+  "pattern": "对静态 C 数组用 std::size 取元素个数并做下标取模",
+  "why_typical": "std::size 直接接受裸数组，省略 sizeof(arr) / sizeof(arr[0]) 的写法，也不会把数组退化成指针。",
+  "excerpt": "    return MESSAGES[time(nullptr) % std::size(MESSAGES)];",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-18",
+  "is_test": false,
+  "notes": "生产路径；崩溃报告器的信号安全代码，数组长度在编译期确定。"
+}
