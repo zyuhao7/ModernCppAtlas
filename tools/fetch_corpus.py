@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -22,9 +23,8 @@ LATEST_CACHE = ROOT / ".cache" / "corpus-latest"
 def run(cmd: list[str], *, cwd: Path | None = None) -> str:
     result = subprocess.run(cmd, cwd=cwd, text=True, capture_output=True)
     if result.returncode != 0:
-        print(result.stdout, file=sys.stderr)
-        print(result.stderr, file=sys.stderr)
-        raise SystemExit(f"command failed: {' '.join(cmd)}")
+        detail = result.stderr.strip() or result.stdout.strip()
+        raise SystemExit(f"command failed: {' '.join(cmd)}: {detail}")
     return result.stdout.strip()
 
 
@@ -40,7 +40,7 @@ def require_clean(repo: str, dest: Path) -> None:
         )
 
 
-def fetch_latest(repo: str, url: str, dest: Path) -> None:
+def fetch_latest(repo: str, url: str, dest: Path) -> str:
     if dest.exists():
         require_clean(repo, dest)
         run(["git", "fetch", "--depth", "1", "--no-tags", "origin", "HEAD"], cwd=dest)
@@ -58,7 +58,7 @@ def fetch_latest(repo: str, url: str, dest: Path) -> None:
                 str(dest),
             ]
         )
-    print(f"{repo}: upstream HEAD ready at {head_commit(dest)[:12]}")
+    return head_commit(dest)
 
 
 def main() -> int:
@@ -74,17 +74,32 @@ def main() -> int:
     entries = yaml.safe_load(args.corpus.read_text())
     cache = LATEST_CACHE if args.latest else CACHE
     cache.mkdir(parents=True, exist_ok=True)
+    commits: dict[str, str] = {}
+    failed_fetches: dict[str, str] = {}
+    if args.latest:
+        report = cache / "fetch-report.json"
+        # 拉取中断后，扫描器不能继续使用上一轮的成功清单。
+        report.unlink(missing_ok=True)
 
     for entry in entries:
         repo = entry["repo"]
         url = entry["url"]
         dest = cache / repo.replace("/", "__")
-        if dest.exists() and not (dest / ".git").exists():
-            raise SystemExit(f"{dest} exists but is not a git checkout")
+        invalid_checkout = dest.exists() and not (dest / ".git").exists()
         if args.latest:
-            fetch_latest(repo, url, dest)
+            try:
+                if invalid_checkout:
+                    raise SystemExit(f"{dest} exists but is not a git checkout")
+                commits[repo] = fetch_latest(repo, url, dest)
+            except SystemExit as exc:
+                failed_fetches[repo] = str(exc)
+                print(f"warning: {repo}: {exc}", file=sys.stderr)
+            else:
+                print(f"{repo}: upstream HEAD ready at {commits[repo][:12]}")
             continue
 
+        if invalid_checkout:
+            raise SystemExit(f"{dest} exists but is not a git checkout")
         commit = entry["commit"]
         tag = entry["tag"]
         if dest.exists():
@@ -127,6 +142,12 @@ def main() -> int:
             )
         print(f"{repo}: ready at {actual[:12]}")
 
+    if args.latest:
+        report.write_text(
+            json.dumps({"commits": commits, "failed_fetches": failed_fetches}, indent=2)
+            + "\n",
+            encoding="utf-8",
+        )
     return 0
 
 

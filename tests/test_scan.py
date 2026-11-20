@@ -80,7 +80,7 @@ class CorpusScanTests(unittest.TestCase):
         ):
             self.assertEqual(fetch_corpus.main(), 0)
 
-    def run_scan(self, *args: str) -> dict:
+    def run_scan(self, *args: str, status: int = 0) -> dict:
         output = self.root / "candidates.json"
         with (
             patch(
@@ -96,7 +96,7 @@ class CorpusScanTests(unittest.TestCase):
             ),
             contextlib.redirect_stdout(io.StringIO()),
         ):
-            self.assertEqual(scan.main(), 0)
+            self.assertEqual(scan.main(), status)
         return json.loads(output.read_text())
 
     def test_scan_uses_pinned_blobs_when_worktree_diverges(self) -> None:
@@ -158,3 +158,31 @@ class CorpusScanTests(unittest.TestCase):
                 ("cpp20.string-range-utilities", "3-3"),
             },
         )
+
+    def test_latest_scan_keeps_successes_and_excludes_failed_cached_repos(self) -> None:
+        good = yaml.safe_load(self.manifest.read_text())[0]
+        bad = {**good, "repo": "fixture/unavailable"}
+        self.manifest.write_text(yaml.safe_dump([bad, good]))
+        self.run_fetch("--latest")
+        failed_checkout = self.latest_cache / "fixture__unavailable"
+        missing_origin = (self.root / "gone").as_uri()
+        git(failed_checkout, "remote", "set-url", "origin", missing_origin)
+
+        with contextlib.redirect_stderr(io.StringIO()):
+            self.run_fetch("--latest")
+            result = self.run_scan("--latest", "--cache", str(self.latest_cache))
+            good_checkout = self.latest_cache / "fixture__example"
+            git(good_checkout, "remote", "set-url", "origin", missing_origin)
+            self.run_fetch("--latest")
+            failed = self.run_scan(
+                "--latest", "--cache", str(self.latest_cache), status=1
+            )
+
+        self.assertEqual([entry["repo"] for entry in result["corpus"]], [good["repo"]])
+        self.assertEqual(
+            [entry["repo"] for entry in result["candidates"]], [good["repo"]]
+        )
+        self.assertIn(bad["repo"], result["failed_fetches"])
+        self.assertEqual(failed["corpus"], [])
+        self.assertEqual(failed["candidates"], [])
+        self.assertEqual(set(failed["failed_fetches"]), {bad["repo"], good["repo"]})
