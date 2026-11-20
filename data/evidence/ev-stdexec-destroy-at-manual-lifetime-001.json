@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-destroy-at-manual-lifetime-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/__detail/__manual_lifetime.hpp",
+  "lines": "67-72",
+  "feature": "cpp17.destroy-at",
+  "pattern": "结束手动生命周期容器中当前对象的生命周期",
+  "why_typical": "存储归容器持有，结束元素生命周期时无需释放底层缓冲区。",
+  "excerpt": "    //! End the lifetime of the contained `_Ty`.\n    //! \\pre The lifetime has started.\n    constexpr void __destroy() noexcept\n    {\n      std::destroy_at(&__get());\n    }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

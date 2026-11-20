@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-bind-front-compatibility-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/functional/bind_front.h",
+  "lines": "186-195",
+  "feature": "cpp20.bind-front",
+  "pattern": "通过特性测试宏选择标准 bind_front 或兼容实现",
+  "why_typical": "在标准库支持时复用其实现，同时维持同一套库接口。",
+  "excerpt": "#if defined(__cpp_lib_bind_front) && __cpp_lib_bind_front >= 201907L\nusing std::bind_front;\n#else   // defined(__cpp_lib_bind_front) && __cpp_lib_bind_front >= 201907L\ntemplate <class F, class... BoundArgs>\nconstexpr functional_internal::bind_front_t<F, BoundArgs...> bind_front(\n    F&& func, BoundArgs&&... args) {\n  return functional_internal::bind_front_t<F, BoundArgs...>(\n      std::in_place, std::forward<F>(func), std::forward<BoundArgs>(args)...);\n}\n#endif  // defined(__cpp_lib_bind_front) && __cpp_lib_bind_front >= 201907L",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-to-address-insert-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/inplace_vector.hpp",
+  "lines": "895-903",
+  "feature": "cpp20.to-address",
+  "pattern": "在就地向量插入时取得输入范围的起始地址",
+  "why_typical": "先移动目标容器中的现有元素，再用输入地址复制新元素。",
+  "excerpt": "               // Move existing elements to make space\n               if (pos_idx < this->storage_size()) {\n                  std::memmove(this->data_ptr() + pos_idx + count, this->data_ptr() + pos_idx,\n                               (this->storage_size() - pos_idx) * sizeof(T));\n               }\n\n               // Copy the new elements directly\n               std::memcpy(this->data_ptr() + pos_idx, std::to_address(first), count * sizeof(T));\n               this->set_storage_size(this->storage_size() + count);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

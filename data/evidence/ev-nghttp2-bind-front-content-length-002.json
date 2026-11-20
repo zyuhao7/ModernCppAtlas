@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-bind-front-content-length-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_https_upstream.cc",
+  "lines": "1118-1120",
+  "feature": "cpp20.bind-front",
+  "pattern": "把响应体长度绑定到整数格式化回调",
+  "why_typical": "待格式化的值已知，输出位置由缓冲区提供。",
+  "excerpt": "  output->append(\"\\r\\nContent-Length: \"sv);\n  output->append(std::numeric_limits<decltype(html.size())>::digits10 + 1,\n                 std::bind_front(util::UIntFormatter{}, html.size()));",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}

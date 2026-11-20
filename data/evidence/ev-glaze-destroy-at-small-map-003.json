@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-destroy-at-small-map-003",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/ordered_small_map.hpp",
+  "lines": "151-156",
+  "feature": "cpp17.destroy-at",
+  "pattern": "逐个析构小型映射中已构造的元素",
+  "why_typical": "循环按实际构造数量结束元素生命周期，容量中的空槽位不参与。",
+  "excerpt": "      static void destroy_range(value_type* data, uint32_t count) noexcept\n      {\n         for (uint32_t i = 0; i < count; ++i) {\n            std::destroy_at(data + i);\n         }\n      }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "manual",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-20",
+  "is_test": false,
+  "notes": "生产路径。固定版本的源码与用法已核对，维护者复核通过。"
+}
