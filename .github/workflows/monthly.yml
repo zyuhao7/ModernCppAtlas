@@ -23,9 +23,11 @@ jobs:
         run: uv run tools/fetch_corpus.py --latest
 
       - name: Scan for updated usage
+        id: scan
         run: uv run tools/scan/scan.py --latest
 
       - name: Upload candidates
+        if: ${{ !cancelled() && (steps.scan.outcome == 'success' || steps.scan.outcome == 'failure') }}
         uses: actions/upload-artifact@v4
         with:
           name: candidates

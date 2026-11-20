@@ -396,13 +396,32 @@ def main() -> int:
 
     entries = yaml.safe_load(args.corpus.read_text())
     cache = args.cache or (LATEST_CACHE if args.latest else DEFAULT_CACHE)
+    latest_commits: dict[str, str] = {}
+    failed_fetches: dict[str, str] = {}
+    if args.latest:
+        report = cache / "fetch-report.json"
+        try:
+            fetch_report = json.loads(report.read_text(encoding="utf-8"))
+        except (FileNotFoundError, json.JSONDecodeError) as exc:
+            raise SystemExit(
+                f"cannot read {report}. Run tools/fetch_corpus.py --latest first."
+            ) from exc
+        latest_commits = fetch_report["commits"]
+        failed_fetches = fetch_report["failed_fetches"]
+
     candidates: list[dict] = []
     scanned_files = Counter()
     scanned_corpus = []
+    skipped_repos: dict[str, str] = {}
 
     for entry in entries:
         repo = entry["repo"]
         if args.repo and repo != args.repo:
+            continue
+        if args.latest and repo not in latest_commits:
+            reason = failed_fetches.get(repo, "not in the latest fetch report")
+            skipped_repos[repo] = reason
+            print(f"warning: skipping {repo}: {reason}", file=sys.stderr)
             continue
         repo_dir = cache / repo.replace("/", "__")
         if not (repo_dir / ".git").exists():
@@ -411,7 +430,7 @@ def main() -> int:
                 f"{repo_dir} missing. Run tools/fetch_corpus.py{fetch_mode} first."
             )
 
-        revision = "HEAD" if args.latest else entry["commit"]
+        revision = latest_commits[repo] if args.latest else entry["commit"]
         commit = (
             git_output(
                 repo_dir,
@@ -447,6 +466,8 @@ def main() -> int:
         "corpus": scanned_corpus,
         "candidates": candidates,
     }
+    if args.latest:
+        payload["failed_fetches"] = skipped_repos
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
 
@@ -457,6 +478,9 @@ def main() -> int:
     for feature, count in sorted(feature_counts.items()):
         print(f"  {feature}: {count} candidates")
     print(f"total: {len(candidates)} candidates -> {args.output}")
+    if args.latest and not scanned_corpus:
+        print("no upstream repositories were scanned", file=sys.stderr)
+        return 1
     return 0
 
 

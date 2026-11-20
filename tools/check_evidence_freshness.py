@@ -1,6 +1,7 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.12"
+# dependencies = ["pyyaml>=6.0"]
 # ///
 """Check that published evidence still resolves upstream.
 
@@ -24,6 +25,8 @@ import urllib.request
 from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_DIR = ROOT / "data" / "evidence"
@@ -239,7 +242,13 @@ def main() -> int:
     for record in unknowns:
         print(f"  warning: {record['id']}: unknown ({record['detail']})")
 
-    if args.apply_stale:
+    if args.apply_stale and failures:
+        failed_ids = {record["id"] for record in failures}
+        affected_cards = []
+        for path in sorted((ROOT / "data" / "libraries").glob("*.yaml")):
+            card = yaml.safe_load(path.read_text(encoding="utf-8"))
+            if failed_ids.intersection(card["evidence"]):
+                affected_cards.append(path.relative_to(ROOT).as_posix())
         today = date.today().isoformat()
         affected: set[str] = set()
         for record in failures:
@@ -250,6 +259,11 @@ def main() -> int:
             print(
                 "stale evidence removed from these features; update their claims "
                 "ledgers before validating: " + ", ".join(sorted(affected))
+            )
+        if affected_cards:
+            print(
+                "update evidence references in these library cards before validating: "
+                + ", ".join(affected_cards)
             )
         return 0
 

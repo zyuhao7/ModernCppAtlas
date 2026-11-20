@@ -128,7 +128,7 @@ review:
 
 **单审与双审。** `manual` 证据至少一位审核者并记录 `verified_at`；`verified` 证据需要两位不同审核者、至少一位不是 `submitted_by` 填写的提交者，并记录日期。没有第二人真实复核时保持 `manual`。
 
-**关于失效：** 固定 commit 的 permalink 中行号不会漂移，因此月度任务不重比摘录原文。它做两件事：发现同一特性的更新用法；对已发布证据做结构性存活检查（仓库、commit、路径、许可证）。存活检查失败时自动开 issue，不直接改动数据；维护者确认后运行 `tools/check_evidence_freshness.py --apply-stale` 降级，并同步修正该页的主张账本。网络或 API 限流记为 `unknown`，不会触发降级。
+**关于失效：** 固定 commit 的 permalink 中行号不会漂移，因此月度任务不重比摘录原文。它做两件事：发现同一特性的更新用法；对已发布证据做结构性存活检查（仓库、commit、路径、许可证）。存活检查失败时自动开 issue，不直接改动数据；维护者确认后运行 `tools/check_evidence_freshness.py --apply-stale` 降级，并同步修正相关主张账本和库卡片。网络或 API 限流记为 `unknown`，不会触发降级。
 
 ## 社区投稿与审核流程
 
@@ -154,7 +154,7 @@ review:
    - 证据审核：可追溯性、许可证、上下文是否断章取义；
    - 主张审核：正文中可检验的说法是否逐条落入账本，账本是否真的由证据支持。
 4. **定级与合并**：通过后按审核人数标记 `manual` 或 `verified`；有争议时以标准文本、提案或编译器实际行为为准，要求提供最小可复现示例。
-5. **失效处理。** 月度任务发现结构性失效后开 issue。维护者确认后标记为 `stale`，保留原定位、理由和日期，并更新引用该证据的主张。证据少于当前分级要求时，补充可核验证据或调整分级。若上游仓库已删除，从语料清单中移除该仓库。
+5. **失效处理。** 月度任务发现结构性失效后开 issue。维护者确认后标记为 `stale`，保留原定位、理由和日期，并更新引用该证据的主张和库卡片。证据少于当前分级要求时，补充可核验证据或调整分级。若上游仓库已删除，从语料清单中移除该仓库。
 
 单人维护阶段，新条目默认 `manual`。引入第二名审核者后再开放 `verified`，避免把“单人确认”包装成“双人复核”。
 
@@ -218,7 +218,7 @@ uv run tools/check_search.py                  # 中文搜索冒烟（需先构�
 
 `tools/validate.py` 默认校验数据契约。加 `--check-corpus` 后，从 `.cache/corpus` 核对未失效证据的固定 commit、路径、行段、许可证与摘录原文，缺失的历史 commit 会自动尝试浅拉取。标记为 `stale` 的记录仍需通过数据校验，包括失效理由和日期。
 
-月度扫描在独立缓存中获取各上游默认分支。用 `uv run tools/fetch_corpus.py --latest` 获取版本，再用 `uv run tools/scan/scan.py --latest` 生成候选。候选链接指向实际扫描的固定 commit。
+月度扫描在独立缓存中获取各上游默认分支。用 `uv run tools/fetch_corpus.py --latest` 获取版本，再用 `uv run tools/scan/scan.py --latest` 生成候选。扫描以本轮成功拉取的固定 commit 为准，并在候选报告的 `failed_fetches` 中列出失败仓库。若全部失败，扫描仍写出报告，然后以非零状态退出。
 
 `build_site.py` 必须先于 `mkdocs`、`check_links.py`、`check_search.py`；顺序颠倒会检查到旧的 `.site-docs/`。
 

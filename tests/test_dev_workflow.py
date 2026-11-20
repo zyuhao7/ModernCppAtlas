@@ -6,11 +6,12 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from unittest.mock import patch
 
 from tools import check_evidence_freshness as freshness
+from tools import validate
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -63,6 +64,59 @@ class FreshnessTimeoutTests(unittest.TestCase):
                     for call in urlopen.call_args_list
                 ],
                 [(url, 0.75) for url in responses],
+            )
+
+    def test_stale_evidence_warns_about_and_invalidates_library_card(self) -> None:
+        card_name = "lib-vroom-semaphore.yaml"
+        evidence_id = "ev-vroom-semaphore-search-001"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            libraries = root / "data/libraries"
+            libraries.mkdir(parents=True)
+            shutil.copyfile(validate.LIBRARY_DIR / card_name, libraries / card_name)
+            evidence = root / "evidence"
+            evidence.mkdir()
+            for path in validate.EVIDENCE_DIR.glob("*.json"):
+                target = evidence / path.name
+                if path.stem == evidence_id:
+                    shutil.copyfile(path, target)
+                else:
+                    target.symlink_to(path)
+
+            def check(_checker, record):
+                if record["id"] == evidence_id:
+                    return "path_missing", "fixture path is gone"
+                return "ok", ""
+
+            with (
+                patch.object(freshness, "ROOT", root),
+                patch.object(freshness, "EVIDENCE_DIR", evidence),
+                patch.object(freshness.Checker, "check", check),
+                patch.dict("os.environ", {"GITHUB_TOKEN": "test"}),
+                patch(
+                    "sys.argv",
+                    [
+                        "freshness",
+                        "--apply-stale",
+                        "--report",
+                        str(root / "report.json"),
+                    ],
+                ),
+                redirect_stdout(io.StringIO()) as output,
+            ):
+                self.assertEqual(freshness.main(), 0)
+            self.assertIn(f"data/libraries/{card_name}", output.getvalue())
+
+            with (
+                patch.object(validate, "EVIDENCE_DIR", evidence),
+                patch.object(validate, "LIBRARY_DIR", libraries),
+                patch("sys.argv", ["validate.py"]),
+                redirect_stderr(io.StringIO()) as errors,
+            ):
+                self.assertEqual(validate.main(), 1)
+            self.assertIn(
+                f"{card_name}: evidence {evidence_id} is not published",
+                errors.getvalue(),
             )
 
 

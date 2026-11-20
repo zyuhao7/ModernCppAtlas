@@ -20,7 +20,7 @@ claims:
     statement: "把 mmap 得到的 io_uring 环形缓冲区指针绑定到 atomic_ref"
     evidence: [ev-stdexec-atomic-ref-submission-ring-002]
   - id: c3
-    statement: "对同一块普通内存按 relaxed 与 acquire 内存序读取共享队列指针"
+    statement: "提交队列用 relaxed 读取用户态维护的 tail，用 acquire 读取内核更新的 head"
     evidence: [ev-stdexec-atomic-ref-load-store-003]
 review:
   author: "zyuhao7"
@@ -88,7 +88,7 @@ int main() {
 
 内存序与 `std::atomic` 一致：默认 `memory_order_seq_cst`，需要放松时显式传 `relaxed`、`acquire`、`release` 或 `acq_rel`。读改写操作可用 `fetch_add`、`fetch_sub`、`fetch_or`、`exchange`；比较交换有 `compare_exchange_weak` 与 `compare_exchange_strong`。
 
-对共享数据结构，常见做法是每个需要原子访问的普通字段各建一个 `atomic_ref`，在构造时绑定到固定地址。stdexec 的 io_uring 后端就是如此：提交队列和完成队列的 `head`/`tail` 位于 mmap 内存中，用 `atomic_ref<__u32>` 绑定后，提交线程用 `release` 发布 `tail`，读取方按 `acquire` 观察；内核更新的 `head` 只做 `relaxed` 读取，因为同步由环形缓冲区的生产者/消费者协议保证。
+对共享数据结构，常见做法是给需要原子访问的普通字段各绑定一个 `atomic_ref`。在 stdexec 的 io_uring 提交队列中，用户态用 `relaxed` 读取自己维护的 `tail`，用 `acquire` 读取内核发布的 `head`，确认哪些槽位可以复用。写好新条目后，用户态用 `release` 更新 `tail`，供内核以 `acquire` 读取。两个方向各自在同一个索引上同步：内核通过 `head` 归还槽位，用户态通过 `tail` 发布新条目。
 
 `atomic_ref` 可以拷贝，拷贝出的引用指向同一个对象。多个 `atomic_ref` 之间的原子操作彼此原子；但只要还有 `atomic_ref` 引用某个对象，该对象就必须只通过这些 `atomic_ref` 访问，不能再同时走普通读写或 `std::atomic`。也不能让另一个 `atomic_ref` 并发引用它的子对象。
 
@@ -100,7 +100,7 @@ int main() {
 | stdexec | [`include/exec/linux/io_uring_context.hpp#L217-L226`](https://github.com/NVIDIA/stdexec/blob/6d7ad689f4d4831c5136e4abe1c601f9a3b64e43/include/exec/linux/io_uring_context.hpp#L217-L226) | 用 mmap 区域中的 `sq_off.head`/`sq_off.tail` 构造 `atomic_ref<__u32>` | 内核共享内存布局不能改类型，只能原地加原子语义 |
 | stdexec | [`include/exec/linux/io_uring_context.hpp#L239-L240`](https://github.com/NVIDIA/stdexec/blob/6d7ad689f4d4831c5136e4abe1c601f9a3b64e43/include/exec/linux/io_uring_context.hpp#L239-L240) | 对 `tail` 做 relaxed 读、对 `head` 做 acquire 读                      | 生产者/消费者协议需要逐字段选择内存序          |
 
-三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第一条是生产头文件的兼容层，后两条来自 Linux io_uring 执行器；同一文件第 276 行用 release 存储发布 `tail`，与第 239-240 行构成完整的发布/获取配对。
+三条证据均为 `manual` 级：作者复核，尚未引入第二名审核者。第一条是生产头文件的兼容层，后两条来自 Linux io_uring 执行器。[同一文件第 276 行](https://github.com/NVIDIA/stdexec/blob/6d7ad689f4d4831c5136e4abe1c601f9a3b64e43/include/exec/linux/io_uring_context.hpp#L276) 用 `release` 发布 `tail`。
 
 ## 陷阱与边界
 

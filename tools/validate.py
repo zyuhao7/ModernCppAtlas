@@ -641,6 +641,8 @@ def main() -> int:
         for evidence_id in data["evidence"]:
             if evidence_id not in evidence:
                 report.error(path, f"evidence {evidence_id} does not exist")
+            elif evidence[evidence_id]["level"] not in PUBLISHED_LEVELS:
+                report.error(path, f"evidence {evidence_id} is not published")
         example = data.get("example")
         if example and not (ROOT / example).is_file():
             report.error(path, f"example does not exist: {example}")
