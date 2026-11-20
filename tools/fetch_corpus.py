@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = ["pyyaml>=6.0"]
 # ///
-"""Clone pinned corpus repositories into .cache/corpus."""
+"""Fetch pinned corpus checkouts or upstream heads for discovery."""
 
 from __future__ import annotations
 
@@ -16,6 +16,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / ".cache" / "corpus"
+LATEST_CACHE = ROOT / ".cache" / "corpus-latest"
 
 
 def run(cmd: list[str], *, cwd: Path | None = None) -> str:
@@ -31,34 +32,67 @@ def head_commit(path: Path) -> str:
     return run(["git", "rev-parse", "HEAD"], cwd=path)
 
 
+def require_clean(repo: str, dest: Path) -> None:
+    if run(["git", "status", "--porcelain"], cwd=dest):
+        raise SystemExit(
+            f"{repo}: cache at {dest} has local changes. "
+            "Commit or discard them before updating."
+        )
+
+
+def fetch_latest(repo: str, url: str, dest: Path) -> None:
+    if dest.exists():
+        require_clean(repo, dest)
+        run(["git", "fetch", "--depth", "1", "--no-tags", "origin", "HEAD"], cwd=dest)
+        run(["git", "checkout", "--detach", "FETCH_HEAD"], cwd=dest)
+    else:
+        run(
+            [
+                "git",
+                "clone",
+                "--depth",
+                "1",
+                "--single-branch",
+                "--no-tags",
+                url,
+                str(dest),
+            ]
+        )
+    print(f"{repo}: upstream HEAD ready at {head_commit(dest)[:12]}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", type=Path, default=ROOT / "data" / "corpus.yaml")
+    parser.add_argument(
+        "--latest",
+        action="store_true",
+        help="fetch upstream HEADs into .cache/corpus-latest",
+    )
     args = parser.parse_args()
 
     entries = yaml.safe_load(args.corpus.read_text())
-    CACHE.mkdir(parents=True, exist_ok=True)
+    cache = LATEST_CACHE if args.latest else CACHE
+    cache.mkdir(parents=True, exist_ok=True)
 
     for entry in entries:
         repo = entry["repo"]
+        url = entry["url"]
+        dest = cache / repo.replace("/", "__")
+        if dest.exists() and not (dest / ".git").exists():
+            raise SystemExit(f"{dest} exists but is not a git checkout")
+        if args.latest:
+            fetch_latest(repo, url, dest)
+            continue
+
         commit = entry["commit"]
         tag = entry["tag"]
-        url = entry["url"]
-        dest = CACHE / repo.replace("/", "__")
-
         if dest.exists():
-            if not (dest / ".git").exists():
-                raise SystemExit(f"{dest} exists but is not a git checkout")
             actual = head_commit(dest)
             if actual == commit:
                 print(f"{repo}: cached at {actual[:12]}")
                 continue
-            dirty = run(["git", "status", "--porcelain"], cwd=dest)
-            if dirty:
-                raise SystemExit(
-                    f"{repo}: cache at {dest} has local changes; "
-                    "commit or discard them before updating"
-                )
+            require_clean(repo, dest)
             print(f"{repo}: updating {actual[:12]} -> {commit[:12]}")
             run(["git", "fetch", "--depth", "1", "origin", commit], cwd=dest)
             run(["git", "checkout", "--detach", commit], cwd=dest)

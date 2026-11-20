@@ -38,17 +38,19 @@ int main() {
   std::cout << "[4] id = " << fresh->id << ", payload = " << fresh->payload
             << '\n';
 
-  // [5] an array of objects in one buffer, each element laundered
+  // [5] construct and find each independent object in the buffer
   alignas(int) std::byte cells[sizeof(int) * 3];
-  for (int i = 0; i < 3; ++i) new (cells + i * sizeof(int)) int(i * i);
-  int* base = std::launder(reinterpret_cast<int*>(cells));
-  std::cout << "[5] squares = " << base[0] << ' ' << base[1] << ' ' << base[2]
-            << '\n';
+  int* squares[3];
+  for (int i = 0; i < 3; ++i) {
+    auto* slot = cells + i * sizeof(int);
+    new (slot) int(i * i);
+    squares[i] = std::launder(reinterpret_cast<int*>(slot));
+  }
+  std::cout << "[5] squares = " << *squares[0] << ' ' << *squares[1] << ' '
+            << *squares[2] << '\n';
 
-  // [6] destroy every element to balance construction
-  for (int i = 0; i < 3; ++i)
-    std::destroy_at(
-        std::launder(reinterpret_cast<int*>(cells + i * sizeof(int))));
+  // [6] destroy each object through its own pointer
+  for (int* square : squares) std::destroy_at(square);
   std::destroy_at(fresh);
   std::cout << "[6] destroyed all objects\n";
 }

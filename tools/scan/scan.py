@@ -3,7 +3,7 @@
 # requires-python = ">=3.12"
 # dependencies = ["pyyaml>=6.0", "tree-sitter>=0.25", "tree-sitter-cpp>=0.23"]
 # ///
-"""Emit candidate evidence locations from the pinned corpus.
+"""Emit candidate evidence locations from committed corpus sources.
 
 This is a discovery tool, not a verifier. Every candidate still needs human
 review before it can enter data/evidence.
@@ -15,8 +15,10 @@ import argparse
 import hashlib
 import json
 import re
+import subprocess
 import sys
 from collections import Counter
+from collections.abc import Iterator
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -26,6 +28,7 @@ from tree_sitter import Language, Parser
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CACHE = ROOT / ".cache" / "corpus"
+LATEST_CACHE = ROOT / ".cache" / "corpus-latest"
 DEFAULT_OUTPUT = ROOT / ".cache" / "candidates.json"
 
 SOURCE_SUFFIXES = {
@@ -146,6 +149,9 @@ NODE_MATCHERS = {
 }
 
 
+ERASE_IF_PATTERN = r"\bstd::erase_if\b"
+STRING_STARTS_ENDS_WITH_PATTERN = r"\b(?:starts_with|ends_with)\s*\("
+
 REGEX_QUERIES = {
     "cpp17.attributes": (
         r"\[\[(?:nodiscard|maybe_unused|fallthrough|deprecated|likely|unlikely)\b"
@@ -178,8 +184,10 @@ REGEX_QUERIES = {
         r"\bstd::(?:latch|barrier|counting_semaphore|binary_semaphore)\b"
     ),
     "cpp20.remove-cvref-type-identity": (r"\bstd::(?:remove_cvref|type_identity)\b"),
+    "cpp20.erase-if": ERASE_IF_PATTERN,
+    "cpp20.string-starts-ends-with": STRING_STARTS_ENDS_WITH_PATTERN,
     "cpp20.string-range-utilities": (
-        r"\bstd::(?:ssize|erase_if)\b|\b(?:starts_with|ends_with)\s*\("
+        rf"\bstd::ssize\b|{ERASE_IF_PATTERN}|{STRING_STARTS_ENDS_WITH_PATTERN}"
     ),
     "cpp23.expected": r"\bstd::expected\b",
     "cpp23.print": r"\bstd::print(?:ln)?\s*\(",
@@ -305,82 +313,144 @@ def scan_file(
     return found
 
 
-def source_files(repo_dir: Path, configured_paths: list[str]) -> list[Path]:
-    roots = (
-        [repo_dir / path for path in configured_paths]
-        if configured_paths
-        else [repo_dir]
+def git_output(repo_dir: Path, *args: str) -> bytes:
+    result = subprocess.run(
+        ["git", "--no-replace-objects", *args], cwd=repo_dir, capture_output=True
     )
-    files: list[Path] = []
-    for root in roots:
-        if not root.exists():
-            print(f"warning: missing corpus path {root}", file=sys.stderr)
-            continue
-        for path in root.rglob("*"):
-            if not path.is_file() or path.suffix.lower() not in SOURCE_SUFFIXES:
+    if result.returncode:
+        detail = result.stderr.decode(errors="replace").strip()
+        raise SystemExit(f"{repo_dir}: git {' '.join(args)}: {detail}")
+    return result.stdout
+
+
+def committed_sources(
+    repo_dir: Path, commit: str, configured_paths: list[str]
+) -> Iterator[tuple[Path, bytes]]:
+    roots = [Path(path) for path in configured_paths]
+    missing_roots = set(roots) - {Path(".")}
+    tree = git_output(
+        repo_dir,
+        "--literal-pathspecs",
+        "ls-tree",
+        "--full-tree",
+        "-r",
+        "-t",
+        "-l",
+        "-z",
+        commit,
+        "--",
+        *(root.as_posix() for root in roots),
+    )
+    with subprocess.Popen(
+        ["git", "--no-replace-objects", "cat-file", "--batch"],
+        cwd=repo_dir,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+    ) as process:
+        request, response = process.stdin, process.stdout
+        assert request is not None and response is not None
+        for entry in tree.split(b"\0")[:-1]:
+            metadata, filename = entry.split(b"\t", maxsplit=1)
+            try:
+                relative = Path(filename.decode())
+            except UnicodeDecodeError:
+                print(f"warning: skipping non-UTF-8 path {filename!r}", file=sys.stderr)
                 continue
-            relative = path.relative_to(repo_dir)
-            if is_excluded(relative):
+            missing_roots.discard(relative)
+            mode, _, object_id, size = metadata.split()
+            if mode not in {b"100644", b"100755"} or int(size) > MAX_FILE_BYTES:
                 continue
-            if path.stat().st_size > MAX_FILE_BYTES:
+            if relative.suffix.lower() not in SOURCE_SUFFIXES or is_excluded(relative):
                 continue
-            files.append(path)
-    return sorted(files)
+            request.write(object_id + b"\n")
+            request.flush()
+            if response.readline().split() != [object_id, b"blob", size]:
+                raise SystemExit(f"{repo_dir}: cannot read {relative} at {commit}")
+            source = response.read(int(size))
+            if response.read(1) != b"\n":
+                raise SystemExit(f"{repo_dir}: incomplete blob {relative} at {commit}")
+            yield relative, source
+        request.close()
+        if process.wait():
+            raise SystemExit(f"{repo_dir}: git cat-file failed")
+    for root in sorted(missing_roots):
+        print(
+            f"warning: missing corpus path {repo_dir / root} at {commit}",
+            file=sys.stderr,
+        )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus", type=Path, default=ROOT / "data" / "corpus.yaml")
-    parser.add_argument("--cache", type=Path, default=DEFAULT_CACHE)
+    parser.add_argument("--cache", type=Path)
+    parser.add_argument(
+        "--latest",
+        action="store_true",
+        help="scan upstream HEADs from .cache/corpus-latest",
+    )
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--repo", help="only scan one corpus repo")
     parser.add_argument("--feature", help="only keep one feature id")
     args = parser.parse_args()
 
     entries = yaml.safe_load(args.corpus.read_text())
+    cache = args.cache or (LATEST_CACHE if args.latest else DEFAULT_CACHE)
     candidates: list[dict] = []
     scanned_files = Counter()
-    scanned_repos = Counter()
+    scanned_corpus = []
 
     for entry in entries:
         repo = entry["repo"]
         if args.repo and repo != args.repo:
             continue
-        repo_dir = args.cache / repo.replace("/", "__")
+        repo_dir = cache / repo.replace("/", "__")
         if not (repo_dir / ".git").exists():
-            raise SystemExit(f"{repo_dir} missing; run tools/fetch_corpus.py first")
+            fetch_mode = " --latest" if args.latest else ""
+            raise SystemExit(
+                f"{repo_dir} missing. Run tools/fetch_corpus.py{fetch_mode} first."
+            )
 
-        for path in source_files(repo_dir, entry["paths"]):
-            relative = path.relative_to(repo_dir)
-            try:
-                source = path.read_bytes()
-            except OSError as exc:
-                print(f"warning: cannot read {path}: {exc}", file=sys.stderr)
-                continue
-            found = scan_file(repo, entry["commit"], entry["license"], relative, source)
+        revision = "HEAD" if args.latest else entry["commit"]
+        commit = (
+            git_output(
+                repo_dir,
+                "rev-parse",
+                "--verify",
+                "--end-of-options",
+                f"{revision}^{{commit}}",
+            )
+            .decode("ascii")
+            .strip()
+        )
+        scanned_files[repo] = 0
+        for relative, source in committed_sources(repo_dir, commit, entry["paths"]):
+            found = scan_file(repo, commit, entry["license"], relative, source)
             if args.feature:
                 found = [item for item in found if item["feature"] == args.feature]
             scanned_files[repo] += 1
             candidates.extend(found)
 
-        scanned_repos[repo] = scanned_files[repo]
+        scanned_corpus.append(
+            {
+                "repo": repo,
+                "commit": commit,
+                "tag": None if args.latest else entry["tag"],
+            }
+        )
 
     candidates.sort(
         key=lambda item: (item["feature"], item["repo"], item["path"], item["lines"])
     )
     payload = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "corpus": [
-            {"repo": entry["repo"], "commit": entry["commit"], "tag": entry["tag"]}
-            for entry in entries
-            if entry["repo"] in scanned_repos
-        ],
+        "corpus": scanned_corpus,
         "candidates": candidates,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
 
-    print(f"scanned {sum(scanned_files.values())} files in {len(scanned_repos)} repos")
+    print(f"scanned {sum(scanned_files.values())} files in {len(scanned_corpus)} repos")
     for repo, count in sorted(scanned_files.items()):
         print(f"  {repo}: {count} files")
     feature_counts = Counter(item["feature"] for item in candidates)

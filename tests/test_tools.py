@@ -166,6 +166,12 @@ class CorpusLinkTests(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         self.assertIn("is not available in the cache", errors[0])
 
+    def test_stale_record_can_preserve_a_missing_source(self) -> None:
+        self.assertEqual(self.check(level="stale", path="removed.cpp"), [])
+        errors = self.check(level="manual", path="removed.cpp")
+        self.assertEqual(len(errors), 1)
+        self.assertIn("path not found at commit", errors[0])
+
     def test_empty_excerpt_is_rejected_for_permissive_license(self) -> None:
         errors = self.check(excerpt="")
         self.assertEqual(len(errors), 1)

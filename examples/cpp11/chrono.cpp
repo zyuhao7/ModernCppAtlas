@@ -35,9 +35,11 @@ int main() {
   std::cout << "[4] slept at least 2ms = " << std::boolalpha
             << (elapsed >= milliseconds(2)) << '\n';
 
-  // 场景 5：time_point 加 duration 得到截止时刻，可直接比较。
-  auto deadline = start + seconds(1);
-  std::cout << "[5] deadline after end = " << (deadline > end)
+  // 场景 5：用固定时间点演示截止时刻的计算与比较。
+  const steady_clock::time_point sample_start{};
+  const auto sample_end = sample_start + milliseconds(2);
+  const auto deadline = sample_start + seconds(1);
+  std::cout << "[5] deadline after end = " << (deadline > sample_end)
             << ", remaining s = "
-            << duration_cast<seconds>(deadline - end).count() << '\n';
+            << duration_cast<seconds>(deadline - sample_end).count() << '\n';
 }

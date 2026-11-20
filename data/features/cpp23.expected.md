@@ -39,27 +39,30 @@ review:
 <!-- compile -->
 
 ```cpp
+#include <charconv>
 #include <expected>
 #include <iostream>
 #include <string>
 #include <string_view>
+#include <system_error>
 
 std::expected<int, std::string> parse_port(std::string_view text) {
   if (text.empty()) return std::unexpected(std::string{"empty port"});
 
-  int value = 0;
-  for (char c : text) {
-    if (c < '0' || c > '9') {
-      return std::unexpected(std::string{"port must be numeric"});
-    }
-    value = value * 10 + (c - '0');
+  unsigned value = 0;
+  const char* end = text.data() + text.size();
+  const auto [next, error] = std::from_chars(text.data(), end, value);
+  if (next != end) {
+    return std::unexpected(std::string{"port must be numeric"});
   }
-  if (value > 65535) return std::unexpected(std::string{"port out of range"});
-  return value;
+  if (error == std::errc::result_out_of_range || value > 65535u) {
+    return std::unexpected(std::string{"port out of range"});
+  }
+  return static_cast<int>(value);
 }
 
 int main() {
-  for (std::string_view text : {"8080", "abc", "70000"}) {
+  for (std::string_view text : {"8080", "abc", "70000", "99999999999999999999"}) {
     auto result = parse_port(text);
     if (result) {
       std::cout << "port " << *result << '\n';
@@ -76,6 +79,7 @@ int main() {
 port 8080
 error: port must be numeric
 error: port out of range
+error: port out of range
 ```
 
 完整版本见 [`examples/cpp23/expected.cpp`](../../examples/cpp23/expected.cpp)，六个场景的输出为：
@@ -84,6 +88,7 @@ error: port out of range
 [1] 8080 -> port 8080
 [1] abc -> error: port must be numeric
 [1] 70000 -> error: port out of range
+[1] 99999999999999999999 -> error: port out of range
 [2] value() threw, error = port must be numeric
 [3] value_or(80) = 80, value_or(80) on success = 9000
 [4] doubled(21) = 42, doubled(bad) has value = 0, error = port must be numeric
@@ -93,9 +98,9 @@ error: port out of range
 
 场景 1 用同一个返回类型表达三种结局：成功值、非数字、越界，调用方先判 `bool` 再取 `*result` 或 `error()`。场景 2 说明 `value()` 在失败时抛出 `std::bad_expected_access<E>`，异常携带原始错误对象。场景 3 对比 `value_or` 在成功与失败两种状态下的行为，它不区分失败原因。场景 4 的 `transform` 在失败时短路，回调不执行，错误原样保留。场景 5 的 `or_else` 把任意错误映射成兜底值 `8080`，成功路径不受影响。场景 6 使用 `std::expected<void, std::string>`：只有成功或失败，没有成功值，适合纯校验函数。
 
-示例带特性检测：libstdc++ 提供 `__cpp_lib_expected` 时直接使用 `std::expected`；Clang 18 配合 libstdc++ 13 时该设施被 `__cpp_concepts` 门控隐藏，回退到等价结构体实现，两条工具链的输出逐字相同。
+示例在标准库支持 `std::expected` 的单子操作时使用该类型。较旧的标准库用普通结构体重现相同输出。
 
-`result` 可以隐式转成 `bool`，为真表示持有值；`*result` 和 `result->` 访问成功值，`error()` 访问错误值。`value()` 也能取成功值，但在错误状态下会抛出 `std::bad_expected_access<E>`。只报告成功或失败、没有成功值的操作使用 `std::expected<void, E>`。
+`if (result)` 检查是否持有值，`*result` 和 `result->` 访问成功值，`error()` 访问错误值。`value()` 也能取成功值，但在错误状态下会抛出 `std::bad_expected_access<E>`。只报告成功或失败、没有成功值的操作使用 `std::expected<void, E>`。
 
 ## 进阶用法
 

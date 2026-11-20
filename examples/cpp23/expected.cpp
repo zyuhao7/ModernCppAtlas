@@ -1,30 +1,29 @@
+#include <charconv>
 #include <iostream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <system_error>
+#include <utility>
 #include <version>
 
-#if defined(__cpp_lib_expected)
+#if defined(__cpp_lib_expected) && __cpp_lib_expected >= 202211L
 #include <expected>
-#endif
-
-#if defined(__cpp_lib_expected)
 
 std::expected<int, std::string> parse_port(std::string_view text) {
   if (text.empty()) {
     return std::unexpected(std::string{"empty port"});
   }
-  int value = 0;
-  for (char c : text) {
-    if (c < '0' || c > '9') {
-      return std::unexpected(std::string{"port must be numeric"});
-    }
-    value = value * 10 + (c - '0');
+  unsigned value = 0;
+  const char* end = text.data() + text.size();
+  const auto [next, error] = std::from_chars(text.data(), end, value);
+  if (next != end) {
+    return std::unexpected(std::string{"port must be numeric"});
   }
-  if (value > 65535) {
+  if (error == std::errc::result_out_of_range || value > 65535u) {
     return std::unexpected(std::string{"port out of range"});
   }
-  return value;
+  return static_cast<int>(value);
 }
 
 std::expected<int, std::string> doubled(std::string_view text) {
@@ -47,7 +46,8 @@ std::expected<void, std::string> check_bounds(int port) {
 
 int main() {
   // 成功与失败共用同一个返回类型，调用方先检查再解引用。
-  for (std::string_view text : {"8080", "abc", "70000"}) {
+  for (std::string_view text :
+       {"8080", "abc", "70000", "99999999999999999999"}) {
     const auto result = parse_port(text);
     if (result) {
       std::cout << "[1] " << text << " -> port " << *result << '\n';
@@ -85,8 +85,7 @@ int main() {
 
 #else
 
-// Clang 18 配合 libstdc++ 13 时，<expected> 的声明被 __cpp_concepts 挡在门外。
-// 回退分支用普通结构体重跑同样的六个场景，保证快照在两条工具链上逐字一致。
+// 缺少 std::expected 的单子操作时，用普通结构体演示同样的六个场景。
 
 struct PortResult {
   bool ok;
@@ -111,13 +110,16 @@ struct PortResult {
 PortResult parse_port(std::string_view text) {
   if (text.empty()) return std::string{"empty port"};
 
-  int value = 0;
-  for (char c : text) {
-    if (c < '0' || c > '9') return std::string{"port must be numeric"};
-    value = value * 10 + (c - '0');
+  unsigned value = 0;
+  const char* end = text.data() + text.size();
+  const auto [next, error] = std::from_chars(text.data(), end, value);
+  if (next != end) {
+    return std::string{"port must be numeric"};
   }
-  if (value > 65535) return std::string{"port out of range"};
-  return value;
+  if (error == std::errc::result_out_of_range || value > 65535u) {
+    return std::string{"port out of range"};
+  }
+  return static_cast<int>(value);
 }
 
 PortResult doubled(std::string_view text) {
@@ -138,7 +140,8 @@ PortResult check_bounds(int port) {
 }
 
 int main() {
-  for (std::string_view text : {"8080", "abc", "70000"}) {
+  for (std::string_view text :
+       {"8080", "abc", "70000", "99999999999999999999"}) {
     const PortResult result = parse_port(text);
     if (result.has_value()) {
       std::cout << "[1] " << text << " -> port " << result.value() << '\n';
