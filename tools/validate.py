@@ -141,6 +141,8 @@ def check_corpus_link(
     evidence: dict,
     corpus_by_repo: dict[str, dict],
 ) -> None:
+    if evidence.get("level") == "stale":
+        return
     repo = evidence["repo"]
     entry = corpus_by_repo.get(repo)
     if entry is None:
@@ -545,6 +547,7 @@ def main() -> int:
         check_compilers(report, features, compilers)
 
     evidence: dict[str, dict] = {}
+    corpus_evidence: list[tuple[Path, dict]] = []
     evidence_by_feature: dict[str, list[dict]] = defaultdict(list)
     evidence_files = (
         sorted(EVIDENCE_DIR.glob("*.json")) if EVIDENCE_DIR.exists() else []
@@ -558,6 +561,8 @@ def main() -> int:
             continue
         if not validate_schema(report, path, data, evidence_schema):
             continue
+        if args.check_corpus:
+            corpus_evidence.append((path, data))
         evidence_id = data["id"]
         if path.stem != evidence_id:
             report.error(path, f"filename stem {path.stem!r} != id {evidence_id!r}")
@@ -663,17 +668,8 @@ def main() -> int:
             report.error(CORPUS_FILE, f"duplicate corpus repo {repo}")
         corpus_by_repo[repo] = entry
 
-    if args.check_corpus:
-        for path in evidence_files:
-            try:
-                data = json.loads(path.read_text(encoding="utf-8"))
-            except json.JSONDecodeError:
-                continue
-            if (
-                isinstance(data, dict)
-                and {"repo", "commit", "path", "lines"} <= data.keys()
-            ):
-                check_corpus_link(report, path, data, corpus_by_repo)
+    for path, data in corpus_evidence:
+        check_corpus_link(report, path, data, corpus_by_repo)
 
     if report.errors:
         for message in report.errors:

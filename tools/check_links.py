@@ -8,9 +8,8 @@
 from __future__ import annotations
 
 import argparse
-import html
-import re
 import sys
+from functools import cache
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
@@ -28,19 +27,23 @@ LINK_ATTRS = {
     "iframe": ("src",),
     "source": ("src",),
 }
-ID = re.compile(r"""\b(?:id|name)\s*=\s*["']([^"']+)["']""")
 
 
 class LinkParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.links: list[str] = []
+        self.anchors: set[str] = set()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        for name in LINK_ATTRS.get(tag, ()):
-            for attr, value in attrs:
-                if attr == name and value:
-                    self.links.append(value)
+        link_attrs = LINK_ATTRS.get(tag, ())
+        for attr, value in attrs:
+            if not value:
+                continue
+            if attr in link_attrs:
+                self.links.append(value)
+            if attr == "id" or (tag == "a" and attr == "name"):
+                self.anchors.add(value)
 
 
 def base_path(config: Path) -> str:
@@ -50,43 +53,51 @@ def base_path(config: Path) -> str:
     site_url = options.get("site_url")
     if not site_url:
         return "/"
-    return urlsplit(site_url).path or "/"
+    return unquote(urlsplit(site_url).path) or "/"
 
 
 def target_for(
     source: Path, raw: str, site_dir: Path, base: str
-) -> tuple[Path, str] | None:
-    url = urlsplit(html.unescape(raw))
+) -> tuple[Path | None, str] | None:
+    url = urlsplit(raw)
     if url.scheme or url.netloc or raw.startswith("//"):
         return None
+    fragment = unquote(url.fragment)
     if not url.path:
-        return source, unquote(url.fragment)
+        return source, fragment
     path = unquote(url.path)
     if path.startswith("/"):
-        prefix = base if base.endswith("/") else base + "/"
-        if not path.startswith(prefix):
-            return site_dir / path.lstrip("/"), unquote(url.fragment)
-        target = (site_dir / path[len(prefix) :]).resolve()
+        prefix = base.rstrip("/") + "/"
+        if path == prefix.removesuffix("/"):
+            target = site_dir
+        elif path.startswith(prefix):
+            target = site_dir / path.removeprefix(prefix)
+        else:
+            return None, fragment
     else:
-        target = (source.parent / path).resolve()
+        target = source.parent / path
+    target = target.resolve()
+    if not target.is_relative_to(site_dir.resolve()):
+        return None, fragment
     if path.endswith("/") or target.is_dir():
         target = target / "index.html"
-    return target, unquote(url.fragment)
-
-
-def anchors(path: Path) -> set[str]:
-    text = path.read_text(encoding="utf-8", errors="replace")
-    return {html.unescape(value) for value in ID.findall(text)}
+    return target, fragment
 
 
 def check(site_dir: Path, base: str) -> tuple[int, list[str]]:
+    @cache
+    def parse_page(path: Path) -> LinkParser:
+        parser = LinkParser()
+        parser.feed(path.read_text(encoding="utf-8", errors="replace"))
+        parser.close()
+        return parser
+
+    site_dir = site_dir.resolve()
     checked = 0
     failures: list[str] = []
     seen: set[tuple[Path, str]] = set()
     for source in sorted(site_dir.rglob("*.html")):
-        parser = LinkParser()
-        parser.feed(source.read_text(encoding="utf-8", errors="replace"))
-        for raw in parser.links:
+        for raw in parse_page(source).links:
             resolved = target_for(source, raw, site_dir, base)
             if resolved is None:
                 continue
@@ -96,11 +107,11 @@ def check(site_dir: Path, base: str) -> tuple[int, list[str]]:
             if key in seen:
                 continue
             seen.add(key)
-            if not target.is_file():
+            if target is None or not target.is_file():
                 failures.append(f"{key[0]}: missing target {raw}")
                 continue
             if fragment and target.suffix == ".html":
-                if fragment not in anchors(target):
+                if fragment not in parse_page(target).anchors:
                     failures.append(f"{key[0]}: missing anchor {raw}")
     return checked, failures
 

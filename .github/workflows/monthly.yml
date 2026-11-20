@@ -19,17 +19,11 @@ jobs:
       - name: Install tools
         run: uv sync --frozen
 
-      - name: Cache corpus checkouts
-        uses: actions/cache@v4
-        with:
-          path: .cache/corpus
-          key: corpus-${{ hashFiles('data/corpus.yaml') }}
-
-      - name: Fetch pinned corpus
-        run: uv run tools/fetch_corpus.py
+      - name: Fetch current upstream sources
+        run: uv run tools/fetch_corpus.py --latest
 
       - name: Scan for updated usage
-        run: uv run tools/scan/scan.py
+        run: uv run tools/scan/scan.py --latest
 
       - name: Upload candidates
         uses: actions/upload-artifact@v4

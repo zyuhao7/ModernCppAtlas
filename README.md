@@ -154,7 +154,7 @@ review:
    - 证据审核：可追溯性、许可证、上下文是否断章取义；
    - 主张审核：正文中可检验的说法是否逐条落入账本，账本是否真的由证据支持。
 4. **定级与合并**：通过后按审核人数标记 `manual` 或 `verified`；有争议时以标准文本、提案或编译器实际行为为准，要求提供最小可复现示例。
-5. **失效处理**：月度任务发现结构性失效后开 issue；维护者确认后降级为 `stale` 并保留定位记录与原因，同时修正引用该证据的主张。月度扫描只生成“更新用法”候选，不自动替换旧证据。
+5. **失效处理。** 月度任务发现结构性失效后开 issue。维护者确认后标记为 `stale`，保留原定位、理由和日期，并更新引用该证据的主张。证据少于当前分级要求时，补充可核验证据或调整分级。若上游仓库已删除，从语料清单中移除该仓库。
 
 单人维护阶段，新条目默认 `manual`。引入第二名审核者后再开放 `verified`，避免把“单人确认”包装成“双人复核”。
 
@@ -177,7 +177,7 @@ review:
 2. 在 `data/evidence/` 下每条约 3 个证据文件，填固定 commit、路径、行段、许可证与摘录；摘录必须与 commit 原文一致。
 3. 在 frontmatter 的 `claims` 中把每条可检验主张映射到证据 ID，保证没有孤证。
 4. 写 `examples/cppNN/<name>.cpp`，跑 `uv run tools/verify_examples.py --run --update-expected` 生成快照，再把输出贴回页面。
-5. 本地跑一遍 `uv run tools/validate.py --check-corpus`、`uv run tools/check_snippets.py --compiler g++` 与单元测试。
+5. 本地跑一遍 `uv run tools/validate.py --check-corpus`、`uv run tools/check_snippets.py --compiler g++-14` 与单元测试。
 6. 按 `.github/pull_request_template.md` 的清单自查后提交 PR。
 
 ## 构建与演示示例
@@ -197,7 +197,7 @@ make clean      # 删除 build/
 make build/examples/cpp11/unordered_map
 ```
 
-用 `CXX=clang++ make examples` 切换编译器。
+完整构建需要 GCC 14，或使用 Clang 18 搭配支持 C++23 `<print>` 的标准库。用 `make examples CXX=g++-14` 选择编译器。
 
 ## 本地验证
 
@@ -208,15 +208,17 @@ uv run tools/fetch_corpus.py                  # 拉取固定 commit 的语料
 uv run tools/scan/scan.py                     # 输出候选到 .cache/candidates.json
 uv run tools/check_evidence_freshness.py      # 检查已发布证据的上游结构是否仍存在
 uv run tools/validate.py --check-corpus       # 校验 schema、固定链接、路径与行段，并比对摘录原文
-uv run tools/verify_examples.py --compiler g++ --run  # 编译运行并比对 examples/expected 输出快照
-uv run tools/check_snippets.py --compiler g++  # 编译正文中标记的代码块
+uv run tools/verify_examples.py --compiler g++-14 --run  # 编译运行并比对 examples/expected 输出快照
+uv run tools/check_snippets.py --compiler g++-14  # 编译正文中标记的代码块
 uv run python -m unittest discover -s tests -v  # 工具与输出目录安全边界回归测试
 uv run tools/build_site.py && uv run --extra docs mkdocs build --strict  # 先生成再构建站点
 uv run tools/check_links.py                   # 站内链接与锚点检查（需先构建站点）
 uv run tools/check_search.py                  # 中文搜索冒烟（需先构建站点）
 ```
 
-`tools/validate.py` 不带 `--check-corpus` 时只校验数据契约；带该参数时要求 `.cache/corpus` 已就绪，并逐条验证 permalink 指向的 commit、路径、行段、许可证与摘录原文。证据按自身固定 commit 校验，不要求等于语料当前版本；缺失的历史 commit 会自动尝试浅拉取。
+`tools/validate.py` 默认校验数据契约。加 `--check-corpus` 后，从 `.cache/corpus` 核对未失效证据的固定 commit、路径、行段、许可证与摘录原文，缺失的历史 commit 会自动尝试浅拉取。标记为 `stale` 的记录仍需通过数据校验，包括失效理由和日期。
+
+月度扫描在独立缓存中获取各上游默认分支。用 `uv run tools/fetch_corpus.py --latest` 获取版本，再用 `uv run tools/scan/scan.py --latest` 生成候选。候选链接指向实际扫描的固定 commit。
 
 `build_site.py` 必须先于 `mkdocs`、`check_links.py`、`check_search.py`；顺序颠倒会检查到旧的 `.site-docs/`。
 

@@ -62,10 +62,12 @@ int main() {
   std::this_thread::sleep_for(milliseconds(2));
   steady_clock::time_point end = steady_clock::now();
   const auto elapsed = duration_cast<milliseconds>(end - start);
-  std::cout << (elapsed >= milliseconds::zero()) << '\n';
+  std::cout << (elapsed >= milliseconds(2)) << '\n';
 
-  const auto deadline = start + seconds(1);
-  std::cout << (deadline > end) << '\n';
+  const steady_clock::time_point sample_start{};
+  const auto sample_end = sample_start + milliseconds(2);
+  const auto deadline = sample_start + seconds(1);
+  std::cout << (deadline > sample_end) << '\n';
 }
 ```
 
@@ -79,7 +81,7 @@ int main() {
 [5] deadline after end = true, remaining s = 0
 ```
 
-场景 1 对比两种转换：`duration_cast<seconds>` 截断得到 1，赋给 `duration<double>` 保留 1.5。场景 2 是反向的隐式转换：`minutes` 赋给 `seconds` 不会丢失精度，因此不需要 `duration_cast`，显式转换到毫秒才得到 60000。场景 3 演示时长相除得到无量纲比值；整数计数相除会截断，所以先把计数换成 `double`。场景 4 用 `steady_clock` 测量 2ms 休眠，并断言耗时不少于 2ms。场景 5 把截止时刻与当前时刻比较，再用 `duration_cast` 截断剩余时间。
+场景 1 对比两种转换：`duration_cast<seconds>` 截断得到 1，赋给 `duration<double>` 保留 1.5。场景 2 是反向的隐式转换：`minutes` 赋给 `seconds` 不会丢失精度，因此不需要 `duration_cast`，显式转换到毫秒才得到 60000。场景 3 演示时长相除得到无量纲比值；整数计数相除会截断，所以先把计数换成 `double`。场景 4 用 `steady_clock` 测量 2ms 休眠，并检查耗时不少于 2ms。场景 5 用固定的起点分别计算结束时刻与截止时刻，再用 `duration_cast` 将剩余的 998ms 截断为 0 秒。
 
 `count()` 返回底层计数，不带单位；打印或跨接口传递裸数字会丢掉单位信息。需要固定单位时，先用 `duration_cast` 转成目标类型再取 `count()`。
 

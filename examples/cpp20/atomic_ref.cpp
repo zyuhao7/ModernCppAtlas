@@ -4,7 +4,7 @@
 #include <vector>
 
 int main() {
-  unsigned value = 0;
+  alignas(std::atomic_ref<unsigned>::required_alignment) unsigned value = 0;
   std::atomic_ref<unsigned> ref(value);
 
   std::vector<std::thread> workers;
@@ -19,29 +19,29 @@ int main() {
     worker.join();
   }
 
-  std::cout << "[1] value = " << value
-            << ", loaded = " << ref.load(std::memory_order_acquire) << '\n';
+  std::cout << "[1] loaded after join = " << ref.load(std::memory_order_acquire)
+            << '\n';
 
   ref.store(10, std::memory_order_release);
   const unsigned previous = ref.exchange(20);
-  std::cout << "[2] previous = " << previous << ", after exchange = " << value
-            << '\n';
+  std::cout << "[2] previous = " << previous
+            << ", after exchange = " << ref.load() << '\n';
 
   unsigned expected = 20;
   const bool success = ref.compare_exchange_strong(expected, 30);
   expected = 99;
   const bool failed = ref.compare_exchange_strong(expected, 40);
-  std::cout << "[3] success = " << success << ", value = " << value
+  std::cout << "[3] success = " << success << ", value = " << ref.load()
             << ", failed = " << failed << ", expected = " << expected << '\n';
 
   std::atomic_ref<unsigned> copied = ref;
   copied.fetch_sub(5);
-  std::cout << "[4] copied sees = " << ref.load() << ", original = " << value
-            << '\n';
+  std::cout << "[4] copied sees = " << copied.load()
+            << ", original = " << ref.load() << '\n';
 
-  unsigned flags = 4;
+  alignas(std::atomic_ref<unsigned>::required_alignment) unsigned flags = 4;
   std::atomic_ref<unsigned> view(flags);
   view.fetch_or(1);
   view.fetch_and(~4u);
-  std::cout << "[5] flags = " << flags << '\n';
+  std::cout << "[5] flags = " << view.load() << '\n';
 }

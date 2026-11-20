@@ -43,6 +43,7 @@ review:
 ```cpp
 #include <cstddef>
 #include <iostream>
+#include <memory>
 #include <new>
 
 struct Point {
@@ -76,7 +77,7 @@ int main() {
 [6] destroyed all objects
 ```
 
-场景 1 在栈上对齐存储里构造含 `const` 成员的结构体，用 `launder` 取得指针。场景 2 确认 `launder` 返回的地址与原存储一致。场景 3 通过 laundered 指针修改成员。场景 4 销毁旧对象、在同址构造新对象后再次 `launder`。场景 5 在一段缓冲区里构造数组，用 `launder` 得到首元素指针。场景 6 逐个销毁，配平构造。
+场景 1 在栈上对齐存储里构造含 `const` 成员的结构体，用 `launder` 取得指针。场景 2 确认 `launder` 返回的地址与原存储一致。场景 3 通过 laundered 指针修改成员。场景 4 销毁旧对象、在同址构造新对象后再次 `launder`。场景 5 在一段缓冲区里逐个构造整数，分别用 `launder` 得到各对象的指针。场景 6 逐个销毁，配平构造。
 
 ## 进阶用法
 

@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -27,6 +28,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_DIR = ROOT / "data" / "evidence"
 DEFAULT_REPORT = ROOT / ".cache" / "freshness.json"
+DEFAULT_TIMEOUT = 20.0
 API = "https://api.github.com"
 PUBLISHED_LEVELS = {"manual", "verified"}
 STRUCTURAL = {"repo_missing", "commit_missing", "path_missing", "license_changed"}
@@ -36,7 +38,7 @@ class NetworkError(Exception):
     """Transient failure: the evidence cannot be judged this run."""
 
 
-def fetch_json(url: str, token: str | None, timeout: float = 20.0):
+def fetch_json(url: str, token: str | None, timeout: float = DEFAULT_TIMEOUT):
     headers = {
         "Accept": "application/vnd.github+json",
         "User-Agent": "ModernCppAtlas-freshness",
@@ -64,14 +66,18 @@ def fetch_json(url: str, token: str | None, timeout: float = 20.0):
 
 
 class Checker:
-    def __init__(self, token: str | None) -> None:
+    def __init__(self, token: str | None, timeout: float = DEFAULT_TIMEOUT) -> None:
         self.token = token
+        self.timeout = timeout
         self.repositories: dict[str, tuple[str, str]] = {}
         self.licenses: dict[str, tuple[str, str | None]] = {}
 
+    def fetch(self, url: str):
+        return fetch_json(url, self.token, self.timeout)
+
     def check_repository(self, repo: str) -> tuple[str, str]:
         if repo not in self.repositories:
-            status, _payload = fetch_json(f"{API}/repos/{repo}", self.token)
+            status, _payload = self.fetch(f"{API}/repos/{repo}")
             if status == 200:
                 self.repositories[repo] = ("ok", "")
             elif status == 404:
@@ -85,7 +91,7 @@ class Checker:
 
     def check_license(self, repo: str) -> tuple[str, str | None]:
         if repo not in self.licenses:
-            status, payload = fetch_json(f"{API}/repos/{repo}/license", self.token)
+            status, payload = self.fetch(f"{API}/repos/{repo}/license")
             if status == 200 and isinstance(payload, dict):
                 license_info = payload.get("license") or {}
                 spdx = license_info.get("spdx_id")
@@ -114,7 +120,7 @@ class Checker:
         if status != "ok":
             return status, detail
 
-        status, payload = fetch_json(f"{API}/repos/{repo}/commits/{commit}", self.token)
+        status, _payload = self.fetch(f"{API}/repos/{repo}/commits/{commit}")
         if status in {404, 422}:
             return "commit_missing", f"commit {commit} not found (history rewritten?)"
         if status != 200:
@@ -122,7 +128,7 @@ class Checker:
 
         quoted = urllib.parse.quote(path, safe="/")
         url = f"{API}/repos/{repo}/contents/{quoted}?ref={commit}"
-        status, payload = fetch_json(url, self.token)
+        status, payload = self.fetch(url)
         message = str(payload.get("message", "")) if isinstance(payload, dict) else ""
         if status == 404:
             return "path_missing", f"{path} not found at {commit[:12]}"
@@ -174,8 +180,12 @@ def main() -> int:
         help="demote evidence with a structural failure to level: stale",
     )
     parser.add_argument("--repo", help="only check one repository")
-    parser.add_argument("--timeout", type=float, default=20.0)
+    parser.add_argument(
+        "--timeout", type=float, default=DEFAULT_TIMEOUT, help="HTTP timeout in seconds"
+    )
     args = parser.parse_args()
+    if not math.isfinite(args.timeout) or args.timeout <= 0:
+        parser.error("--timeout must be a finite positive number")
 
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
     if not token:
@@ -184,7 +194,7 @@ def main() -> int:
             "requests per hour",
             file=sys.stderr,
         )
-    checker = Checker(token)
+    checker = Checker(token, args.timeout)
 
     records: list[dict] = []
     for path in sorted(EVIDENCE_DIR.glob("*.json")):

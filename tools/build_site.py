@@ -21,6 +21,7 @@ FEATURE_DIR = ROOT / "data" / "features"
 EVIDENCE_DIR = ROOT / "data" / "evidence"
 LIBRARY_DIR = ROOT / "data" / "libraries"
 TAXONOMY_FILE = ROOT / "data" / "taxonomy.yaml"
+COMPILERS_FILE = ROOT / "data" / "compilers.yaml"
 DEFAULT_OUT_DIR = ROOT / ".site-docs"
 OUT_DIR = DEFAULT_OUT_DIR
 GENERATED_MARKER = ".moderncppatlas-generated"
@@ -150,10 +151,9 @@ def review_text(meta: dict) -> str:
     return f"{label}（{', '.join(review['reviewers'])}）"
 
 
-def feature_meta_table(meta: dict, records: list[dict]) -> str:
+def feature_meta_table(meta: dict, records: list[dict], compilers: dict) -> str:
     levels = Counter(record["level"] for record in records)
     level_text = ", ".join(f"{name} {count}" for name, count in sorted(levels.items()))
-    compilers = meta["compilers"]
     compiler_text = (
         f"GCC {compilers['gcc']}+ · Clang {compilers['clang']}+ · "
         f"MSVC {compilers['msvc']}+"
@@ -164,8 +164,9 @@ def feature_meta_table(meta: dict, records: list[dict]) -> str:
         f"| {meta['standard']} | {meta['difficulty']}/5 | {meta['status']} | "
         f"{meta['tier']} | {len(records)} 条（{level_text}） | "
         f"{review_text(meta)} | {meta['last_verified']} |\n\n"
-        f"编译器支持：{compiler_text}。版本查询："
-        "[cppreference 编译器支持](https://en.cppreference.com/w/cpp/compiler_support)。\n"
+        f"编译器支持：{compiler_text}。"
+        f"[cppreference 编译器支持]({compilers['source']})，"
+        f"查阅日期 {compilers['checked_at']}。\n"
     )
 
 
@@ -187,6 +188,7 @@ def build_feature_pages(
     features: dict[str, dict],
     bodies: dict[str, str],
     evidence: dict[str, list[dict]],
+    compilers: dict[str, dict],
     repo_url: str,
     branch: str,
 ) -> None:
@@ -203,7 +205,7 @@ def build_feature_pages(
             OUT_DIR / "features" / f"{feature_id}.md",
             f"---\n{frontmatter}\n---\n\n"
             f"# {meta['title']}\n\n"
-            f"{feature_meta_table(meta, records)}"
+            f"{feature_meta_table(meta, records, compilers[feature_id])}"
             f"{claim_table(meta)}"
             f"{evidence_line}\n"
             f"{body}\n",
@@ -490,9 +492,10 @@ def main() -> int:
     features, bodies = load_features()
     evidence = load_evidence()
     libraries = load_libraries()
+    compilers = yaml.safe_load(COMPILERS_FILE.read_text(encoding="utf-8"))["features"]
 
     build_feature_pages(
-        features, bodies, evidence, args.repo_url.rstrip("/"), args.branch
+        features, bodies, evidence, compilers, args.repo_url.rstrip("/"), args.branch
     )
     build_evidence_pages(features, evidence)
     build_libraries_page(features, libraries, args.repo_url.rstrip("/"), args.branch)
