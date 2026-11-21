@@ -69,7 +69,7 @@ class CorpusScanTests(unittest.TestCase):
         git(self.upstream, "commit", "-m", message)
         return git(self.upstream, "rev-parse", "HEAD")
 
-    def run_fetch(self, *args: str) -> None:
+    def run_fetch(self, *args: str, status: int = 0) -> None:
         with (
             patch.object(fetch_corpus, "CACHE", self.pinned_cache),
             patch.object(fetch_corpus, "LATEST_CACHE", self.latest_cache),
@@ -78,7 +78,7 @@ class CorpusScanTests(unittest.TestCase):
             ),
             contextlib.redirect_stdout(io.StringIO()),
         ):
-            self.assertEqual(fetch_corpus.main(), 0)
+            self.assertEqual(fetch_corpus.main(), status)
 
     def run_scan(self, *args: str, status: int = 0) -> dict:
         output = self.root / "candidates.json"
@@ -137,6 +137,47 @@ class CorpusScanTests(unittest.TestCase):
         self.assertEqual(len(result["candidates"]), 1)
         self.assertEqual(result["candidates"][0]["commit"], latest)
 
+    def test_latest_scan_rejects_report_without_fetch_results(self) -> None:
+        self.latest_cache.mkdir(parents=True)
+        (self.latest_cache / "fetch-report.json").write_text("{}")
+        output = self.root / "candidates.json"
+        with (
+            patch(
+                "sys.argv",
+                [
+                    "scan.py",
+                    "--corpus",
+                    str(self.manifest),
+                    "--output",
+                    str(output),
+                    "--latest",
+                    "--cache",
+                    str(self.latest_cache),
+                ],
+            ),
+            contextlib.redirect_stdout(io.StringIO()),
+            contextlib.redirect_stderr(io.StringIO()),
+            self.assertRaises(SystemExit) as raised,
+        ):
+            scan.main()
+
+        self.assertIn("missing fetch results", str(raised.exception))
+
+    def test_latest_scan_skips_repos_without_checkout(self) -> None:
+        self.latest_cache.mkdir(parents=True)
+        (self.latest_cache / "fetch-report.json").write_text(
+            json.dumps({"commits": {"fixture/example": self.pin}, "failed_fetches": {}})
+        )
+
+        with contextlib.redirect_stderr(io.StringIO()):
+            result = self.run_scan(
+                "--latest", "--cache", str(self.latest_cache), status=1
+            )
+
+        self.assertEqual(result["corpus"], [])
+        self.assertEqual(result["candidates"], [])
+        self.assertIn("fixture/example", result["failed_fetches"])
+
     def test_dedicated_features_keep_umbrella_matches(self) -> None:
         candidates = scan.scan_file(
             "fixture/example",
@@ -173,7 +214,7 @@ class CorpusScanTests(unittest.TestCase):
             result = self.run_scan("--latest", "--cache", str(self.latest_cache))
             good_checkout = self.latest_cache / "fixture__example"
             git(good_checkout, "remote", "set-url", "origin", missing_origin)
-            self.run_fetch("--latest")
+            self.run_fetch("--latest", status=1)
             failed = self.run_scan(
                 "--latest", "--cache", str(self.latest_cache), status=1
             )

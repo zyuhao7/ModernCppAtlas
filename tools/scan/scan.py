@@ -406,8 +406,13 @@ def main() -> int:
             raise SystemExit(
                 f"cannot read {report}. Run tools/fetch_corpus.py --latest first."
             ) from exc
-        latest_commits = fetch_report["commits"]
-        failed_fetches = fetch_report["failed_fetches"]
+        latest_commits = fetch_report.get("commits")
+        failed_fetches = fetch_report.get("failed_fetches", {})
+        if not isinstance(latest_commits, dict) or not isinstance(failed_fetches, dict):
+            raise SystemExit(
+                f"{report} is missing fetch results. "
+                "Run tools/fetch_corpus.py --latest again."
+            )
 
     candidates: list[dict] = []
     scanned_files = Counter()
@@ -425,10 +430,12 @@ def main() -> int:
             continue
         repo_dir = cache / repo.replace("/", "__")
         if not (repo_dir / ".git").exists():
-            fetch_mode = " --latest" if args.latest else ""
-            raise SystemExit(
-                f"{repo_dir} missing. Run tools/fetch_corpus.py{fetch_mode} first."
-            )
+            if args.latest:
+                reason = f"{repo_dir} is not a git checkout"
+                skipped_repos[repo] = reason
+                print(f"warning: skipping {repo}: {reason}", file=sys.stderr)
+                continue
+            raise SystemExit(f"{repo_dir} missing. Run tools/fetch_corpus.py first.")
 
         revision = latest_commits[repo] if args.latest else entry["commit"]
         commit = (

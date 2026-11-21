@@ -148,6 +148,9 @@ def main() -> int:
             + "\n",
             encoding="utf-8",
         )
+        if not commits:
+            print("error: no repositories were fetched", file=sys.stderr)
+            return 1
     return 0
 
 
