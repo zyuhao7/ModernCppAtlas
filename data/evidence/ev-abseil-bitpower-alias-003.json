@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-bitpower-alias-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/numeric/bits.h",
+  "lines": "138-143",
+  "feature": "cpp20.bit-power",
+  "pattern": "特性宏可用时把 absl 的 2 的幂函数直接别名到 std 版本",
+  "why_typical": "库保留兼容回退，但在支持 C++20 时把 bit_ceil/bit_floor/bit_width/has_single_bit 全部转发到标准实现。",
+  "excerpt": "#if (defined(__cpp_lib_int_pow2) && __cpp_lib_int_pow2 >= 202002L)\n\nusing std::bit_ceil;\nusing std::bit_floor;\nusing std::bit_width;\nusing std::has_single_bit;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；别名依赖 __cpp_lib_int_pow2 特性测试宏。"
+}

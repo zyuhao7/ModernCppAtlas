@@ -1,0 +1,6 @@
+[1] twice(int) = 1, twice(string) = 0
+[2] join(as, as) = 1, join(int, int) = 0
+[3] add(int) member = 1
+[4] lambda(int) = 1, lambda() = 0
+[5] invoke_result_t<twice, int> is int = 1
+[6] is_invocable_r<int, twice, int> = 1, is_invocable_r<double, twice, int> = 1

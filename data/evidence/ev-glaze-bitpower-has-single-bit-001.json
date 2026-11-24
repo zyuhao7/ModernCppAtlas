@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-bitpower-has-single-bit-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/core/reflect.hpp",
+  "lines": "1143-1149",
+  "feature": "cpp20.bit-power",
+  "pattern": "用 has_single_bit 判断枚举值是否为 2 的幂，再取位位置",
+  "why_typical": "反射要识别 2 的幂标志位枚举；has_single_bit(0) 返回 false，正好把零值排除在同一次判断里。",
+  "excerpt": "            for (const auto v : vals) {\n               const auto uv = static_cast<UnsignedU>(v);\n               if (uv == 0 || !std::has_single_bit(uv)) {\n                  return std::pair{false, size_t{0}};\n               }\n               const auto bit = static_cast<size_t>(std::countr_zero(uv));\n               if (bit > max_bit) max_bit = bit;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；has_single_bit 与 countr_zero 组合识别标志位枚举。"
+}

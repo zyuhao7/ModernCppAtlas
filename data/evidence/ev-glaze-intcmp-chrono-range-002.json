@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-intcmp-chrono-range-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/core/chrono.hpp",
+  "lines": "519-521",
+  "feature": "cpp20.integer-comparison",
+  "pattern": "用 cmp_greater / cmp_less 检查时长计数是否超出目标 Duration 的取值范围",
+  "why_typical": "ticks 与 Duration::rep 可能宽度与符号不同；cmp_* 在数学值层面判断是否溢出，不受隐式转换误导。",
+  "excerpt": "               const auto ticks = duration_cast<duration<int64_t, typename Duration::period>>(secs).count();\n               if (std::cmp_greater(ticks, (Duration::max)().count()) ||\n                   std::cmp_less(ticks, (Duration::min)().count())) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；范围检查用 cmp_greater/cmp_less 防止符号与宽度不一致导致的误判。"
+}
