@@ -1,0 +1,19 @@
+{
+  "id": "ev-fmt-logical-traits-variant-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/std.h",
+  "lines": "154-157",
+  "feature": "cpp17.logical-traits",
+  "pattern": "用 std::conjunction 展开包，要求 variant 的每个备选类型都可格式化",
+  "why_typical": "conjunction 接受可变参数，天然适合把包展开后的多个谓词折叠成一个条件；全部为真才算可格式化。",
+  "excerpt": "template <typename Variant, typename Char> class is_variant_formattable {\n  template <size_t... Is>\n  static auto check(std::index_sequence<Is...>) -> std::conjunction<\n      is_formattable<std::variant_alternative_t<Is, Variant>, Char>...>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；variant 格式化能力的编译期检测。"
+}

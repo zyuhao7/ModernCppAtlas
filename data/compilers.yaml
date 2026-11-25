@@ -744,3 +744,21 @@ features:
     msvc: "19.27"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-24"
+  cpp20.attributes:
+    gcc: "9"
+    clang: "12"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-25"
+  cpp17.logical-traits:
+    gcc: "6.1"
+    clang: "3.8"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-25"
+  cpp11.hash-specialization:
+    gcc: "4.4"
+    clang: "3.1"
+    msvc: "16.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-25"

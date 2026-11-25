@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-logical-traits-checkop-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/log/internal/check_op.h",
+  "lines": "382-387",
+  "feature": "cpp17.logical-traits",
+  "pattern": "用 conjunction_v 组合 is_enum 与多个 negation 条件",
+  "why_typical": "判断“作用域枚举且不能按整数或流输出”需要叠加多个条件；conjunction 与 negation 让每个条件各占一行，语义清晰。",
+  "excerpt": "template <typename T>\nstd::enable_if_t<\n    std::conjunction_v<std::is_enum<T>,\n                       std::negation<std::is_convertible<T, int>>,\n                       std::negation<HasOstreamOperator<T>>,\n                       std::negation<HasAbslStringify<T>>>,",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；日志宏对枚举类型的重载筛选。"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-hash-uuid-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/util/uuid.hpp",
+  "lines": "105-113",
+  "feature": "cpp11.hash-specialization",
+  "pattern": "为自定义 uuid 类型特化 std::hash，用于无序容器键",
+  "why_typical": "uuid 是值类型且需要作为哈希表键；特化 std::hash 后可直接放进 unordered_map / unordered_set。",
+  "excerpt": "template <>\nstruct std::hash<glz::uuid>\n{\n   [[nodiscard]] size_t operator()(const glz::uuid& u) const noexcept\n   {\n      // FNV-1a over the 16 bytes. Deterministic and allocation-free. The\n      // offset basis and prime are width-specific so this compiles cleanly on\n      // 32-bit platforms where size_t is 32 bits.\n      if constexpr (sizeof(size_t) >= 8) {",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；库自带的哈希特化。"
+}

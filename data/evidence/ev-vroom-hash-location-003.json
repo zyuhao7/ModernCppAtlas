@@ -1,0 +1,19 @@
+{
+  "id": "ev-vroom-hash-location-003",
+  "repo": "VROOM-Project/vroom",
+  "commit": "43dd7d0b8b560431eb555bf335cf4797eb7343c4",
+  "path": "src/structures/vroom/location.h",
+  "lines": "59-72",
+  "feature": "cpp11.hash-specialization",
+  "pattern": "为 Location 特化 std::hash，复用已有类型的哈希结果",
+  "why_typical": "复合键的哈希可以先分别调用成员类型的 std::hash 再组合；特化与 operator== 定义在同一头文件，保证两者语义一致。",
+  "excerpt": "namespace std {\ntemplate <> struct hash<vroom::Location> {\n  std::size_t operator()(const vroom::Location& l) const noexcept {\n    if (l.user_index()) {\n      return hash<vroom::Index>()(l.index());\n    }\n\n    assert(l.has_coordinates());\n    return ((hash<vroom::Coordinate>()(l.lon()) ^\n             (hash<vroom::Coordinate>()(l.lat()) << 1)) >>\n            1);\n  }\n};\n} // namespace std",
+  "license": "BSD-2-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；路径规划中的位置键。"
+}
