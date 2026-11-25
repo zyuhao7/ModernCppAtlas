@@ -23,7 +23,7 @@ claims:
     statement: "用 cmp_less_equal 断言有符号计数与无符号容量上限的关系"
     evidence: [ev-stdexec-intcmp-uring-assert-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---

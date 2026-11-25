@@ -23,7 +23,7 @@ claims:
     statement: "用 conjunction_v 组合 is_enum 与多个 negation 条件"
     evidence: [ev-abseil-logical-traits-checkop-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---

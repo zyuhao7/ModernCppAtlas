@@ -23,7 +23,7 @@ claims:
     statement: "在就地向量插入时取得输入范围的起始地址"
     evidence: [ev-glaze-to-address-insert-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---
