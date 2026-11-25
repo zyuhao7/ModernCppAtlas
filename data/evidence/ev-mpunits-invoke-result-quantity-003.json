@@ -1,0 +1,19 @@
+{
+  "id": "ev-mpunits-invoke-result-quantity-003",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/framework/quantity.h",
+  "lines": "113-115",
+  "feature": "cpp17.is-invocable",
+  "pattern": "用 regular_invocable 与 invoke_result_t 约束二元运算的结果类型",
+  "why_typical": "概念先要求 Func 可用 (T, U) 调用，再用 invoke_result_t 检查返回类型满足 RepresentationOf，二者组合成可复用约束。",
+  "excerpt": "template<auto QS, typename Func, typename T, typename U>\nconcept InvokeResultOf = QuantitySpec<MP_UNITS_REMOVE_CONST(decltype(QS))> && std::regular_invocable<Func, T, U> &&\n                         RepresentationOf<std::invoke_result_t<Func, T, U>, QS>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；invoke_result_t 嵌入 concept 定义，C++20 concepts 语境下使用 C++17 库工具。"
+}

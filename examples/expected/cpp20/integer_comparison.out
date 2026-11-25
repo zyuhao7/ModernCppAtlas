@@ -1,0 +1,5 @@
+[1] -1 as unsigned = 4294967295, cmp_less(-1, 1u) = 1
+[2] cmp_greater(1u, -1) = 1
+[3] cmp_equal(1u, 1) = 1, cmp_not_equal(1u, -1) = 1
+[4] size_t 3 < int 5 = 1
+[5] cmp_greater(int64_max, uint32_max) = 1

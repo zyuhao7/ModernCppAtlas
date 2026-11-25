@@ -726,3 +726,21 @@ features:
     msvc: "19.25"
     source: https://en.cppreference.com/w/cpp/compiler_support/20
     checked_at: "2026-11-20"
+  cpp17.is-invocable:
+    gcc: "7.1"
+    clang: "6"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-24"
+  cpp20.bit-power:
+    gcc: "9"
+    clang: "9"
+    msvc: "19.28"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-24"
+  cpp20.integer-comparison:
+    gcc: "10"
+    clang: "13"
+    msvc: "19.27"
+    source: https://en.cppreference.com/w/cpp/compiler_support/20
+    checked_at: "2026-11-24"

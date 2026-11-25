@@ -1,0 +1,19 @@
+{
+  "id": "ev-stdexec-intcmp-uring-assert-003",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/linux/io_uring_context.hpp",
+  "lines": "508-509",
+  "feature": "cpp20.integer-comparison",
+  "pattern": "用 cmp_less_equal 断言有符号计数与无符号容量上限之间的关系",
+  "why_typical": "__n_total_submitted_ 是可能为负的计数，cq_entries 是无符号容量；cmp_less_equal 按数学值比较，断言语义正确。",
+  "excerpt": "        STDEXEC_ASSERT(0 <= __n_total_submitted_\n                       && std::cmp_less_equal(__n_total_submitted_, __params_.cq_entries));",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；有符号计数对无符号容量的边界断言用 cmp_less_equal。"
+}

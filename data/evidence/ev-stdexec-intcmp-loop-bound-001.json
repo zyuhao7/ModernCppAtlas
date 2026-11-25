@@ -1,0 +1,19 @@
+{
+  "id": "ev-stdexec-intcmp-loop-bound-001",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "examples/benchmark/common.hpp",
+  "lines": "139-140",
+  "feature": "cpp20.integer-comparison",
+  "pattern": "用 cmp_less 比较 size_t 循环下标与 int 上限，避免隐式符号转换",
+  "why_typical": "下标是 size_t、线程数是 int，直接比较会触发符号转换警告并可能给出错误结果；cmp_less 按数学值比较。",
+  "excerpt": "  std::size_t buffer_size = 2000 << 20;\n  for (std::size_t i = 0; std::cmp_less(i, nthreads); ++i)",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；size_t 与 int 混比用 cmp_less 消除符号转换。"
+}

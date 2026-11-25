@@ -1,0 +1,19 @@
+{
+  "id": "ev-stdexec-bitpower-ceil-lifo-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/exec/detail/bwos_lifo_queue.hpp",
+  "lines": "199-205",
+  "feature": "cpp20.bit-power",
+  "pattern": "用 bit_ceil 把请求的块数向上取整到 2 的幂，以便用掩码取模",
+  "why_typical": "无锁队列要求容量是 2 的幂才能用位与代替取模；bit_ceil(num_blocks) 是该约束的标准表达。",
+  "excerpt": "  lifo_queue<Tp, Allocator>::lifo_queue(std::size_t num_blocks,\n                                        std::size_t block_size,\n                                        Allocator   allocator)\n    : blocks_(std::bit_ceil(num_blocks),\n              block_type(block_size, allocator),\n              allocator_of_t<block_type>(allocator))\n    , mask_(blocks_.size() - 1)",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；bit_ceil 保证容量为 2 的幂，后续 mask_ 取模成立。"
+}

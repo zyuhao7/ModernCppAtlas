@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-is-invocable-cli-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/ext/cli_menu.hpp",
+  "lines": "161-162",
+  "feature": "cpp17.is-invocable",
+  "pattern": "用 is_invocable_v 选择无参回调分支，再用 invoke_result_t 决定返回类型",
+  "why_typical": "命令行注册器按回调签名在编译期分流；先判可调用性，再推导返回类型，避免写两条重载。",
+  "excerpt": "                  else if constexpr (std::is_invocable_v<Func>) {\n                     using R = std::invoke_result_t<Func>;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；is_invocable_v 与 invoke_result_t 配对使用的典型写法。"
+}

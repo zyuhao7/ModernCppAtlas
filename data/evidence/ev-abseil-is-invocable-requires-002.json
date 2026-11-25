@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-is-invocable-requires-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/meta/internal/requires.h",
+  "lines": "58-61",
+  "feature": "cpp17.is-invocable",
+  "pattern": "把 is_invocable_v 包成 Requires 谓词，在 C++17 下模拟可调用性约束",
+  "why_typical": "C++17 没有 concepts，Abseil 用 is_invocable_v 直接检查一组参数能否调用 F，作为 enable_if 的定制点。",
+  "excerpt": "template <typename... T, typename F>\nconstexpr bool Requires(F) {\n  return std::is_invocable_v<F, T...>;\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-24",
+  "is_test": false,
+  "notes": "生产路径；constexpr 谓词配合 enable_if 实现 C++17 约束。"
+}

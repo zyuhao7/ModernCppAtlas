@@ -1,0 +1,6 @@
+[1] has_single_bit(8) = 1, has_single_bit(9) = 0
+[2] bit_ceil(9) = 16, bit_floor(9) = 8
+[3] bit_width(8) = 4, bit_width(9) = 4
+[4] lowest power-of-2 >= 44 = 64, highest <= 44 = 32
+[5] table capacity for 5 slots = 8
+[6] bit_ceil(0) = 1, bit_floor(0) = 0, bit_width(0) = 0
