@@ -1,0 +1,19 @@
+{
+  "id": "ev-glaze-attributes-unlikely-001",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/file/raw_or_file.hpp",
+  "lines": "35-38",
+  "feature": "cpp20.attributes",
+  "pattern": "在错误分支上标注 [[unlikely]]，提示解析失败是冷路径",
+  "why_typical": "反序列化主路径成功率高，错误返回用 [[unlikely]] 让编译器把冷代码排到分支外，是性能敏感库的常见标注。",
+  "excerpt": "         if (*it == '\"') {\n            parse<JSON>::op<Opts>(v.str, ctx, it, end);\n            if (bool(ctx.error)) [[unlikely]]\n               return;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；JSON 解析错误分支标记为冷路径。"
+}

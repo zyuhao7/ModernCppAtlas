@@ -1,0 +1,19 @@
+{
+  "id": "ev-nghttp2-hash-quic-cid-002",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/shrpx_quic.h",
+  "lines": "60-71",
+  "feature": "cpp11.hash-specialization",
+  "pattern": "为 C 结构体 ngtcp2_cid 特化 std::hash，并携带随机化密钥",
+  "why_typical": "哈希值需要抗碰撞，特化里保存 SipHash 密钥而不是简单拼接字段，展示 std::hash 可以是有状态的可调用对象。",
+  "excerpt": "namespace std {\ntemplate <> struct hash<ngtcp2_cid> {\n  hash() {\n    std::ranges::copy(shrpx::generate_siphash_key(), std::ranges::begin(key));\n  }\n\n  std::size_t operator()(const ngtcp2_cid &cid) const noexcept {\n    return static_cast<size_t>(siphash24(key, {cid.data, cid.datalen}));\n  }\n\n  std::array<uint64_t, 2> key;\n};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；QUIC 连接 ID 的哈希。"
+}

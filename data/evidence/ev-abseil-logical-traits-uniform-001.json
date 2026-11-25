@@ -1,0 +1,19 @@
+{
+  "id": "ev-abseil-logical-traits-uniform-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/random/internal/uniform_helper.h",
+  "lines": "77-81",
+  "feature": "cpp17.logical-traits",
+  "pattern": "用 std::disjunction_v 判断任一方向的隐式转换是否成立",
+  "why_typical": "两个模板参数只要有一个能无损转换就应当参与重载；disjunction 把两个谓词组合成一个条件，短路求值且可读。",
+  "excerpt": "template <typename A, typename B>\nusing uniform_inferred_return_t = std::enable_if_t<\n    std::disjunction_v<is_widening_convertible<A, B>,\n                       is_widening_convertible<B, A>>,\n    std::conditional_t<is_widening_convertible<A, B>::value, B, A>>;",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": ["zyuhao7"],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；随机分布参数的类型推导约束。"
+}

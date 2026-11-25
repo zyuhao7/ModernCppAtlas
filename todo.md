@@ -397,7 +397,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 
 ### M3 · C++17/20 扩张（新增 350–450 人时）
 
-- 累计 200 条目：60 A + 110 B + 30 C。（进行中：124 个完整条目，123 A + 1 B，373 条证据）
+- 累计 200 条目：60 A + 110 B + 30 C。（进行中：127 个完整条目，126 A + 1 B，382 条证据）
 - 20 篇进阶长文：concepts、ranges、coroutines、modules、`std::format`、`std::span` 等。
 - 12 张库联动卡片。
 - 第十九批加入 `cpp17.clamp`（drogon/Hyprland/glaze 各 1 条）、`cpp14.init-capture`（glaze/Hyprland/stdexec 各 1 条）与 `cpp20.bit-operations`（mold/stdexec/nghttp2 各 1 条），均为 A 级，带可运行示例。
@@ -411,6 +411,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 - 第二十七批加入 `cpp17.size-data-empty`（glaze/Hyprland/abseil 各 1 条）、`cpp20.string-starts-ends-with`（mold/Hyprland/vroom 各 1 条）与 `cpp20.associative-contains`（nghttp2/mold/vroom 各 1 条），均为 A 级，带可运行示例。
 - 第二十八批加入 `cpp17.destroy-at`（stdexec 2 条、glaze 1 条）、`cpp20.to-address`（nghttp2 1 条、glaze 2 条）与 `cpp20.bind-front`（nghttp2 2 条、Abseil 1 条），均按 A 级编写，带可运行示例。
 - 第二十九批加入 `cpp17.is-invocable`（glaze/abseil/mp-units 各 1 条）、`cpp20.bit-power`（glaze/stdexec/abseil 各 1 条）与 `cpp20.integer-comparison`（stdexec 2 条、glaze 1 条），均按 A 级编写，带可运行示例。
+- 第三十批加入 `cpp20.attributes`（glaze/mold/fmt 各 1 条）、`cpp17.logical-traits`（abseil 2 条、fmt 1 条）与 `cpp11.hash-specialization`（glaze/nghttp2/vroom 各 1 条），均按 A 级编写，带可运行示例。
 - 退出标准：月度证据刷新跑通一次；20 个最常用特性有完整进阶用法。
 
 ### M4 · C++23/26（新增 150–250 人时）

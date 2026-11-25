@@ -1,0 +1,4 @@
+[1] conjunction<is_integral<int>, is_signed<int>> = 1
+[2] conjunction<is_integral<double>, is_signed<double>> = 0
+[3] disjunction<is_integral<int>, is_floating_point<int>> = 1
+[4] negation<is_pointer<int>> = 1
