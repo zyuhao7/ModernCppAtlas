@@ -23,7 +23,7 @@ claims:
     statement: "用 regular_invocable 与 invoke_result_t 约束运算的结果类型"
     evidence: [ev-mpunits-invoke-result-quantity-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---
