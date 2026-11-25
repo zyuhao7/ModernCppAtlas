@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-inline-namespace-003",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "5207-5219",
+  "feature": "cpp11.inline-namespaces",
+  "pattern": "用嵌套内联命名空间 literals/json_literals 暴露用户定义字面量",
+  "why_typical": "字面量运算符位于独立命名空间避免污染，内联后又能从 nlohmann 外层直接找到。",
+  "excerpt": "inline namespace literals\n{\ninline namespace json_literals\n{\n\n/// @brief user-defined string literal for JSON values\n/// @sa https://json.nlohmann.me/api/basic_json/operator_literal_json/\nJSON_HEDLEY_NON_NULL(1)\n#if !defined(JSON_HEDLEY_GCC_VERSION) || JSON_HEDLEY_GCC_VERSION_CHECK(4,9,0)\n    inline nlohmann::json operator \"\"_json(const char* s, std::size_t n)\n#else\n    inline nlohmann::json operator \"\" _json(const char* s, std::size_t n)\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；_json 字面量的命名空间布局。"
+}

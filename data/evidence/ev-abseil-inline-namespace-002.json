@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-inline-namespace-002",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/base/config.h",
+  "lines": "175-182",
+  "feature": "cpp11.inline-namespaces",
+  "pattern": "用配置宏选择展开为空或展开为 inline namespace，注入可配置的 ABI 标签",
+  "why_typical": "同一个头文件可在需要时隐藏内联命名空间，也可在发布时把 ABI 标签写进符号；调用方代码不变。",
+  "excerpt": "#if ABSL_OPTION_USE_INLINE_NAMESPACE == 0\n#define ABSL_NAMESPACE_BEGIN\n#define ABSL_NAMESPACE_END\n#define ABSL_INTERNAL_C_SYMBOL(x) x\n#elif ABSL_OPTION_USE_INLINE_NAMESPACE == 1\n#define ABSL_NAMESPACE_BEGIN \\\n  inline namespace ABSL_OPTION_INLINE_NAMESPACE_NAME {\n#define ABSL_NAMESPACE_END }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；Abseil 全局命名空间注解。"
+}

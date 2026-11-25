@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-transparent-comparator-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/json/schema.hpp",
+  "lines": "203-210",
+  "feature": "cpp14.transparent-comparators",
+  "pattern": "以 string_view 为键的 map 使用 std::less<>，让查找与插入都不必构造字符串",
+  "why_typical": "schema 关键字来自解析结果中的视图；透明比较器让 string_view 与其它字符串类型直接比较。",
+  "excerpt": "      // structural keywords (used internally by schema generation, not typically set by users)\n      boxed<std::variant<std::string_view, std::vector<std::string_view>>> type{};\n      sv_opt ref{};\n      boxed<std::map<std::string_view, schema, std::less<>>> properties{};\n      boxed<std::vector<schema>> prefixItems{};\n      boxed<std::variant<bool, std::shared_ptr<schema>>> items{};\n      boxed<std::variant<bool, std::shared_ptr<schema>>> additionalProperties{};\n      boxed<std::map<std::string_view, schema, std::less<>>> defs{};",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；JSON schema 内部结构。"
+}

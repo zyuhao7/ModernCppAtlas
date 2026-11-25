@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-decltype-auto-apply-001",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/utility/utility.h",
+  "lines": "40-46",
+  "feature": "cpp14.decltype-auto",
+  "pattern": "用 decltype(auto) 转发 std::apply 的返回值，保留引用返回值",
+  "why_typical": "兼容旧平台的包装函数必须原样返回被包装函数的结果类型；写 auto 会把引用退化成值，decltype(auto) 保持值类别。",
+  "excerpt": "template <class F, class T>\nABSL_DEPRECATE_AND_INLINE()\nconstexpr decltype(auto)\n    apply(F&& f, T&& t) noexcept(noexcept(std::apply(std::declval<F>(),\n                                                     std::declval<T>()))) {\n  return std::apply(std::forward<F>(f), std::forward<T>(t));\n}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；公共 header 中的兼容包装，返回类型必须与 std::apply 完全一致。"
+}
