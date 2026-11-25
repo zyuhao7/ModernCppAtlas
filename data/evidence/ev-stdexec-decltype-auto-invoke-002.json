@@ -1,0 +1,21 @@
+{
+  "id": "ev-stdexec-decltype-auto-invoke-002",
+  "repo": "NVIDIA/stdexec",
+  "commit": "6d7ad689f4d4831c5136e4abe1c601f9a3b64e43",
+  "path": "include/stdexec/functional.hpp",
+  "lines": "303-314",
+  "feature": "cpp14.decltype-auto",
+  "pattern": "递归选择可调用对象时用 -> decltype(auto) 保留被选中回调的返回类型",
+  "why_typical": "第一个可调用对象可能按值或按引用返回；用 auto 会丢掉引用，decltype(auto) 让包装层对调用方透明。",
+  "excerpt": "      template <class _Fn0, class... _Fns>\n      STDEXEC_ATTRIBUTE(host, device, always_inline)\n      constexpr auto operator()(_Fn0 &&__fn0, _Fns &&...__fns) const noexcept -> decltype(auto)\n      {\n        if constexpr (__callable<_Fn0, _Args...>)\n        {\n          return static_cast<_Fn0 &&>(__fn0);\n        }\n        else\n        {\n          return (*this)(static_cast<_Fns &&>(__fns)...);\n        }",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；发送者/接收者库内部的可调用对象选择器。"
+}

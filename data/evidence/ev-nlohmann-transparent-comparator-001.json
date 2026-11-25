@@ -1,0 +1,21 @@
+{
+  "id": "ev-nlohmann-transparent-comparator-001",
+  "repo": "nlohmann/json",
+  "commit": "55f93686c01528224f448c19128836e7df245f72",
+  "path": "include/nlohmann/json.hpp",
+  "lines": "326-332",
+  "feature": "cpp14.transparent-comparators",
+  "pattern": "用 std::less<> 作为对象默认比较器，避免异构查找时构造临时键",
+  "why_typical": "JSON 对象常用字符串字面量查找；透明比较器让比较直接发生在 key_type 与实参之间，省掉临时 std::string。",
+  "excerpt": "#if defined(JSON_HAS_CPP_14)\n    // use of transparent comparator avoids unnecessary repeated construction of temporaries\n    // in functions involving lookup by key with types other than object_t::key_type (aka. StringType)\n    using default_object_comparator_t = std::less<>;\n#else\n    using default_object_comparator_t = std::less<StringType>;\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；默认比较器随 C++14 能力切换。"
+}

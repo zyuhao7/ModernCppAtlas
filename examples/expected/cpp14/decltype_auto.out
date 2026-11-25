@@ -1,0 +1,6 @@
+[1] auto return is int = 1
+[2] decltype(auto) return is int& = 1
+[3] counter after writing through alias = 7
+[4] return (counter) is int& = 1
+[5] return counter is int = 1
+[6] forwarding wrapper keeps int& = 1
