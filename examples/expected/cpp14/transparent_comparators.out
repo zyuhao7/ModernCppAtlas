@@ -1,0 +1,5 @@
+[1] transparent find("bob") found = 1
+[2] Name constructions in transparent lookup = 0
+[3] classic find("dave") found = 0
+[4] Name constructions in classic lookup = 1
+[5] descending traversal = 3 2 1

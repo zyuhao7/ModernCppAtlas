@@ -1,0 +1,5 @@
+[1] atlas::version = 2
+[2] atlas::v2::version = 2
+[3] sizeof(atlas::Widget) = 4
+[4] atlas::Traits<int>::id = 7
+[5] ADL describe: widget 4 bytes

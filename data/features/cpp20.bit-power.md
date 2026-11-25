@@ -23,7 +23,7 @@ claims:
     statement: "特性宏可用时把库内 2 的幂函数别名到标准实现"
     evidence: [ev-abseil-bitpower-alias-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---

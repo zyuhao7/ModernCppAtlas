@@ -1,0 +1,21 @@
+{
+  "id": "ev-nano-transparent-comparator-003",
+  "repo": "nanocurrency/nano-node",
+  "commit": "6b5f63ce04c9a1ffe37b8c687fffc1bef941bf98",
+  "path": "nano/node/scheduler/bucket.hpp",
+  "lines": "72-81",
+  "feature": "cpp14.transparent-comparators",
+  "pattern": "多索引容器的优先级索引使用 std::greater<> 实现降序排列",
+  "why_typical": "比较器不必写死元素类型，std::greater<> 由调用点推导参数；优先级队列按时间戳从大到小遍历。",
+  "excerpt": "\t// clang-format off\n\tusing ordered_elections = boost::multi_index_container<election_entry,\n\tmi::indexed_by<\n\t\tmi::sequenced<mi::tag<tag_sequenced>>,\n\t\tmi::hashed_unique<mi::tag<tag_root>,\n\t\t\tmi::member<election_entry, nano::qualified_root, &election_entry::root>>,\n\t\tmi::ordered_non_unique<mi::tag<tag_priority>,\n\t\t\tmi::member<election_entry, nano::priority_timestamp, &election_entry::priority>, std::greater<>> // Descending\n\t>>;\n\t// clang-format on",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；选举调度器的优先级索引。"
+}

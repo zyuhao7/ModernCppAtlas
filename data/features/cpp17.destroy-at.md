@@ -23,7 +23,7 @@ claims:
     statement: "逐个析构小型映射中已构造的元素"
     evidence: [ev-glaze-destroy-at-small-map-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---

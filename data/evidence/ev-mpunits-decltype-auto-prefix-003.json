@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-decltype-auto-prefix-003",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/systems/include/mp-units/systems/si/prefixes.h",
+  "lines": "124-132",
+  "feature": "cpp14.decltype-auto",
+  "pattern": "格式化辅助函数用 decltype(auto) 返回 func 的精确结果类型",
+  "why_typical": "func 可能返回引用或轻量视图；固定返回 auto 会多做一次拷贝，decltype(auto) 把推导交给实现。",
+  "excerpt": "template<Quantity Q, std::invocable<Q> Func, PrefixableUnit U, auto Character = quantity_character::real_scalar>\n  requires RepresentationOf<typename Q::rep, Character> && treat_as_floating_point<typename Q::rep> &&\n           requires(Q::rep v) {\n             requires requires { abs(v); } || requires { std::abs(v); };\n             requires requires { log10(v); } || requires { std::log10(v); };\n             requires requires { floor(v); } || requires { std::floor(v); };\n           }\nconstexpr decltype(auto) invoke_with_prefixed(Func func, Q q, U u, prefix_range range = prefix_range::engineering,\n                                              int min_integral_digits = 1)",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；单位前缀格式化，返回类型由传入的格式化函数决定。"
+}

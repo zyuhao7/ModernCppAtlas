@@ -23,7 +23,7 @@ claims:
     statement: "按编译器能力把 [[no_unique_address]] 封装成可移植宏"
     evidence: [ev-fmt-attributes-nounique-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---
