@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-inline-namespace-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/base.h",
+  "lines": "260-267",
+  "feature": "cpp11.inline-namespaces",
+  "pattern": "API 宏展开为外层 namespace fmt 加内联 namespace v12",
+  "why_typical": "头文件里的符号带 ABI 版本段，但用户仍写 fmt::format；升级 ABI 只改内联命名空间名。",
+  "excerpt": "#ifndef FMT_BEGIN_NAMESPACE\n#  define FMT_BEGIN_NAMESPACE \\\n    namespace fmt {           \\\n    inline namespace v12 {\n#  define FMT_END_NAMESPACE \\\n    }                       \\\n    }\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-25",
+  "is_test": false,
+  "notes": "生产路径；整个 fmt 公共 API 的命名空间入口。"
+}

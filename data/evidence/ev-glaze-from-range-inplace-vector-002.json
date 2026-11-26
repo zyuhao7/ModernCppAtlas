@@ -1,0 +1,21 @@
+{
+  "id": "ev-glaze-from-range-inplace-vector-002",
+  "repo": "stephenberry/glaze",
+  "commit": "d78832c82289c61a9315bfbc35332cec9f4e93ca",
+  "path": "include/glaze/containers/inplace_vector.hpp",
+  "lines": "557-564",
+  "feature": "cpp23.from-range",
+  "pattern": "条件编译的 std::from_range_t 构造函数把范围交给 assign_range",
+  "why_typical": "容器模拟标准容器的 C++23 接口；只有库声明 containers_ranges 能力时才暴露标记重载。",
+  "excerpt": "#ifdef __cpp_lib_containers_ranges\n      template <std::ranges::input_range R>\n         requires std::convertible_to<std::ranges::range_reference_t<R>, T>\n      constexpr inplace_vector(std::from_range_t, R&& rg) // freestanding-deleted\n      {\n         assign_range(std::forward<R>(rg));\n      }\n#endif",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；glaze 的固定容量向量。"
+}

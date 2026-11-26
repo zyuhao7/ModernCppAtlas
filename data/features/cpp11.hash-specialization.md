@@ -23,7 +23,7 @@ claims:
     statement: "复用成员类型的 std::hash 结果组合出复合键的哈希"
     evidence: [ev-vroom-hash-location-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---

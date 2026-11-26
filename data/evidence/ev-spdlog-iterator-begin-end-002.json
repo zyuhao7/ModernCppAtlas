@@ -1,0 +1,21 @@
+{
+  "id": "ev-spdlog-iterator-begin-end-002",
+  "repo": "gabime/spdlog",
+  "commit": "79524ddd08a4ec981b7fea76afd08ee05f83755d",
+  "path": "include/spdlog/fmt/bin_to_hex.h",
+  "lines": "64-69",
+  "feature": "cpp11.iterator-utilities",
+  "pattern": "泛型容器参数用 std::begin/std::end 取迭代器，不依赖容器的具体类型",
+  "why_typical": "to_hex 接受任意单字节容器；非成员 begin/end 把 vector、string、数组统一成迭代器对。",
+  "excerpt": "                                                                     size_t size_per_line = 32) {\n    static_assert(sizeof(typename Container::value_type) == 1,\n                  \"sizeof(Container::value_type) != 1\");\n    using Iter = typename Container::const_iterator;\n    return details::dump_info<Iter>(std::begin(container), std::end(container), size_per_line);\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；十六进制转储工具。"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-iterator-distance-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/strings/escaping.cc",
+  "lines": "1201-1205",
+  "feature": "cpp11.iterator-utilities",
+  "pattern": "用 std::distance 把迭代器位置转换成长度，而不是改写原迭代器",
+  "why_typical": "解析器保留当前位置的副本，再用 distance 计算已消费的前缀长度；distance 对随机访问迭代器是常量时间。",
+  "excerpt": "  std::size_t initial_portion =\n      static_cast<std::size_t>(std::distance(input.begin(), in));\n\n  if (initial_portion == input.size()) {\n    return std::string(input);",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；URL 转义解析。"
+}

@@ -23,7 +23,7 @@ claims:
     statement: "通过特性测试宏选择标准 bind_front 或兼容实现"
     evidence: [ev-abseil-bind-front-compatibility-003]
 review:
-  author: "Codex"
+  author: "zyuhao7"
   level: manual
   reviewers: ["zyuhao7"]
 ---
