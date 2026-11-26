@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-ratio-period-002",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/chrono.h",
+  "lines": "587-597",
+  "feature": "cpp11.ratio",
+  "pattern": "用 std::ratio 实例比较 chrono 周期，把分钟、小时、天等常见单位映射成后缀",
+  "why_typical": "ratio<60>、ratio<3600> 这些类型本身就是单位标签；类型比较在编译期完成，运行期只返回字符串。",
+  "excerpt": "  if (std::is_same<Period, std::hecto>::value) return \"hs\";\n  if (std::is_same<Period, std::kilo>::value) return \"ks\";\n  if (std::is_same<Period, std::mega>::value) return \"Ms\";\n  if (std::is_same<Period, std::giga>::value) return \"Gs\";\n  if (std::is_same<Period, std::tera>::value) return \"Ts\";\n  if (std::is_same<Period, std::peta>::value) return \"Ps\";\n  if (std::is_same<Period, std::exa>::value) return \"Es\";\n  if (std::is_same<Period, std::ratio<60>>::value) return \"min\";\n  if (std::is_same<Period, std::ratio<3600>>::value) return \"h\";\n  if (std::is_same<Period, std::ratio<86400>>::value) return \"d\";\n  return nullptr;",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；duration 单位后缀选择。"
+}

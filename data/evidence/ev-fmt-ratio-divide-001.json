@@ -1,0 +1,21 @@
+{
+  "id": "ev-fmt-ratio-divide-001",
+  "repo": "fmtlib/fmt",
+  "commit": "1be298e1bd68957e4cd352e1f676f00e07dcfb57",
+  "path": "include/fmt/chrono.h",
+  "lines": "162-171",
+  "feature": "cpp11.ratio",
+  "pattern": "用 std::ratio_divide 计算两个 chrono 周期的比值，转换系数在编译期完成",
+  "why_typical": "duration 的 period 就是 std::ratio；格式化时先算出 From/To 的精确有理数比例，再决定整数运算路径。",
+  "excerpt": "  using From = std::chrono::duration<FromRep, FromPeriod>;\n  ec = 0;\n\n  // the basic idea is that we need to convert from count() in the from type\n  // to count() in the To type, by multiplying it with this:\n  struct Factor\n      : std::ratio_divide<typename From::period, typename To::period> {};\n\n  static_assert(Factor::num > 0, \"num must be positive\");\n  static_assert(Factor::den > 0, \"den must be positive\");",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；chrono 格式化核心换算。"
+}

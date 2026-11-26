@@ -780,3 +780,21 @@ features:
     msvc: "19.0"
     source: https://en.cppreference.com/w/cpp/compiler_support/11
     checked_at: "2026-11-25"
+  cpp11.iterator-utilities:
+    gcc: "4.6"
+    clang: "3.0"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-26"
+  cpp11.ratio:
+    gcc: "4.4"
+    clang: "3.0"
+    msvc: "17.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/11
+    checked_at: "2026-11-26"
+  cpp23.from-range:
+    gcc: "15"
+    clang: "17"
+    msvc: "19.34"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-26"

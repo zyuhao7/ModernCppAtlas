@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-iterator-begin-end-001",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/framework/unit.h",
+  "lines": "823-826",
+  "feature": "cpp11.iterator-utilities",
+  "pattern": "用 std::begin/std::end 遍历字符数组，数组与容器共用同一组范围边界",
+  "why_typical": "格式化输出既要拼接静态数组前缀，也要拼接分隔符；非成员 begin/end 让两者走同一条拷贝路径。",
+  "excerpt": "  detail::copy(std::begin(prefix), std::end(prefix), out);\n  print_unit(U{});\n  for_each(std::tuple<Rest...>{}, [&]<Unit Arg>(Arg) {\n    detail::copy(std::begin(separator), std::end(separator), out);",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；单位符号拼装时对数组取范围边界。"
+}

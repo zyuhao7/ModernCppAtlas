@@ -1,0 +1,21 @@
+{
+  "id": "ev-abseil-from-range-raw-hash-003",
+  "repo": "abseil/abseil-cpp",
+  "commit": "2065f4ded0558c6f89fee67c8e5228feb4eb960e",
+  "path": "absl/container/internal/raw_hash_set.h",
+  "lines": "2578-2585",
+  "feature": "cpp23.from-range",
+  "pattern": "哈希表用 std::from_range_t 重载接收范围，再转发给迭代器对构造函数",
+  "why_typical": "标准容器新增的范围构造函数用标记类型消歧；Abseil 的兼容实现只在库具备该能力时启用。",
+  "excerpt": "#if defined(__cpp_lib_containers_ranges) && \\\n    __cpp_lib_containers_ranges >= 202202L\n  template <typename R>\n  raw_hash_set(std::from_range_t, R&& rg, size_type reservation_size = 0,\n               const hasher& hash = hasher(), const key_equal& eq = key_equal(),\n               const allocator_type& alloc = allocator_type())\n      : raw_hash_set(std::begin(rg), std::end(rg), reservation_size, hash, eq,\n                     alloc) {}",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；absl 哈希容器底层实现。"
+}

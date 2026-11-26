@@ -1,0 +1,6 @@
+[1] ratio<2, 4> = 1/2
+[2] ratio_add<1/2, 1/4> = 3/4
+[3] ratio_divide<milli, micro> = 1000/1
+[4] milli < centi = 1
+[5] milli == ratio<1, 1000> = 1
+[6] 1500 ms as seconds = 1

@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-from-range-fixed-string-001",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/ext/fixed_string.h",
+  "lines": "104-110",
+  "feature": "cpp23.from-range",
+  "pattern": "为自定义字符串容器增加 std::from_range_t 标记构造函数，直接从范围复制",
+  "why_typical": "固定长度字符串需要从任意输入范围构造；标记重载与迭代器对重载分开，调用点不必拆出 begin/end。",
+  "excerpt": "  template<std::ranges::input_range R>\n    requires std::same_as<std::ranges::range_value_t<R>, CharT>\n  constexpr basic_fixed_string(std::from_range_t, R&& r)\n  {\n    MP_UNITS_EXPECTS(std::ranges::size(r) == N);\n    for (auto it = data_; auto&& v : std::forward<R>(r)) *it++ = std::forward<decltype(v)>(v);\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；单位符号的编译期固定字符串。"
+}

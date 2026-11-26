@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-ratio-chrono-003",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/systems/include/mp-units/systems/si/chrono.h",
+  "lines": "123-129",
+  "feature": "cpp11.ratio",
+  "pattern": "把运行时单位比例转换成 std::ratio 类型，再构造 chrono duration",
+  "why_typical": "库内部的量纲比例是值级别数据；转成 std::ratio 后可以拼进 duration 的 period，交给标准 chrono 继续运算。",
+  "excerpt": "namespace detail {\n\n[[nodiscard]] constexpr auto as_ratio(UnitMagnitude auto m)\n  requires(is_rational(m))\n{\n  return std::ratio<get_value<std::intmax_t>(numerator(m)), get_value<std::intmax_t>(denominator(m))>{};\n}",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-26",
+  "is_test": false,
+  "notes": "生产路径；mp-units 与标准 chrono 的桥接。"
+}
