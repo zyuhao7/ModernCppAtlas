@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-binary-base64-002",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "src/arm64/arm_base64.cpp",
+  "lines": "568-570",
+  "feature": "cpp14.binary-literals",
+  "pattern": "用二进制字面量标记 Base64 分支的两位选择值",
+  "why_typical": "switch 依据 pos64 的高两位分支，case 0b00 直接表达“最高两位为 00”的条件。",
+  "excerpt": "  switch (pos64 >> 4) {\n  case 0b00: {\n    const uint8x16_t v0 = vmovq_n_u8((uint8_t)(pos - 1));",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；ARM64 Base64 解码分支。"
+}

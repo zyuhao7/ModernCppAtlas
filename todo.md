@@ -414,6 +414,7 @@ PR CI 与月度刷新任务分离：PR CI 只验证已固定 commit 的数据；
 - 第三十批加入 `cpp20.attributes`（glaze/mold/fmt 各 1 条）、`cpp17.logical-traits`（abseil 2 条、fmt 1 条）与 `cpp11.hash-specialization`（glaze/nghttp2/vroom 各 1 条），均按 A 级编写，带可运行示例。
 - 第三十一批加入 `cpp14.decltype-auto`（abseil/stdexec/mp-units 各 1 条）、`cpp14.transparent-comparators`（nlohmann/glaze/nano-node 各 1 条）与 `cpp11.inline-namespaces`（fmt/abseil/nlohmann 各 1 条），均按 A 级编写，带可运行示例。
 - 第三十二批加入 `cpp11.iterator-utilities`（mp-units/spdlog/abseil 各 1 条）、`cpp11.ratio`（fmt 2 条、mp-units 1 条）与 `cpp23.from-range`（mp-units/glaze/abseil 各 1 条），均按 A 级编写，带可运行示例。
+- 第三十三批加入 `cpp14.binary-literals`（simdutf 3 条）、`cpp17.gcd-lcm`（mp-units 3 条）与 `cpp23.ranges-to`（Hyprland 2 条、nghttp2 1 条），均按 A 级编写，带可运行示例。
 - 退出标准：月度证据刷新跑通一次；20 个最常用特性有完整进阶用法。
 
 ### M4 · C++23/26（新增 150–250 人时）

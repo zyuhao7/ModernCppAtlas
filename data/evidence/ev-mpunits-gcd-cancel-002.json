@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-gcd-cancel-002",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/bits/ratio.h",
+  "lines": "97-103",
+  "feature": "cpp17.gcd-lcm",
+  "pattern": "用两次 std::gcd 在乘法前交叉约分，避免中间溢出",
+  "why_typical": "先约去分子与对方分母的公因子，再做 safe_multiply，是数值库控制溢出的常见手法。",
+  "excerpt": "  [[nodiscard]] friend consteval ratio operator*(ratio lhs, ratio rhs)\n  {\n    const std::intmax_t gcd1 = std::gcd(lhs.num, rhs.den);\n    const std::intmax_t gcd2 = std::gcd(rhs.num, lhs.den);\n    return ratio{detail::safe_multiply(lhs.num / gcd1, rhs.num / gcd2),\n                 detail::safe_multiply(lhs.den / gcd2, rhs.den / gcd1)};\n  }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；比例乘法的交叉约分。"
+}

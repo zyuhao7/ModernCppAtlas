@@ -798,3 +798,21 @@ features:
     msvc: "19.34"
     source: https://en.cppreference.com/w/cpp/compiler_support/23
     checked_at: "2026-11-26"
+  cpp14.binary-literals:
+    gcc: "4.9"
+    clang: "2.9"
+    msvc: "19.0"
+    source: https://en.cppreference.com/w/cpp/compiler_support/14
+    checked_at: "2026-11-27"
+  cpp17.gcd-lcm:
+    gcc: "7"
+    clang: "4"
+    msvc: "19.11"
+    source: https://en.cppreference.com/w/cpp/compiler_support/17
+    checked_at: "2026-11-27"
+  cpp23.ranges-to:
+    gcc: "14"
+    clang: "17"
+    msvc: "19.34"
+    source: https://en.cppreference.com/w/cpp/compiler_support/23
+    checked_at: "2026-11-27"

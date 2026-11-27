@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-binary-utf32-003",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "src/arm64/arm_convert_utf32_to_utf8.cpp",
+  "lines": "127-129",
+  "feature": "cpp14.binary-literals",
+  "pattern": "用二进制字面量构造 SIMD 位掩码常量",
+  "why_typical": "UTF-16 打包布局要按位段取值，掩码写成 0b0011111101111111 让位宽和位置一眼可辨。",
+  "excerpt": "        const uint16x8_t t1 = vandq_u16(t0, simdutf_vec(0b0011111101111111));\n        // [00cc|cccc|0bcc|cccc] => [10cc|cccc|0bcc|cccc]\n        const uint16x8_t t2 = vorrq_u16(t1, simdutf_vec(0b1000000000000000));",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；ARM NEON 的 UTF-32 到 UTF-8 转换。"
+}

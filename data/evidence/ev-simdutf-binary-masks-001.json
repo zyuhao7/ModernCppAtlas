@@ -1,0 +1,21 @@
+{
+  "id": "ev-simdutf-binary-masks-001",
+  "repo": "simdutf/simdutf",
+  "commit": "59589cd3df6823cbfdbd253cde3377e7c3e1fe9b",
+  "path": "src/generic/utf8_validation/utf8_lookup4_algorithm.h",
+  "lines": "144-150",
+  "feature": "cpp14.binary-literals",
+  "pattern": "用二进制字面量写出 UTF-8 校验表的高位掩码",
+  "why_typical": "校验算法按 UTF-8 前导字节的位段分类，0b11110000 这类写法与规范位图一一对应，比十六进制更直观。",
+  "excerpt": "                                        255,\n                                        255,\n                                        255,\n                                        255,\n                                        0b11110000u - 1,\n                                        0b11100000u - 1,\n                                        0b11000000u - 1};",
+  "license": "Apache-2.0",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；generic UTF-8 校验核心，跨平台实现共用。"
+}
