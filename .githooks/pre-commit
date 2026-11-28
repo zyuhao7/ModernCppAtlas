@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# Mirrors the CI `format` job, but only for staged content.
+# Install with: make hooks
+set -euo pipefail
+
+cd "$(git rev-parse --show-toplevel)"
+
+staged=$(git diff --cached --name-only --diff-filter=ACMR)
+[ -n "$staged" ] || exit 0
+
+py=()
+cpp=()
+md=()
+while IFS= read -r f; do
+  case "$f" in
+    tools/*.py | tests/*.py) py+=("$f") ;;
+    examples/*/*.cpp) cpp+=("$f") ;;
+    README.md | todo.md | .github/pull_request_template.md | data/features/*.md)
+      md+=("$f")
+      ;;
+  esac
+done <<<"$staged"
+
+[ ${#py[@]} -gt 0 ] || [ ${#cpp[@]} -gt 0 ] || [ ${#md[@]} -gt 0 ] || exit 0
+
+# Check exactly what is committed, not what happens to sit in the worktree.
+work=$(mktemp -d)
+trap 'rm -rf -- "$work"' EXIT
+for f in "${py[@]}" "${cpp[@]}" "${md[@]}"; do
+  [ -n "$f" ] || continue
+  mkdir -p "$work/$(dirname "$f")"
+  git show ":$f" >"$work/$f"
+done
+
+# Formatters read their configuration from these files.
+for cfg in pyproject.toml .clang-format .mdformat.toml; do
+  [ -e "$cfg" ] && cp "$cfg" "$work/$cfg"
+done
+
+fail=0
+cd "$work"
+if [ ${#py[@]} -gt 0 ]; then
+  uv run --project "$OLDPWD" ruff format --check "${py[@]}" || fail=1
+  uv run --project "$OLDPWD" ruff check "${py[@]}" || fail=1
+fi
+if [ ${#cpp[@]} -gt 0 ]; then
+  uv run --project "$OLDPWD" clang-format --dry-run --Werror "${cpp[@]}" ||
+    fail=1
+fi
+if [ ${#md[@]} -gt 0 ]; then
+  uv run --project "$OLDPWD" mdformat --check "${md[@]}" || fail=1
+fi
+
+if [ "$fail" -ne 0 ]; then
+  echo
+  echo "format check failed: run 'make fmt' and re-stage the changed files." >&2
+  exit 1
+fi

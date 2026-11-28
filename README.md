@@ -228,10 +228,11 @@ uv run tools/check_search.py                  # 中文搜索冒烟（需先构�
 
 ```bash
 uv sync --group dev
-uv run ruff format tools && uv run ruff check tools
-uv run clang-format -i examples/*/*.cpp
-uv run mdformat README.md todo.md data/features .github/pull_request_template.md
+make fmt         # 就地格式化并修复 lint
+make fmt-check   # 只检查，失败即退出，可直接复现 CI
 ```
+
+`make hooks` 会把 `.githooks/pre-commit` 软链到 `.git/hooks/`，提交时只检查暂存内容，格式不合规直接拒绝提交。
 
 ## 持续集成
 
