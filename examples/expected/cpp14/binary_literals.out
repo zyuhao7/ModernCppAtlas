@@ -1,0 +1,5 @@
+[1] flags = 10
+[2] mask = 240
+[3] low nibble = 6
+[4] utf8 tail = 0x80
+[5] leading bits = two

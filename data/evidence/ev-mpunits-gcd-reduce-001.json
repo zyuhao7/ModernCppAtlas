@@ -1,0 +1,21 @@
+{
+  "id": "ev-mpunits-gcd-reduce-001",
+  "repo": "mpusz/mp-units",
+  "commit": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+  "path": "src/core/include/mp-units/bits/ratio.h",
+  "lines": "76-82",
+  "feature": "cpp17.gcd-lcm",
+  "pattern": "用 std::gcd 在构造有理数时约分分子分母",
+  "why_typical": "比例类型在 consteval 构造函数里调用 std::gcd，得到最简分数后再存储。",
+  "excerpt": "    if (num == 0)\n      den = 1;\n    else {\n      const std::intmax_t gcd = std::gcd(num, den);\n      num = num * (den < 0 ? -1 : 1) / gcd;\n      den = detail::abs(den) / gcd;\n    }",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；mp-units 内部比例类型的归一化。"
+}

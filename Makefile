@@ -9,7 +9,7 @@ CONFIG_HASH := $(firstword $(shell printf '%s\0%s\0' $(call shell_quote,$(CXX)) 
 COMPILED_DIR := $(BUILD_DIR)/.compiled/$(CONFIG_HASH)
 refresh_example_link = $(if $(filter $(abspath $(COMPILED_DIR)/$*),$(realpath $@)),,FORCE)
 
-.PHONY: all examples run verify clean FORCE
+.PHONY: all examples run verify fmt fmt-check hooks clean FORCE
 .SECONDEXPANSION:
 .PRECIOUS: $(COMPILED_DIR)/%
 
@@ -38,6 +38,25 @@ run: examples
 
 verify:
 	uv run tools/verify_examples.py --compiler $(CXX) --run
+
+# Mirrors the CI format job: writes in place, then verifies.
+fmt:
+	uv run ruff format tools tests
+	uv run ruff check --fix tools tests
+	uv run clang-format -i examples/*/*.cpp
+	uv run mdformat README.md todo.md data/features .github/pull_request_template.md
+
+# Read-only mirror of the CI format job; fails on any drift.
+fmt-check:
+	uv run ruff format --check tools tests
+	uv run ruff check tools tests
+	uv run clang-format --dry-run --Werror examples/*/*.cpp
+	uv run mdformat --check README.md todo.md data/features .github/pull_request_template.md
+
+# Symlink the tracked hook into .git/hooks (no git config changes).
+hooks:
+	ln -sfn ../../.githooks/pre-commit .git/hooks/pre-commit
+	@echo "pre-commit hook installed"
 
 clean:
 	rm -rf build

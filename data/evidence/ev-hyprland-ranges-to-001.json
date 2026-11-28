@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-ranges-to-001",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/render/OpenGL.cpp",
+  "lines": "1383-1387",
+  "feature": "cpp23.ranges-to",
+  "pattern": "把视图管道直接物化为 std::vector",
+  "why_typical": "渲染层把坐标变换与 join 的视图一次性转成连续容器，随后交给 GPU 上传接口。",
+  "excerpt": "        std::vector<float> pressedPos = m_pressedHistoryPositions | std::views::transform([&](const Vector2D& vec) {\n                                            Vector2D pPressed = ((vec - pMonitor->m_position) * pMonitor->m_scale);\n                                            return std::array<float, 2>{pPressed.x / pMonitor->m_transformedSize.x, pPressed.y / pMonitor->m_transformedSize.y};\n                                        }) |\n            std::views::join | std::ranges::to<std::vector<float>>();",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；指针位置的渲染缓冲区准备。"
+}

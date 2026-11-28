@@ -1,0 +1,21 @@
+{
+  "id": "ev-nghttp2-ranges-to-003",
+  "repo": "nghttp2/nghttp2",
+  "commit": "85e300c79fb6dbcfa9c1013215c8710c1c2cd3d2",
+  "path": "src/util.cc",
+  "lines": "986-990",
+  "feature": "cpp23.ranges-to",
+  "pattern": "用 ranges::to<std::vector> 物化 split/transform 结果",
+  "why_typical": "配置解析把字符串 split 后直接收集成 vector，元素类型由视图的 transform 推导。",
+  "excerpt": "std::vector<std::string_view> split_str(std::string_view s, char delim) {\n  return s | std::ranges::views::split(delim) |\n         std::ranges::views::transform(\n           [](auto &&r) { return std::string_view{r}; }) |\n         std::ranges::to<std::vector>();",
+  "license": "MIT",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；命令行配置字符串切分。"
+}

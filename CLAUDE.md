@@ -52,9 +52,9 @@ uv run tools/check_search.py
 Formatting (must match the CI `format` job):
 
 ```bash
-uv run ruff format tools tests && uv run ruff check tools tests
-uv run clang-format -i examples/*/*.cpp
-uv run mdformat README.md todo.md data/features .github/pull_request_template.md
+make fmt         # ruff format/fix, clang-format -i, mdformat
+make fmt-check   # read-only mirror of the CI format job
+make hooks       # symlink .githooks/pre-commit (checks staged content)
 ```
 
 Maintenance / network-dependent tools:

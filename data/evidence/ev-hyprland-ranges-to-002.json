@@ -1,0 +1,21 @@
+{
+  "id": "ev-hyprland-ranges-to-002",
+  "repo": "hyprwm/Hyprland",
+  "commit": "0aa6745f705f2c4b0a5004eb019ef76e5bbdb426",
+  "path": "src/helpers/MiscFunctions.cpp",
+  "lines": "414-424",
+  "feature": "cpp23.ranges-to",
+  "pattern": "用 ranges::to<std::string> 结束字符串变换管道",
+  "why_typical": "字符清洗管道以 to<std::string> 收尾，省去手动 reserve 与逐字符 push。",
+  "excerpt": "    auto result = in | std::views::transform([](unsigned char ch) -> char {\n                      switch (ch) {\n                          case ' ':\n                          case '\\n':\n                          case ',': return '-';\n\n                          default: return sc<char>(std::tolower(ch));\n                      }\n                  });\n\n    return result | std::ranges::to<std::string>();",
+  "license": "BSD-3-Clause",
+  "generated": false,
+  "level": "manual",
+  "discovered_by": "regex",
+  "verified_by": [
+    "zyuhao7"
+  ],
+  "verified_at": "2026-11-27",
+  "is_test": false,
+  "notes": "生产路径；配置项名字的规范化。"
+}
